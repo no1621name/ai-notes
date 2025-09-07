@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
-import DBClient from './client';
 import { useToasterStore } from '@/app/stores/toaster';
+import DBClient from './client';
 import { SchemaFieldType } from '../../types/api';
 
-type RequestHandler = null | ((ev: any) => void);
+type RequestHandler = null | ((ev: unknown) => void);
 type IDBRequestType = Record<'onsuccess' | 'onerror', RequestHandler>;
 
 describe('IDBClient', () => {
-  let pinia;
   let request: IDBRequestType;
   let toasterStore: ReturnType<typeof useToasterStore>;
 
@@ -33,11 +31,13 @@ describe('IDBClient', () => {
   };
 
   beforeEach(() => {
-    global.indexedDB = mockIndexedDB as any;
-    pinia = createTestingPinia({
+    createTestingPinia({
       createSpy: vi.fn,
     });
     toasterStore = useToasterStore();
+
+    global.indexedDB = mockIndexedDB as unknown as never;
+
     request = {
       onsuccess: null,
       onerror: null,
@@ -47,7 +47,7 @@ describe('IDBClient', () => {
   });
 
   it('should add error to toaster when IndexedDB is not supported', async () => {
-    delete (window as any).indexedDB;
+    delete (window as { indexedDB: unknown }).indexedDB;
     const dbClient = new DBClient(dbConfig);
 
     await expect(dbClient.getAll('testStore')).rejects.toBeUndefined();
