@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import Header from '@/shared/ui/header.vue';
 import Notifications from '@/app/providers/notifications/ui.vue';
 </script>
@@ -17,4 +18,5 @@ import Notifications from '@/app/providers/notifications/ui.vue';
     </RouterView>
   </div>
   <Notifications />
+  <VueQueryDevtools />
 </template>
