@@ -5,12 +5,16 @@ import Notifications from '@/app/providers/notifications/ui.vue';
 
 <template>
   <div class="w-full flex flex-col items-center min-h-screen">
-    <Header/>
-    <FaAngleDown/>
-    <FaArrowDown/>
+    <Header />
     <div class="flex grow min-h-0 w-full h-max">
-      <RouterView/>
+      <RouterView />
     </div>
+
+    <RouterView name="modal" v-slot="{ Component }">
+      <KeepAlive>
+        <component :is="Component" />
+      </KeepAlive>
+    </RouterView>
   </div>
   <Notifications />
 </template>
