@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Header from '@/shared/ui/header.vue';
+import Notifications from '@/app/providers/notifications/ui.vue';
 </script>
 
 <template>
@@ -11,4 +12,5 @@ import Header from '@/shared/ui/header.vue';
       <RouterView/>
     </div>
   </div>
+  <Notifications />
 </template>
