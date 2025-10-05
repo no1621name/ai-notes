@@ -16,7 +16,7 @@ export default class DBClient implements DataTransfer {
   private db: IDBDatabase | null = null;
   private toaster = useToasterStore();
 
-  constructor(private config: DBConfig) {}
+  constructor(private config: DBConfig) { }
 
   private async connect() {
     return new Promise<void>((resolve, reject) => {

@@ -1,24 +1,19 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+
+}
+@plugin "@tailwindcss/typography";
+
 @import "./transitions.css";
+@import "./syntax.css";
 
 @theme {
   --font-sans: "Inter", sans-serif;
   --font-heading: "Poppins", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
-
-  --color-dark-100: #1A1A1A;
-  --color-dark-200: #2D2D2D;
-  --color-dark-300: #404040;
-  --color-dark-400: #5C5C5C;
-  --color-dark-500: #737373;
-  --color-dark-600: #8F8F8F;
-  --color-accent-100: #E2E8F0;
-  --color-accent-200: #CBD5E1;
-  --color-accent-300: #64748B;
-  --color-primary-500: #3B82F6;
-  --color-primary-600: #2563EB;
 }
 
 body {
-  @apply text-white bg-dark-100;
+  @apply text-base-content bg-base-100;
 }

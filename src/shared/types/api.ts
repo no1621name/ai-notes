@@ -18,12 +18,3 @@ export interface DataStore {
   primaryKey: string;
   schema: Record<string, SchemaFieldType>;
 }
-
-const getA = async (client: DataTransfer) => {
-  const notes = await client.getAll<{ id: PrimaryKeyType; name: string }>('notes');
-  return notes;
-};
-
-// class A {
-//   constructor(private transfer: DataTransfer) {}
-// }

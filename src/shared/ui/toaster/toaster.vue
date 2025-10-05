@@ -13,20 +13,18 @@ const emit = defineEmits<{ close: [id: ToastType['id']] }>();
 </script>
 
 <template>
-  <Teleport to="body">
-    <div class="absolute z-10 bottom-6 right-6 max-w-5/12 w-max min-w-2/12">
-      <TransitionGroup name="list">
-        <Toast
-          v-for="item in items"
-          :key="item.id"
-          :variant="item.type"
-          closable
-          @close="() => emit('close', item.id)"
-        >
-          <template #title>{{ item.title }}</template>
-          <template #default v-if="!!item.message">{{ item.message }}</template>
-        </Toast>
-      </TransitionGroup>
-    </div>
-  </Teleport>
+  <div class="toast">
+    <TransitionGroup name="list">
+      <Toast
+        v-for="item in items"
+        :key="item.id"
+        :variant="item.type"
+        closable
+        @close="() => emit('close', item.id)"
+      >
+        <template #title>{{ item.title }}</template>
+        <template #default v-if="!!item.message">{{ item.message }}</template>
+      </Toast>
+    </TransitionGroup>
+  </div>
 </template>

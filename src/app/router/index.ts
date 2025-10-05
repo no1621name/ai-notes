@@ -16,7 +16,6 @@ const router = createRouter({
       },
       beforeEnter: [
         (to, from) => {
-          console.log(to);
           if (from.matched.length) {
             to.matched[0].components!.default = from.matched[0].components!.default;
           } else {
