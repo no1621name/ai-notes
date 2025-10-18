@@ -2,7 +2,7 @@ import { globalIgnores } from 'eslint/config';
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
 import pluginVue from 'eslint-plugin-vue';
 import pluginVitest from '@vitest/eslint-plugin';
-import pluginOxlint from 'eslint-plugin-oxlint';
+import pluginStylistic from '@stylistic/eslint-plugin';
 
 export default defineConfigWithVueTs(
   {
@@ -19,11 +19,31 @@ export default defineConfigWithVueTs(
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
   },
-  ...pluginOxlint.configs['flat/recommended'],
+
+  pluginStylistic.configs.customize({
+    indent: 2,
+    quotes: 'single',
+    semi: true,
+  }),
 
   {
     rules: {
       'vue/multi-word-component-names': 'off',
+      'vue/first-attribute-linebreak': ['error', {
+        singleline: 'beside',
+        multiline: 'below',
+      }],
+      'vue/max-attributes-per-line': ['error', {
+        singleline: 2,
+        multiline: 1,
+      }],
+      'vue/html-indent': ['error', 2, {
+        attribute: 1,
+        baseIndent: 1,
+        closeBracket: 0,
+        alignAttributesVertically: true,
+        ignores: [],
+      }],
     },
   },
 );
