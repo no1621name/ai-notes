@@ -11,7 +11,7 @@ import Notifications from '@/app/providers/notifications/ui.vue';
       <RouterView />
     </div>
 
-    <RouterView name="modal" v-slot="{ Component }">
+    <RouterView name="drawer" v-slot="{ Component }">
       <KeepAlive>
         <component :is="Component" />
       </KeepAlive>

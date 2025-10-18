@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ModalLayout from '@/widgets/modal-layout.vue';
+import DrawerLayout from '@/widgets/drawer-layout.vue';
 </script>
 
 <template>
-  <ModalLayout>
+  <DrawerLayout>
     <template #header> adasdfasdf </template>
     <template #default>
       <p>
@@ -12,5 +12,5 @@ import ModalLayout from '@/widgets/modal-layout.vue';
         et, possimus perspiciatis debitis qui natus?
       </p>
     </template>
-  </ModalLayout>
+  </DrawerLayout>
 </template>

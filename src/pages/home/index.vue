@@ -10,7 +10,7 @@ const editorRef = useTemplateRef<{ editor: TipTapEditor }>('editor');
 </script>
 
 <template>
-  <RouterLink class="link" to="/modal">asfdasdf</RouterLink>
+  <RouterLink class="link" to="/drawer">asfdasdf</RouterLink>
   <Note id="1" />
   <EditorActions :editor="editorRef?.editor" key="1" />
   <Editor ref="editor" key="1" />

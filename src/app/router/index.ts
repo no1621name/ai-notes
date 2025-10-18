@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/pages/home/index.vue';
-import Modal from '@/pages/modal.vue';
+import Drawer from '@/pages/drawer.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,9 +10,9 @@ const router = createRouter({
       component: Home,
     },
     {
-      path: '/modal',
+      path: '/drawer',
       components: {
-        modal: Modal,
+        drawer: Drawer,
       },
       beforeEnter: [
         (to, from) => {
@@ -21,6 +21,8 @@ const router = createRouter({
           } else {
             to.matched[0].components!.default = Home;
           }
+
+          console.log()
         },
       ],
     },
