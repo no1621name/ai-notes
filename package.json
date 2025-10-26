@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@kalimahapps/vue-icons": "^1.9.2",
+    "@oddbird/css-anchor-positioning": "^0.7.0",
     "@tanstack/vue-query": "^5.87.1",
     "@tanstack/vue-query-devtools": "^5.87.1",
     "@tiptap/extension-bubble-menu": "^3.6.5",

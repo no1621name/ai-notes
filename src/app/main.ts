@@ -1,3 +1,7 @@
+import anchorPolyfill from '@oddbird/css-anchor-positioning/fn';
+
+await anchorPolyfill();
+
 import { createApp, type App as IApp } from 'vue';
 import { createPinia } from 'pinia';
 import { VueQueryPlugin } from '@tanstack/vue-query';
