@@ -1,12 +1,12 @@
 import { toValue, type MaybeRef } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 
-import { useDataTransfer } from '@/app/providers/data-transfer';
+import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import type { PrimaryKeyType } from '@/shared/types/api';
 import { getNote } from '../api/get-note';
 
 export function useGetNote(id: MaybeRef<PrimaryKeyType>) {
-  const dataTransfer = useDataTransfer();
+  const dataTransfer = useDbDataTransfer();
 
   return useQuery({
     queryKey: ['note', id],

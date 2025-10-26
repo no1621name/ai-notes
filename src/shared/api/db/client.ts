@@ -59,8 +59,8 @@ export default class DBClient implements DataTransfer {
 
       if (fields.length) {
         fields
-          .filter((field) => field !== storeInfo.primaryKey)
-          .forEach((field) =>
+          .filter(field => field !== storeInfo.primaryKey)
+          .forEach(field =>
             store.createIndex(field, field, {
               unique: storeInfo.schema[field] === SchemaFieldType.UNIQUE,
             }),
