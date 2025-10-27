@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
+import { drawerDefaultComponentGuard } from './guards';
+
 import Home from '@/pages/home/index.vue';
-import Drawer from '@/pages/drawer.vue';
+import NoteDetails from '@/pages/notes/details.vue';
+import NewNote from '@/pages/notes/new.vue';
+import Drawer from '@/shared/ui/drawer/main.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,19 +15,24 @@ const router = createRouter({
       component: Home,
     },
     {
-      path: '/drawer',
+      path: '/note',
       components: {
         drawer: Drawer,
       },
-      beforeEnter: [
-        (to, from) => {
-          if (from.matched.length) {
-            to.matched[0].components!.default = from.matched[0].components!.default;
-          } else {
-            to.matched[0].components!.default = Home;
-          }
-
-          console.log()
+      children: [
+        {
+          path: ':id',
+          components: {
+            'drawer-content': NoteDetails,
+          },
+          beforeEnter: [drawerDefaultComponentGuard()],
+        },
+        {
+          path: 'new',
+          components: {
+            'drawer-content': NewNote,
+          },
+          beforeEnter: [drawerDefaultComponentGuard()],
         },
       ],
     },
