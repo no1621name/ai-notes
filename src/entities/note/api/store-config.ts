@@ -1,3 +1,5 @@
+import { tagsStoreConfig } from '@/entities/tag/@x/note';
+import type { ManyToManyRelationConfig } from '@/shared/api/db/relations/many-to-many';
 import { type DataStore, SchemaFieldType } from '@/shared/types/api';
 import type { NoteData } from '../model/types';
 
@@ -22,13 +24,22 @@ export const relationConfig: DataStore = {
     tag_id: SchemaFieldType.NOT_UNIQUE,
   },
   indexes: {
-    noteId: {
+    note_id: {
       name: 'note_id_index',
       keyPath: 'note_id',
     },
-    tagId: {
+    tag_id: {
       name: 'tag_id_index',
       keyPath: 'tag_id',
     },
   },
+};
+
+export const noteToTagRelationConfig: ManyToManyRelationConfig = {
+  sourceStore: storeConfig,
+  relatedStore: tagsStoreConfig,
+  relationStore: relationConfig,
+  sourceForeignKey: 'note_id',
+  relatedForeignKey: 'tag_id',
+  relatedField: 'tags',
 };
