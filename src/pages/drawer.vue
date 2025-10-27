@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DrawerLayout from '@/widgets/drawer-layout.vue';
+import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 </script>
 
 <template>

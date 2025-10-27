@@ -1,11 +1,24 @@
 <script setup lang="ts">
-import { onMounted, onActivated, ref } from 'vue';
+import { onMounted, onActivated, ref, provide } from 'vue';
 import { useRouter } from 'vue-router';
-import VueIcon from '@kalimahapps/vue-icons/VueIcon';
+
+import { DRAWER_HIDE_INJECTION_KEY } from '@/shared/constants/drawer';
 
 const router = useRouter();
 const show = ref(false);
 let closing = false;
+
+function hide() {
+  show.value = false;
+}
+
+async function afterLeave() {
+  if (closing) return;
+  closing = true;
+  router.push('/');
+}
+
+provide(DRAWER_HIDE_INJECTION_KEY, hide);
 
 onMounted(() => {
   show.value = true;
@@ -15,16 +28,6 @@ onActivated(() => {
   show.value = true;
   closing = false;
 });
-
-function hide() {
-  show.value = false;
-}
-
-async function afterLeave() {
-  if (closing) return;
-  closing = true;
-  router.back();
-}
 </script>
 
 <template>
@@ -45,17 +48,7 @@ async function afterLeave() {
         role="dialog"
         aria-modal="true"
       >
-        <header class="p-4 border-b border-b-base-300 relative">
-          <div class="max-w-[90%]">
-            <slot name="header" />
-          </div>
-          <button class="absolute top-4 right-4 cursor-pointer" @click="hide">
-            <VueIcon name="lu:x" />
-          </button>
-        </header>
-        <main class="p-4 overflow-auto">
-          <slot />
-        </main>
+        <router-view name="drawer-content" />
       </aside>
     </Transition>
   </div>
