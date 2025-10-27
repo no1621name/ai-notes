@@ -1,15 +1,13 @@
 <script setup lang="ts">
+import { inject } from 'vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
-import Button from '@/shared/ui/button.vue';
-import type { EditorInstanceType } from '../model/types';
+import { DEFAULT_FORMATTING_ACTIONS } from '../model/config';
+import { editorInjectionKey } from '../model/keys';
 import { useGetQuickActions } from '../queries/use-get-quick-actions';
-import { DEFAULT_ACTIONS } from '../model/config';
+import Button from '@/shared/ui/button.vue';
 
-defineProps<{
-  editor?: EditorInstanceType;
-}>();
-
+const editorRef = inject(editorInjectionKey);
 const { data: quickActions } = useGetQuickActions();
 </script>
 
@@ -30,11 +28,11 @@ const { data: quickActions } = useGetQuickActions();
     >
       <li
         class="p-0 mt-0 mb-0 first-of-type:[&>*]:rounded-t-box last-of-type:[&>*]:rounded-b-box"
-        v-for="action in DEFAULT_ACTIONS"
+        v-for="action in DEFAULT_FORMATTING_ACTIONS"
         :key="action.id"
-        @click="() => action.action(editor!)"
+        @click="() => action.action(editorRef?.editor!)"
       >
-        <a :class="{'no-underline flex items-center justify-between': true, 'menu-active cursor-pointer': action.isActive(editor!)}">
+        <a :class="{'no-underline flex items-center justify-between': true, 'menu-active cursor-pointer': action.isActive(editorRef?.editor!)}">
           <span class="flex items-center gap-x-1">
             <VueIcon :name="action.icon" />
             {{ action.label }}

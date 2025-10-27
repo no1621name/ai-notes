@@ -9,7 +9,7 @@ import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import Typography from '@tiptap/extension-typography';
 import { all, createLowlight } from 'lowlight';
 
-import CodeBlock from './code-block.vue';
+import CodeBlock from './blocks/code-block.vue';
 import { BUBBLE_MENU_PLUGIN_KEYS } from '../model/config';
 
 const lowlight = createLowlight(all);
@@ -53,12 +53,8 @@ onBeforeUnmount(() => {
   <div class="w-1/2">
     <EditorContent
       :editor="editor"
-      class="editor-prose prose prose-p:my-2 prose-blockquote:alert prose-h2:mt-6 prose-h3:mt-4" />
-    <!--
-    сделать основные действия над текстом в всплывающем меню, списком - более сложные действия, кнопками - простые
-    и как раз там будет кнопка, триггерящая появление
-    -->
-    <!-- <BubbleMenu plugin-key=s"two" :editor="editor" :options="{ placement: 'left' }">2</BubbleMenu> -->
+      class="editor-prose prose prose-p:my-2 prose-blockquote:alert prose-h2:mt-6 prose-h3:mt-4"
+    />
   </div>
 </template>
 

@@ -7,7 +7,7 @@ export const BUBBLE_MENU_PLUGIN_KEYS: Record<EditorBubbleMenuNames, string> = {
 
 export const DEFAULT_QUICK_ACTIONS: EditorAction['id'][] = ['bold', 'italic', 'strikethrough'];
 
-export const DEFAULT_ACTIONS: EditorAction[] = [
+export const DEFAULT_FORMATTING_ACTIONS: EditorAction[] = [
   {
     id: 'heading1',
     label: 'Заголовок 1',
@@ -79,3 +79,22 @@ export const DEFAULT_ACTIONS: EditorAction[] = [
     isActive: editor => editor.isActive('blockquote'),
   },
 ];
+
+export const DEFAULT_ADDITIONAL_ACTIONS: Record<string, EditorAction> = {
+  undo: {
+    id: 'undo',
+    label: 'Обратно',
+    icon: 'lu:undo',
+    action: editor => editor.chain().focus().undo().run(),
+    isActive: () => false,
+    isDisabled: editor => !editor.can().chain().focus().undo().run(),
+  },
+  redo: {
+    id: 'redo',
+    label: 'Вперед',
+    icon: 'lu:redo',
+    action: editor => editor.chain().focus().redo().run(),
+    isActive: () => false,
+    isDisabled: editor => !editor.can().chain().focus().redo().run(),
+  },
+};

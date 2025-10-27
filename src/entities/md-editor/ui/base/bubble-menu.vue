@@ -1,23 +1,26 @@
 <script lang="ts" setup>
 import { BubbleMenu } from '@tiptap/vue-3/menus';
+import { inject } from 'vue';
 
-import { BUBBLE_MENU_PLUGIN_KEYS } from '../model/config';
-import type { EditorInstanceType, EditorBubbleMenuOptions, EditorBubbleMenuNames } from '../model/types';
+import type { EditorBubbleMenuOptions, EditorBubbleMenuNames } from '../../model/types';
+import { BUBBLE_MENU_PLUGIN_KEYS } from '../../model/config';
+import { editorInjectionKey } from '../../model/keys';
 
 withDefaults(
   defineProps<{
-    editor?: EditorInstanceType;
     pluginKeyName?: EditorBubbleMenuNames;
     menuOptions?: Partial<EditorBubbleMenuOptions>;
   }>(),
   { pluginKeyName: 'main' },
 );
+
+const editorRef = inject(editorInjectionKey);
 </script>
 
 <template>
   <BubbleMenu
-    v-if="editor"
-    :editor="editor"
+    v-if="editorRef"
+    :editor="editorRef?.editor"
     :options="{
       placement: 'bottom',
       offset: 8,
