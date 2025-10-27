@@ -1,4 +1,5 @@
 import type { DataTransfer, PrimaryKeyType } from '@/shared/types/api';
+import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
 
 interface StoredItem<T> {
   id: PrimaryKeyType;
@@ -9,7 +10,7 @@ export default class LocalStorageClient implements DataTransfer {
   private prefix: string;
   private idField: string;
 
-  constructor(prefix: string = 'app', idField: string = 'id') {
+  constructor(private notifier: ErrorNotifier, prefix: string = 'app', idField: string = 'id') {
     this.prefix = prefix;
     this.idField = idField;
   }
@@ -23,9 +24,14 @@ export default class LocalStorageClient implements DataTransfer {
       const key = this.getStoreKey(store);
       const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : [];
-    } catch (error) {
-      console.error(`Error reading store ${store}:`, error);
-      return [];
+    } catch {
+      const message = `Failed to read data from store "${store}"`;
+      this.notifier.add({
+        type: 'danger',
+        title: 'Storage read error',
+        message,
+      });
+      throw new Error(message);
     }
   }
 
@@ -33,9 +39,14 @@ export default class LocalStorageClient implements DataTransfer {
     try {
       const key = this.getStoreKey(store);
       localStorage.setItem(key, JSON.stringify(data));
-    } catch (error) {
-      console.error(`Error writing to store ${store}:`, error);
-      throw new Error(`Failed to save data to store ${store}`);
+    } catch {
+      const message = `Failed to save data to store "${store}"`;
+      this.notifier.add({
+        type: 'danger',
+        title: 'Storage write error',
+        message,
+      });
+      throw new Error(message);
     }
   }
 
@@ -53,7 +64,13 @@ export default class LocalStorageClient implements DataTransfer {
   async getById<T>(store: string, id: PrimaryKeyType): Promise<T | undefined> {
     const items = this.getStoreData<T>(store);
     const item = items.find(i => i.id === id);
-    return item?.data;
+
+    if (typeof item?.data === 'undefined') {
+      this.notifier.itemNotFound(id, store);
+      throw new Error(`Item with id "${id}" not found in store "${store}"`);
+    }
+
+    return item.data;
   }
 
   async getAll<T>(store: string): Promise<T[]> {
@@ -72,6 +89,7 @@ export default class LocalStorageClient implements DataTransfer {
 
     const existingIndex = items.findIndex(i => i.id === id);
     if (existingIndex !== -1) {
+      this.notifier.duplicateItem(id, store);
       throw new Error(`Item with id ${id} already exists in store ${store}`);
     }
 
@@ -82,16 +100,18 @@ export default class LocalStorageClient implements DataTransfer {
   }
 
   async update<T>(store: string, item: T): Promise<PrimaryKeyType> {
-    const items = this.getStoreData<T>(store);
     const id = this.extractId(item);
 
     if (!id) {
+      this.notifier.missingIdForUpdate();
       throw new Error('Item must have an id field to be updated');
     }
 
+    const items = this.getStoreData<T>(store);
     const index = items.findIndex(i => i.id === id);
 
     if (index === -1) {
+      this.notifier.itemNotFound(id, store);
       throw new Error(`Item with id ${id} not found in store ${store}`);
     }
 
@@ -106,6 +126,7 @@ export default class LocalStorageClient implements DataTransfer {
     const filteredItems = items.filter(i => i.id !== id);
 
     if (items.length === filteredItems.length) {
+      this.notifier.itemNotFound(id, store);
       throw new Error(`Item with id ${id} not found in store ${store}`);
     }
 

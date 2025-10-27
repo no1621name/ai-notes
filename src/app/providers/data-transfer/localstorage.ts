@@ -1,10 +1,10 @@
+import { inject } from 'vue';
 import type { DataTransfer } from '@/shared/types/api';
+import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
 import LocalStorageClient from '@/shared/api/localstorage/client';
 
-import { inject } from 'vue';
-
-export const createLsDataTransfer = (): DataTransfer => {
-  return new LocalStorageClient();
+export const createLsDataTransfer = (errorNotifier: ErrorNotifier): DataTransfer => {
+  return new LocalStorageClient(errorNotifier);
 };
 
 export const lsDataTransferKey = Symbol('LsDataTransfer');

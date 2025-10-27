@@ -1,10 +1,10 @@
-import { useToasterStore } from '@/app/stores/toaster';
 import {
   type PrimaryKeyType,
   type DataTransfer,
   type DataStore,
   SchemaFieldType,
 } from '../../types/api';
+import { ErrorNotifier } from '../errors/error-notifier';
 
 interface DBConfig {
   name: string;
@@ -18,22 +18,13 @@ export interface DBDataTransfer extends DataTransfer {
 
 export default class DBClient implements DBDataTransfer {
   private db: IDBDatabase | null = null;
-  private toaster = useToasterStore();
 
-  constructor(private config: DBConfig) { }
-
-  private ERRORS_PAYLOAD = {
-    invalidStoreName: {
-      type: 'danger',
-      title: 'Store error occured',
-      message: 'Invalid store name',
-    },
-  } as const;
+  constructor(private config: DBConfig, private errorNotifier: ErrorNotifier) { }
 
   private async connect() {
     return new Promise<void>((resolve, reject) => {
       if (!('indexedDB' in window)) {
-        this.toaster.add({
+        this.errorNotifier.add({
           type: 'danger',
           title: 'DB error occured',
           message: 'IndexedDB is not supported in your browser',
@@ -43,7 +34,7 @@ export default class DBClient implements DBDataTransfer {
 
       const request = indexedDB.open(this.config.name, this.config.version);
       request.onerror = () => {
-        this.toaster.add({
+        this.errorNotifier.add({
           type: 'danger',
           title: 'DB error occured',
           message: 'IndexedDB failed to open',
@@ -107,37 +98,25 @@ export default class DBClient implements DBDataTransfer {
       const storeConfig = this.config.stores.find(({ name }) => name === storeName);
 
       if (!this.db?.objectStoreNames.contains(storeName) || !storeConfig) {
-        this.toaster.add(this.ERRORS_PAYLOAD.invalidStoreName);
+        this.errorNotifier.invalidStoreName();
         return reject();
       }
 
       if (!!item && !item?.[storeConfig.primaryKey as keyof I]) {
-        this.toaster.add({
-          type: 'danger',
-          title: 'Store error occured',
-          message: 'Missing primary key',
-        });
+        this.errorNotifier.missingPrimaryKey();
         reject();
       }
 
       const request = requestFn();
 
       if (!request) {
-        this.toaster.add({
-          type: 'danger',
-          title: 'Store error occured',
-          message: 'Invalid request',
-        });
+        this.errorNotifier.requestFailed();
         return reject();
       }
 
       request.onsuccess = () => resolve(request.result);
       request.onerror = (event) => {
-        this.toaster.add({
-          type: 'danger',
-          title: 'Request error occured',
-          message: `IndexedDB request failed (${(event.target as IDBRequest).error?.message})`,
-        });
+        this.errorNotifier.requestFailed((event.target as IDBRequest).error);
         reject();
       };
     });
@@ -191,7 +170,7 @@ export default class DBClient implements DBDataTransfer {
 
     return new Promise<IDBObjectStore[]>((resolve, reject) => {
       if (storesNames.some(name => !this.db?.objectStoreNames.contains(name))) {
-        this.toaster.add(this.ERRORS_PAYLOAD.invalidStoreName);
+        this.errorNotifier.invalidStoreName();
         return reject();
       }
 

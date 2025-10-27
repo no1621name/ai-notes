@@ -9,6 +9,7 @@ import { VueQueryPlugin } from '@tanstack/vue-query';
 import App from './app.vue';
 import router from './router';
 import { createDBDataTransfer, dbDataTransferKey, createLsDataTransfer, lsDataTransferKey } from './providers/data-transfer';
+import { ErrorNotifier } from '@/shared/api/errors/error-notifier';
 import './styles/main.css';
 
 const configureApp = (app: IApp) => {
@@ -16,8 +17,10 @@ const configureApp = (app: IApp) => {
   app.use(createPinia());
   app.use(router);
 
-  const dbDataTransfer = createDBDataTransfer();
-  const lsDataTransfer = createLsDataTransfer();
+  const errorNotifier = new ErrorNotifier();
+
+  const dbDataTransfer = createDBDataTransfer(errorNotifier);
+  const lsDataTransfer = createLsDataTransfer(errorNotifier);
 
   app.provide(dbDataTransferKey, dbDataTransfer);
   app.provide(lsDataTransferKey, lsDataTransfer);
