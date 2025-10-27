@@ -1,1 +1,1 @@
-export { storeConfig as notesStoreConfig } from './api/store-config';
+export { storeConfig as notesStoreConfig, relationConfig as noteTagsRelationStoreConfig } from './api/store-config';
