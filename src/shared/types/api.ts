@@ -13,8 +13,16 @@ export interface DataTransfer {
   delete(store: string, id: PrimaryKeyType): Promise<void>;
 }
 
+interface StoreIndex {
+  name: string;
+  keyPath: string | string[];
+  unique?: boolean;
+  multiEntry?: boolean;
+}
+
 export interface DataStore {
   name: string;
   primaryKey: string;
   schema: Record<string, SchemaFieldType>;
+  indexes?: Record<string, StoreIndex>;
 }

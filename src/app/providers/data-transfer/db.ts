@@ -1,16 +1,16 @@
-import type { DataTransfer } from '@/shared/types/api';
-import DBClient from '@/shared/api/db/client';
-
-import { notesStoreConfig } from '@/entities/note';
 import { inject } from 'vue';
 
-export const createDBDataTransfer = (): DataTransfer => {
+import { notesStoreConfig, noteTagsRelationStoreConfig } from '@/entities/note';
+import { tagsStoreConfig } from '@/entities/tag';
+import DBClient, { type DBDataTransfer } from '@/shared/api/db/client';
+
+export const createDBDataTransfer = (): DBDataTransfer => {
   return new DBClient({
     name: 'ai-notes',
-    version: 1,
-    stores: [notesStoreConfig],
+    version: 2,
+    stores: [notesStoreConfig, noteTagsRelationStoreConfig, tagsStoreConfig],
   });
 };
 
 export const dbDataTransferKey = Symbol('DbDataTransfer');
-export const useDbDataTransfer = () => inject(dbDataTransferKey) as DataTransfer;
+export const useDbDataTransfer = () => inject(dbDataTransferKey) as DBDataTransfer;
