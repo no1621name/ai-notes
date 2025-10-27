@@ -45,6 +45,7 @@ export default defineConfigWithVueTs(
         alignAttributesVertically: true,
         ignores: [],
       }],
+      'no-duplicate-imports': 'error',
     },
   },
 );
