@@ -23,8 +23,7 @@ export default class LocalStorageClient implements DataTransfer {
       const key = this.getStoreKey(store);
       const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : [];
-    }
-    catch (error) {
+    } catch (error) {
       console.error(`Error reading store ${store}:`, error);
       return [];
     }
@@ -34,8 +33,7 @@ export default class LocalStorageClient implements DataTransfer {
     try {
       const key = this.getStoreKey(store);
       localStorage.setItem(key, JSON.stringify(data));
-    }
-    catch (error) {
+    } catch (error) {
       console.error(`Error writing to store ${store}:`, error);
       throw new Error(`Failed to save data to store ${store}`);
     }
@@ -114,51 +112,3 @@ export default class LocalStorageClient implements DataTransfer {
     this.setStoreData(store, filteredItems);
   }
 }
-
-// Примеры использования:
-
-// interface User {
-//   id?: number;
-//   name: string;
-//   email: string;
-// }
-
-// interface Product {
-//   id?: string;
-//   title: string;
-//   price: number;
-// }
-
-// const storage = new LocalStorageClient('myapp');
-
-// // Создание
-// const userId = await storage.create<User>('users', {
-//   name: 'John Doe',
-//   email: 'john@example.com',
-// });
-
-// // Обновление
-// await storage.update<User>('users', {
-//   id: userId,
-//   name: 'John Smith',
-//   email: 'john.smith@example.com',
-// });
-
-// // Получение по ID
-// const user = await storage.getById<User>('users', userId);
-
-// // Получение всех
-// const allUsers = await storage.getAll<User>('users');
-
-// // Удаление
-// await storage.delete('users', userId);
-
-// // Работа с разными типами
-// const productId = await storage.create<Product>('products', {
-//   title: 'Laptop',
-//   price: 999,
-// });
-
-// const products = await storage.getAll<Product>('products');
-
-// export default LocalStorageClient;

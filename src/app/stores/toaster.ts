@@ -16,7 +16,7 @@ export const useToasterStore = defineStore('toaster', () => {
   const timers = new Map<Toast['id'], NodeJS.Timeout>();
 
   const remove = (id: Toast['id']) => {
-    const index = toasts.value.findIndex((toast) => toast.id === id);
+    const index = toasts.value.findIndex(toast => toast.id === id);
 
     if (index >= 0) {
       toasts.value.splice(index, 1);
