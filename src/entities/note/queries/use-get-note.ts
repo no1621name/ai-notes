@@ -3,13 +3,13 @@ import { useQuery } from '@tanstack/vue-query';
 
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import type { PrimaryKeyType } from '@/shared/types/api';
-import { getNote } from '../api/get-note';
+import { getNoteWithTags } from '../api/tags/get-note-with-tags';
 
 export function useGetNote(id: MaybeRef<PrimaryKeyType>) {
   const dataTransfer = useDbDataTransfer();
 
   return useQuery({
     queryKey: ['note', id],
-    queryFn: () => getNote(dataTransfer, toValue(id)),
+    queryFn: () => getNoteWithTags(dataTransfer, toValue(id)),
   });
 }

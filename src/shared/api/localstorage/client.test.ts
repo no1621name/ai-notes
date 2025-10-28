@@ -53,7 +53,7 @@ describe('LocalStorageClient', () => {
       length: 0,
     } as unknown as Storage;
 
-    client = new LocalStorageClient('test', 'id', mockErrorNotifier as unknown as ErrorNotifier);
+    client = new LocalStorageClient(mockErrorNotifier as unknown as ErrorNotifier, 'test', 'id');
   });
 
   afterEach(() => {
