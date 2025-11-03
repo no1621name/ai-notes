@@ -11,7 +11,7 @@ const hide = inject(DRAWER_HIDE_INJECTION_KEY);
     <div class="max-w-[90%]">
       <slot name="header" />
     </div>
-    <button class="absolute top-4 right-4 cursor-pointer" @click="hide"> <!-- CLICK HANDLER -->
+    <button class="absolute top-4 right-4 cursor-pointer" @click="hide">
       <VueIcon name="lu:x" />
     </button>
   </header>
