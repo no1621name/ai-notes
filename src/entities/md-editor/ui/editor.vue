@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 import { onBeforeUnmount } from 'vue';
 import { Editor, EditorContent, VueNodeViewRenderer } from '@tiptap/vue-3';
-import { StarterKit } from '@tiptap/starter-kit';
-import { Placeholder } from '@tiptap/extensions';
-import { TaskItem, TaskList } from '@tiptap/extension-list';
 import { BubbleMenu as BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
-import Typography from '@tiptap/extension-typography';
 import { all, createLowlight } from 'lowlight';
 
 import CodeBlock from './blocks/code-block.vue';
 import { BUBBLE_MENU_PLUGIN_KEYS } from '../model/config';
+import { plugins } from '../lib/plugins';
 
 const lowlight = createLowlight(all);
 
@@ -22,23 +19,13 @@ const bubbleMenus = Object.values(BUBBLE_MENU_PLUGIN_KEYS).map(pluginKey =>
 
 const editor = new Editor({
   extensions: [
-    StarterKit.configure({
-      codeBlock: false,
-    }),
-    TaskItem.configure({
-      nested: true,
-    }),
-    TaskList,
+    ...plugins,
     ...bubbleMenus,
-    Placeholder.configure({
-      placeholder: 'Write something',
-    }),
     CodeBlockLowlight.extend({
       addNodeView() {
         return VueNodeViewRenderer(CodeBlock);
       },
     }).configure({ lowlight }),
-    Typography,
   ],
 });
 
