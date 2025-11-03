@@ -1,7 +1,7 @@
 import type { DataTransfer, PrimaryKeyType } from '@/shared/types/api';
-import type { NoteData } from '../model/types';
+import type { NoteBody } from './contracts';
 import { storeConfig } from './store-config';
 
-export const updateNote = (dataTransfer: DataTransfer, id: PrimaryKeyType, body: Partial<NoteData>) => {
-  return dataTransfer.update<Partial<NoteData>>(storeConfig.name, { ...body, id });
+export const updateNote = (dataTransfer: DataTransfer, id: PrimaryKeyType, body: Partial<NoteBody>) => {
+  return dataTransfer.update<Partial<NoteBody>>(storeConfig.name, { ...body, id });
 };

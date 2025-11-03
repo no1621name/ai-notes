@@ -1,7 +1,7 @@
 import type { DataTransfer } from '@/shared/types/api';
-import type { NoteData } from '../model/types';
+import type { NoteBody } from './contracts';
 import { storeConfig } from './store-config';
 
-export const createNote = (dataTransfer: DataTransfer, note: NoteData) => {
-  return dataTransfer.create<NoteData>(storeConfig.name, note);
+export const createNote = (dataTransfer: DataTransfer, note: Omit<NoteBody, 'id' | 'created_at'>) => {
+  return dataTransfer.create(storeConfig.name, { ...note, created_at: new Date(Date.now()) });
 };
