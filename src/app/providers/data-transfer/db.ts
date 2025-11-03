@@ -8,7 +8,7 @@ import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
 export const createDBDataTransfer = (errorNotifier: ErrorNotifier): DBDataTransfer => {
   return new DBClient({
     name: 'ai-notes',
-    version: 2,
+    version: 1,
     stores: [notesStoreConfig, noteTagsRelationStoreConfig, tagsStoreConfig],
   }, errorNotifier);
 };
