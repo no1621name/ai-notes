@@ -1,3 +1,5 @@
+import { v4 } from 'uuid';
+
 import {
   type PrimaryKeyType,
   type DataTransfer,
@@ -14,6 +16,7 @@ interface DBConfig {
 
 export interface DBDataTransfer extends DataTransfer {
   getStores(storesNames: string[]): Promise<IDBObjectStore[]>;
+  getAllByCreatedAt<T>(storeName: string): Promise<T[]>;
 }
 
 export default class DBClient implements DBDataTransfer {
@@ -76,17 +79,20 @@ export default class DBClient implements DBDataTransfer {
 
       const indexes = Object.values(storeInfo.indexes ?? []);
       if (indexes && indexes.length) {
-        indexes.forEach(indexConfig =>
-          store.createIndex(indexConfig.name, indexConfig.keyPath, {
-            unique: indexConfig.unique ?? false,
-            multiEntry: indexConfig.multiEntry ?? false,
-          }));
+        indexes.forEach((indexConfig) => {
+          if (!store.indexNames.contains(indexConfig.name)) {
+            store.createIndex(indexConfig.name, indexConfig.keyPath, {
+              unique: indexConfig.unique ?? false,
+              multiEntry: indexConfig.multiEntry ?? false,
+            });
+          }
+        });
       }
     }
   }
 
   private async performRequest<R, I = object>(
-    requestFn: () => IDBRequest<R> | undefined,
+    requestFn: () => IDBRequest<R> | Promise<IDBRequest<R>> | undefined,
     storeName: string,
     item?: I,
   ) {
@@ -94,7 +100,7 @@ export default class DBClient implements DBDataTransfer {
       await this.connect();
     }
 
-    return new Promise<R>((resolve, reject) => {
+    return new Promise<R>(async (resolve, reject) => {
       const storeConfig = this.config.stores.find(({ name }) => name === storeName);
 
       if (!this.db?.objectStoreNames.contains(storeName) || !storeConfig) {
@@ -107,7 +113,7 @@ export default class DBClient implements DBDataTransfer {
         reject();
       }
 
-      const request = requestFn();
+      const request = await requestFn();
 
       if (!request) {
         this.errorNotifier.requestFailed();
@@ -137,6 +143,10 @@ export default class DBClient implements DBDataTransfer {
   }
 
   public create<T>(store: string, item: T) {
+    if (typeof item === 'object' && item !== null && !('id' in item)) {
+      (item as unknown as { id: string }).id = v4();
+    }
+
     const request = () => {
       const objectStore = this.db?.transaction(store, 'readwrite').objectStore(store);
 
@@ -146,12 +156,19 @@ export default class DBClient implements DBDataTransfer {
     return this.performRequest(request, store, item);
   }
 
-  public update<T>(store: string, item: T) {
-    const request = () => {
-      const objectStore = this.db?.transaction(store, 'readwrite').objectStore(store);
+  public async update<T>(store: string, item: T) {
+    const request = () => new Promise<IDBRequest<PrimaryKeyType>>((resolve, reject) => {
+      const objectStore = this.db?.transaction(store, 'readwrite').objectStore(store) as IDBObjectStore;
 
-      return objectStore?.put(item) as IDBRequest<PrimaryKeyType> | undefined;
-    };
+      const getRequest = objectStore.get((item as { id: string }).id);
+
+      getRequest.onsuccess = () => {
+        const existing = getRequest.result;
+        resolve(objectStore.put({ ...existing, ...item }) as IDBRequest<PrimaryKeyType>);
+      };
+
+      getRequest.onerror = () => reject(getRequest.error);
+    });
 
     return this.performRequest(request, store, item);
   }
@@ -174,13 +191,57 @@ export default class DBClient implements DBDataTransfer {
         return reject();
       }
 
-      const transaction = this.db?.transaction(storesNames);
+      const transaction = this.db?.transaction(storesNames, 'readwrite');
 
       resolve(
         storesNames
           .map(name => transaction?.objectStore(name))
           .filter(store => typeof store !== 'undefined'),
       );
+    });
+  }
+
+  public async getAllByCreatedAt<T>(storeName: string) {
+    if (!this.db) {
+      await this.connect();
+    }
+
+    return new Promise<T[]>((resolve, reject) => {
+      const storeConfig = this.config.stores.find(({ name }) => name === storeName);
+
+      if (!this.db?.objectStoreNames.contains(storeName) || !storeConfig) {
+        this.errorNotifier.invalidStoreName();
+        return reject();
+      }
+
+      if (!storeConfig.indexes?.created_at) {
+        this.errorNotifier.add({
+          title: 'No index',
+          message: 'This store could not be indexed by created date',
+          type: 'danger',
+        });
+
+        return reject();
+      }
+
+      const store = this.db.transaction(storeName, 'readonly').objectStore(storeName);
+      const index = store.index(storeConfig.indexes.created_at.name);
+
+      const result: T[] = [];
+      const request = index.openCursor(null, 'next');
+
+      request.onsuccess = () => {
+        const cursor = request.result;
+
+        if (cursor) {
+          result.push(cursor.value);
+          cursor.continue();
+        } else {
+          resolve(result);
+        }
+      };
+
+      request.onerror = () => reject(request.error);
     });
   }
 }
