@@ -4,4 +4,5 @@ export interface Tag {
   id: PrimaryKeyType;
   name: string;
   color: string;
+  created_at: Date;
 }
