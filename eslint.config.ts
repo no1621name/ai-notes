@@ -45,6 +45,23 @@ export default defineConfigWithVueTs(
         alignAttributesVertically: true,
         ignores: [],
       }],
+      'vue/html-closing-bracket-newline': ['error', {
+        singleline: 'never',
+        multiline: 'always',
+      }],
+      'vue/html-self-closing': ['error', {
+        html: {
+          void: 'never',
+          normal: 'always',
+          component: 'always',
+        },
+        svg: 'always',
+        math: 'always',
+      }],
+      'vue/multiline-html-element-content-newline': ['error', {
+        ignoreWhenEmpty: true,
+        allowEmptyLines: false,
+      }],
       'no-duplicate-imports': 'error',
     },
   },
