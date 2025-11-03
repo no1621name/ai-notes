@@ -56,6 +56,7 @@
     "eslint": "^9.31.0",
     "eslint-plugin-oxlint": "~1.8.0",
     "eslint-plugin-vue": "~10.3.0",
+    "fake-indexeddb": "^6.2.4",
     "husky": "^9.1.7",
     "jiti": "^2.4.2",
     "jsdom": "^26.1.0",
