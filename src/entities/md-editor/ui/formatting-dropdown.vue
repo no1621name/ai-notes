@@ -22,7 +22,7 @@ const { data: quickActions } = useGetQuickActions();
     </Button>
     <ul
       popover
-      class="dropdown menu mt-2 bg-base-200 rounded-box z-1 w-max p-0 shadow-sm max-h-40"
+      class="dropdown menu mt-2 bg-base-200 rounded-box w-max p-0 shadow-sm max-h-40"
       id="formatting-popover"
       style="position-anchor:--formatting-anchor"
     >
@@ -44,7 +44,7 @@ const { data: quickActions } = useGetQuickActions();
               ...action,
               isQuickActionSelected: !!quickActions?.some(quickAction => quickAction?.id === action.id)
             }"
-          ></slot>
+          />
         </a>
       </li>
     </ul>

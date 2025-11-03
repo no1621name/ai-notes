@@ -29,7 +29,7 @@ const editorRef = inject(editorInjectionKey);
     }"
     :plugin-key="BUBBLE_MENU_PLUGIN_KEYS[pluginKeyName]"
   >
-    <div class="bg-base-200 py-1 px-2 rounded-box shadow-sm">
+    <div class="bg-base-200 py-1 px-2 rounded-box shadow-sm z-[1] relative">
       <slot/>
     </div>
   </BubbleMenu>

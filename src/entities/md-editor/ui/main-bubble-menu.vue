@@ -19,6 +19,5 @@ import QuickActionToggler from './quick-actions/quick-action-toggler.vue';
 
       <QuickActions/>
     </div>
-
   </BubbleMenu>
 </template>

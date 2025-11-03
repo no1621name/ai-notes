@@ -17,7 +17,6 @@ defineProps<{
     :class="{ 'btn-primary': action.isActive(editor) }"
     :disabled="action.isDisabled?.(editor) ?? false"
   >
-    <div/>
     <VueIcon :name="action.icon" />
   </Button>
 </template>
