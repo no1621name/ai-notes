@@ -151,4 +151,84 @@ export class ManyToManyManager {
       };
     }) as (S & { [key in K]: R[] })[];
   }
+
+  public addRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType): Promise<PrimaryKeyType> {
+    const relationRecord: Record<string, PrimaryKeyType> = {
+      [this.sourceForeignKey]: sourceId,
+      [this.relatedForeignKey]: relatedId,
+    };
+
+    return this.dataTransfer.create(this.relationStore.name, relationRecord);
+  }
+
+  public async deleteRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType): Promise<void> {
+    const [, relationObjectStore] = await this.getStores();
+
+    const sourceIndex = relationObjectStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+
+    await new Promise<void>((resolve, reject) => {
+      const request = sourceIndex.openCursor(IDBKeyRange.only(sourceId));
+
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (cursor) {
+          const relation = cursor.value;
+          if (relation[this.relatedForeignKey] === relatedId) {
+            const deleteRequest = cursor.delete();
+            deleteRequest.onsuccess = () => resolve();
+            deleteRequest.onerror = () => reject(deleteRequest.error);
+            return;
+          }
+          cursor.continue();
+        } else {
+          resolve();
+        }
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  public async deleteRelationsBySourceId(sourceId: PrimaryKeyType): Promise<void> {
+    const [, relationObjectStore] = await this.getStores();
+
+    const sourceIndex = relationObjectStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+
+    await new Promise<void>((resolve, reject) => {
+      const request = sourceIndex.openCursor(IDBKeyRange.only(sourceId));
+
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (cursor) {
+          cursor.delete();
+          cursor.continue();
+        } else {
+          resolve();
+        }
+      };
+
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  public async deleteRelationsByRelatedId(relatedId: PrimaryKeyType): Promise<void> {
+    const [, relationObjectStore] = await this.getStores();
+
+    const relatedIndex = relationObjectStore.index(this.relationStore.indexes![this.relatedForeignKey].name);
+
+    await new Promise<void>((resolve, reject) => {
+      const request = relatedIndex.openCursor(IDBKeyRange.only(relatedId));
+
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (cursor) {
+          cursor.delete();
+          cursor.continue();
+        } else {
+          resolve();
+        }
+      };
+
+      request.onerror = () => reject(request.error);
+    });
+  }
 }
