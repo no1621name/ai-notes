@@ -15,7 +15,7 @@ const hide = inject(DRAWER_HIDE_INJECTION_KEY);
       <VueIcon name="lu:x" />
     </button>
   </header>
-  <main class="p-4 overflow-auto">
+  <main class="p-4 overflow-y-auto">
     <slot />
   </main>
 </template>

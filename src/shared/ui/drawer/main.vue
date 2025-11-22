@@ -44,7 +44,7 @@ onActivated(() => {
     <Transition name="slide-right" @after-leave="afterLeave">
       <aside
         v-if="show"
-        class="absolute right-0 top-0 h-full w-5/6 sm:w-3/4 lg:w-1/2 max-w-[90vw] bg-base-200 shadow-2xl pointer-events-auto"
+        class="absolute right-0 top-0 h-full w-5/6 sm:w-3/4 lg:w-1/2 max-w-[90vw] bg-base-200 shadow-2xl pointer-events-auto flex flex-col"
         role="dialog"
         aria-modal="true"
       >
