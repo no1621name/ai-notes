@@ -22,6 +22,7 @@ const router = createRouter({
       children: [
         {
           path: ':id',
+          name: 'note-details',
           components: {
             'drawer-content': NoteDetails,
           },
