@@ -1,1 +1,1 @@
-export { plugins } from '../lib/plugins';
+export { toDescription } from '../lib/to-description';
