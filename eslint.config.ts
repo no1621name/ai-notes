@@ -63,6 +63,9 @@ export default defineConfigWithVueTs(
         allowEmptyLines: false,
       }],
       'no-duplicate-imports': 'error',
+      '@typescript-eslint/no-unused-vars': ['error', {
+        varsIgnorePattern: '_',
+      }],
     },
   },
 );
