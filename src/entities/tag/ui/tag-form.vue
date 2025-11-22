@@ -94,7 +94,7 @@ const onSubmit = handleSubmit((values) => {
       type="button"
       popovertarget="tag-colorpicker-popover"
       style="anchor-name:--tag-colorpicker-anchor;"
-      class="btn-xs btn-square join-item border-none"
+      class="btn-xs btn-square join-item border-none text-neutral-content"
       :style="{ backgroundColor: color }"
     >
       <VueIcon name="cg:color-picker" />
