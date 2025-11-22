@@ -5,6 +5,8 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
 
+    "lib": ["es2021"],
+
     "paths": {
       "@/*": ["./src/*"]
     }
