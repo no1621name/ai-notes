@@ -1,7 +1,5 @@
-import { generateText } from '@tiptap/vue-3';
-
 import type { WithTags, TagBody } from '@/entities/tag/@x/note';
-import { plugins } from '@/entities/md-editor/@x/note';
+import { toDescription } from '@/entities/md-editor/@x/note';
 import type { DBDataTransfer } from '@/shared/api/db/client';
 import { ManyToManyManager } from '@/shared/api/db/relations/many-to-many';
 import type { NoteBody, NoteShort } from '../contracts';
@@ -14,7 +12,7 @@ export const getNotesWithTags = async (dataTransfer: DBDataTransfer): Promise<Wi
     if (text) {
       return ({
         ...note,
-        description: generateText(JSON.parse(text), plugins),
+        description: toDescription(JSON.parse(text)),
       });
     }
     return null;

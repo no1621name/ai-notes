@@ -5,7 +5,12 @@ import { ManyToManyManager } from '@/shared/api/db/relations/many-to-many';
 import type { NoteBody } from '../contracts';
 import { noteToTagRelationConfig } from '../store-config';
 
-export const getNoteWithTags = (dataTransfer: DBDataTransfer, noteId: PrimaryKeyType): Promise<WithTags<NoteBody>> => {
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const getNoteWithTags = async (dataTransfer: DBDataTransfer, noteId: PrimaryKeyType): Promise<WithTags<NoteBody>> => {
   const relationManager = new ManyToManyManager(noteToTagRelationConfig, dataTransfer);
+  await sleep(3000);
   return relationManager.get<NoteBody, TagBody, 'tags'>(noteId);
 };

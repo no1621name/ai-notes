@@ -5,6 +5,7 @@ import type { NoteData } from '../model/types';
 
 const noteSchema: Record<Exclude<keyof NoteData, 'id' | 'tags'>, SchemaFieldType> = {
   created_at: SchemaFieldType.NOT_UNIQUE,
+  updated_at: SchemaFieldType.NOT_UNIQUE,
   title: SchemaFieldType.NOT_UNIQUE,
   text: SchemaFieldType.NOT_UNIQUE,
   reminder_date: SchemaFieldType.NOT_UNIQUE,
