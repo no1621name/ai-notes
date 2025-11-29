@@ -9,7 +9,7 @@ export interface DataTransfer {
   getById<T>(store: string, id: PrimaryKeyType): Promise<T | undefined>;
   getAll<T>(store: string): Promise<T[]>;
   create<T>(store: string, item: T): Promise<PrimaryKeyType>;
-  update<T>(store: string, item: T): Promise<PrimaryKeyType>;
+  update<T>(store: string, item: Partial<T>): Promise<T>;
   delete(store: string, id: PrimaryKeyType): Promise<void>;
 }
 

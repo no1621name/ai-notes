@@ -155,9 +155,9 @@ describe('LocalStorageClient', () => {
     await client.create<TestItem>(storeName, original);
 
     const updated = { id: '5', name: 'New' };
-    const id = await client.update<TestItem>(storeName, updated);
+    const response = await client.update<TestItem>(storeName, updated);
 
-    expect(id).toBe('5');
+    expect(response).toEqual(updated);
     const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
     expect(stored).toEqual([{ id: '5', data: updated }]);
   });

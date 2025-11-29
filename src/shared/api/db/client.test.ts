@@ -365,7 +365,7 @@ describe('IDBClient', () => {
 
   it('should successfully update an item', async () => {
     const existingItem = { id: '1', name: 'Old Name', value: 'Old Value' };
-    const updatedItem = { id: '1', name: 'New Name' };
+    const updatedItem = { id: '1', name: 'New Name', value: undefined };
     const mergedItem = { ...existingItem, ...updatedItem };
 
     const getRequest = { onsuccess: null, onerror: null, result: existingItem } as unknown as IDBRequestType & { result: unknown };
@@ -400,7 +400,7 @@ describe('IDBClient', () => {
       putRequest.onsuccess?.({});
     });
 
-    await expect(dbClient.update('testStore', updatedItem)).resolves.toBeUndefined();
+    await expect(dbClient.update('testStore', updatedItem)).resolves.toEqual(updatedItem);
     expect(mockObjectStore.get).toHaveBeenCalledWith('1');
     expect(mockObjectStore.put).toHaveBeenCalledWith(mergedItem);
     expect(mockErrorNotifier.add).not.toHaveBeenCalled();

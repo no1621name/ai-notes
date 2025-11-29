@@ -99,7 +99,7 @@ export default class LocalStorageClient implements DataTransfer {
     return id;
   }
 
-  async update<T>(store: string, item: T): Promise<PrimaryKeyType> {
+  async update<T>(store: string, item: Partial<T>): Promise<T> {
     const id = this.extractId(item);
 
     if (!id) {
@@ -115,10 +115,11 @@ export default class LocalStorageClient implements DataTransfer {
       throw new Error(`Item with id ${id} not found in store ${store}`);
     }
 
-    items[index] = { id, data: item };
+    const newItem = { ...items[index].data, ...item } as T;
+    items[index] = { id, data: newItem };
     this.setStoreData(store, items);
 
-    return id;
+    return newItem;
   }
 
   async delete(store: string, id: PrimaryKeyType): Promise<void> {

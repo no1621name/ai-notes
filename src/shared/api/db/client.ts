@@ -156,21 +156,54 @@ export default class DBClient implements DBDataTransfer {
     return this.performRequest(request, store, item);
   }
 
-  public async update<T>(store: string, item: T) {
-    const request = () => new Promise<IDBRequest<PrimaryKeyType>>((resolve, reject) => {
-      const objectStore = this.db?.transaction(store, 'readwrite').objectStore(store) as IDBObjectStore;
+  public async update<T>(store: string, item: Partial<T>) {
+    if (!this.db) {
+      await this.connect();
+    }
 
-      const getRequest = objectStore.get((item as { id: string }).id);
+    return new Promise<T>((resolve, reject) => {
+      const storeConfig = this.config.stores.find(({ name }) => name === store);
+
+      if (!this.db?.objectStoreNames.contains(store) || !storeConfig) {
+        this.errorNotifier.invalidStoreName();
+        return reject();
+      }
+
+      if (!!item && !item?.[storeConfig.primaryKey as keyof Partial<T>]) {
+        this.errorNotifier.missingPrimaryKey();
+        reject();
+      }
+
+      const transaction = this.db.transaction(store, 'readwrite');
+      const objectStore = transaction.objectStore(store);
+
+      const getRequest = objectStore.get((item as { [key: typeof storeConfig.primaryKey]: PrimaryKeyType })[storeConfig.primaryKey]);
 
       getRequest.onsuccess = () => {
         const existing = getRequest.result;
-        resolve(objectStore.put({ ...existing, ...item }) as IDBRequest<PrimaryKeyType>);
+
+        if (!existing) {
+          reject(new Error('Item not found'));
+          return;
+        }
+
+        const newItem = { ...existing, ...item };
+        const putRequest = objectStore.put(newItem);
+
+        putRequest.onsuccess = () => resolve(newItem);
+        putRequest.onerror = (event) => {
+          const target = event.target as IDBRequest;
+          this.errorNotifier.requestFailed(target.error);
+          reject();
+        };
       };
 
-      getRequest.onerror = () => reject(getRequest.error);
+      getRequest.onerror = (event) => {
+        const target = event.target as IDBRequest;
+        this.errorNotifier.requestFailed(target.error);
+        reject();
+      };
     });
-
-    return this.performRequest(request, store, item);
   }
 
   public delete(store: string, id: PrimaryKeyType) {
