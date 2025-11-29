@@ -19,7 +19,7 @@ const editorRef = inject(editorInjectionKey);
 
 <template>
   <BubbleMenu
-    v-if="editorRef"
+    v-if="editorRef?.editor"
     :editor="editorRef?.editor"
     :options="{
       placement: 'bottom',

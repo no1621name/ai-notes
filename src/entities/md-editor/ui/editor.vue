@@ -1,15 +1,19 @@
 <script lang="ts" setup>
-import { onBeforeUnmount } from 'vue';
 import { Editor, EditorContent, VueNodeViewRenderer } from '@tiptap/vue-3';
 import { BubbleMenu as BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
+import { Placeholder } from '@tiptap/extensions';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
-import { all, createLowlight } from 'lowlight';
 
-import CodeBlock from './blocks/code-block.vue';
 import { BUBBLE_MENU_PLUGIN_KEYS } from '../model/config';
 import { plugins } from '../lib/plugins';
+import EditorSkeleton from './editor-skeleton.vue';
+import CodeBlock from './blocks/code-block.vue';
+import { onBeforeMount, shallowRef } from 'vue';
 
-const lowlight = createLowlight(all);
+const props = withDefaults(defineProps<{ placeholder?: string; skeleton?: boolean; contentSkeleton?: boolean }>(), {
+  placeholder: 'Write something',
+  skeleton: false,
+});
 
 const bubbleMenus = Object.values(BUBBLE_MENU_PLUGIN_KEYS).map(pluginKey =>
   BubbleMenuPlugin.configure({
@@ -17,41 +21,50 @@ const bubbleMenus = Object.values(BUBBLE_MENU_PLUGIN_KEYS).map(pluginKey =>
   }),
 );
 
-const editor = new Editor({
-  extensions: [
-    ...plugins,
-    ...bubbleMenus,
-    CodeBlockLowlight.extend({
-      addNodeView() {
-        return VueNodeViewRenderer(CodeBlock);
-      },
-    }).configure({ lowlight }),
-  ],
+const editor = shallowRef<Editor | undefined>(undefined);
+
+onBeforeMount(async () => {
+  const { createLowlight, common } = await import('lowlight');
+  const lowlight = createLowlight(common);
+
+  editor.value = new Editor({
+    extensions: [
+      ...plugins,
+      ...bubbleMenus,
+      Placeholder.configure({
+        placeholder: props.placeholder,
+      }),
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return VueNodeViewRenderer(CodeBlock);
+        },
+      }).configure({ lowlight }),
+    ],
+  });
 });
 
 defineExpose({ editor });
-
-onBeforeUnmount(() => {
-  editor.destroy();
-});
 </script>
 
 <template>
-  <div class="w-1/2">
+  <div class="relative w-full h-full flex flex-col">
+    <EditorSkeleton v-if="skeleton || !editor"/>
     <EditorContent
+      v-else
       :editor="editor"
-      class="editor-prose prose prose-p:my-2 prose-blockquote:alert prose-h2:mt-6 prose-h3:mt-4"
+      class="max-w-full editor-prose prose prose-p:my-2 prose-blockquote:alert prose-h2:mt-6 prose-h3:mt-4 flex-1 flex flex-col"
     />
   </div>
 </template>
 
 <style>
 .tiptap {
-  border: 2px solid var(--color-base-300);
+  border: none;
+  height: 100%;
+  outline: none;
 }
 
 .tiptap:focus {
-  border-color: var(--color-neutral);
   outline: none;
 }
 
@@ -64,7 +77,8 @@ onBeforeUnmount(() => {
   height: 0;
   pointer-events: none;
   font-style: italic;
-  color: var(--color-neutral-content);
+  color: var(--color-base-content);
+  opacity: 0.5;
   content: attr(data-placeholder);
 }
 

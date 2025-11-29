@@ -25,7 +25,7 @@ const clickHandler = (event: Event) => {
 </script>
 
 <template>
-  <button @click="clickHandler" class="text-xl cursor-pointer hover:[&>*]:opacity-70">
+  <button @click="clickHandler" class="text-xl cursor-pointer hover:*:opacity-70">
     <VueIcon name="an:filled-star" v-if="isSelected" />
     <VueIcon name="an:outlined-star" v-else/>
   </button>

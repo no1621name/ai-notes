@@ -18,20 +18,18 @@ const selectedLanguage = computed<string>({
 </script>
 
 <template>
-  <NodeViewWrapper as="" class="">
-    <pre class="flex relative">
-      <code><node-view-content /></code>
-      <select class="w-max select select-xs absolute top-2 right-2" v-model="selectedLanguage">
-        <option :value="null">auto</option>
-        <option disabled>—</option>
-        <option
-          v-for="language in languages"
-          :value="language"
-          :key="language"
-        >
-          {{ language }}
-        </option>
+  <NodeViewWrapper as="pre" class="flex relative">
+    <code><node-view-content /></code>
+    <select class="w-max select select-xs absolute top-2 right-2" v-model="selectedLanguage">
+      <option :value="null">auto</option>
+      <option disabled>—</option>
+      <option
+        v-for="language in languages"
+        :value="language"
+        :key="language"
+      >
+        {{ language }}
+      </option>
     </select>
-    </pre>
   </NodeViewWrapper>
 </template>

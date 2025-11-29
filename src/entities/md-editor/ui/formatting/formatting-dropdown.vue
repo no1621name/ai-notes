@@ -2,9 +2,9 @@
 import { inject } from 'vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
-import { DEFAULT_FORMATTING_ACTIONS } from '../model/config';
-import { editorInjectionKey } from '../model/keys';
-import { useGetQuickActions } from '../queries/use-get-quick-actions';
+import { DEFAULT_FORMATTING_ACTIONS } from '../../model/config';
+import { editorInjectionKey } from '../../model/keys';
+import { useGetQuickActions } from '../../queries/use-get-quick-actions';
 import Button from '@/shared/ui/button.vue';
 
 const editorRef = inject(editorInjectionKey);
@@ -12,7 +12,7 @@ const { data: quickActions } = useGetQuickActions();
 </script>
 
 <template>
-  <div>
+  <div v-if="editorRef?.editor">
     <Button
       popovertarget="formatting-popover"
       style="anchor-name:--formatting-anchor"
@@ -27,7 +27,7 @@ const { data: quickActions } = useGetQuickActions();
       style="position-anchor:--formatting-anchor"
     >
       <li
-        class="p-0 mt-0 mb-0 first-of-type:[&>*]:rounded-t-box last-of-type:[&>*]:rounded-b-box"
+        class="p-0 mt-0 mb-0 first-of-type:*:rounded-t-box last-of-type:*:rounded-b-box"
         v-for="action in DEFAULT_FORMATTING_ACTIONS"
         :key="action.id"
         @click="() => action.action(editorRef?.editor!)"
