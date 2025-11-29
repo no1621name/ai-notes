@@ -44,7 +44,7 @@ const hanldeTagSelection = ({ id }: { id: string }) => {
       </TagBadge>
     </template>
 
-    <template v-if="isLoading">
+    <template v-if="isLoading && !tags?.length">
       <div
         v-for="i in 2"
         :key="i"
