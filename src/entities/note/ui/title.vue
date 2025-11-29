@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { z } from 'zod';
+import * as z from 'zod/mini';
+import type { ZodString } from 'zod';
 import { useField } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+
+import SkeletonRow from '@/shared/ui/skeleton-row.vue';
 
 withDefaults(defineProps<{
   modelValue: string | null;
@@ -15,7 +18,7 @@ const MAX_LEN = 100;
 
 const { value, errorMessage } = useField(
   'title',
-  toTypedSchema(z.string().trim().min(1, 'Required')),
+  toTypedSchema(z.string().check(z.trim(), z.minLength(1, 'Required')) as unknown as ZodString),
   { syncVModel: true },
 );
 
@@ -85,18 +88,26 @@ const preventPasting = (event: ClipboardEvent) => {
 
 <template>
   <fieldset class="relative">
-    <textarea
-      @keydown="preventTyping"
-      @paste="preventPasting"
-      v-model.trim="value"
-      placeholder="Note title..."
-      :disabled="skeleton"
-      type="text"
-      class="textarea textarea-xl textarea-ghost field-sizing-content max-h-32 min-h-0 overflow-y-auto w-full max-w-full resize-none focus:outline-0 break-all"
+    <SkeletonRow
+      v-if="skeleton"
+      class="pt-3 pb-6"
+      :count="3"
+      :height="32"
     />
-    <div class="flex items-center flex-wrap mt-1">
-      <p v-if="!!errorMessage" class="mr-auto text-error text-sm">{{errorMessage}}</p>
-      <span class="select-none text-base-content/50 text-sm ml-auto">{{currentLength}}/{{MAX_LEN}}</span>
-    </div>
+
+    <template v-else>
+      <textarea
+        @keydown="preventTyping"
+        @paste="preventPasting"
+        v-model.trim="value"
+        placeholder="Note title..."
+        type="text"
+        class="textarea textarea-xl textarea-ghost field-sizing-content max-h-32 min-h-0 overflow-y-auto w-full max-w-full resize-none focus:outline-0 break-all"
+      />
+      <div class="flex items-center flex-wrap mt-1">
+        <p v-if="!!errorMessage" class="mr-auto text-error text-sm">{{errorMessage}}</p>
+        <span class="select-none text-base-content/50 text-sm ml-auto">{{currentLength}}/{{MAX_LEN}}</span>
+      </div>
+    </template>
   </fieldset>
 </template>
