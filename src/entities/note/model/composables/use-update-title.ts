@@ -5,7 +5,7 @@ import { debounce } from '@/shared/lib/debounce';
 export const useUpdateTitle = (noteId: MaybeRef<string>) => {
   const { mutate } = useUpdateNote(noteId);
 
-  const updateTitle = debounce((oldTitle: null | string, title: string | null) => {
+  const updateTitle = debounce((title: string | null, oldTitle: null | string) => {
     if (oldTitle === null || title === null || title === oldTitle) {
       return;
     }
