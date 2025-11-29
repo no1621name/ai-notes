@@ -1,6 +1,6 @@
 import { TaskItem, TaskList } from '@tiptap/extension-list';
 import Typography from '@tiptap/extension-typography';
-import { Placeholder } from '@tiptap/extensions';
+import { CharacterCount } from '@tiptap/extensions';
 import StarterKit from '@tiptap/starter-kit';
 
 export const plugins = [
@@ -11,8 +11,6 @@ export const plugins = [
     nested: true,
   }),
   TaskList,
-  Placeholder.configure({
-    placeholder: 'Write something',
-  }),
   Typography,
+  CharacterCount,
 ];
