@@ -31,7 +31,7 @@ onActivated(() => {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-50 pointer-events-none">
+  <div class="fixed inset-0 z-30 pointer-events-none">
     <Transition name="fade">
       <button
         v-if="show"

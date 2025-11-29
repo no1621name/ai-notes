@@ -13,7 +13,7 @@ const emit = defineEmits<{ close: [id: ToastType['id']] }>();
 </script>
 
 <template>
-  <div class="toast">
+  <div class="toast z-40">
     <TransitionGroup name="list">
       <Toast
         v-for="item in items"
