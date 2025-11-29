@@ -2,7 +2,8 @@
 import { ref, toRefs, onMounted, computed } from 'vue';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import zod from 'zod';
+import * as z from 'zod/mini';
+import type { ZodSchema } from 'zod';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import Button from '@/shared/ui/button.vue';
@@ -35,9 +36,9 @@ const selectColor = (selectedColor: string) => {
 
 const { handleSubmit, defineField, errors, resetForm, setValues } = useForm({
   validationSchema: toTypedSchema(
-    zod.object({
-      name: zod.string().min(1, 'Name is required').max(25, 'Name is too long').nullish(),
-    }),
+    z.object({
+      name: z.nullish(z.string().check(z.minLength(1, 'Name is required'), z.maxLength(25, 'Name is too long'))),
+    }) as unknown as ZodSchema,
   ),
 });
 

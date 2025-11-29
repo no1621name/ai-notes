@@ -45,29 +45,31 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
       popover
       id="tags-dropdown"
       style="position-anchor:--anchor-tags-dropdown"
-      class="dropdown dropdown-end overflow-hidden mt-1 p-2 gap-y-2 items-stretch flex flex-col rounded-box bg-base-200 shadow-sm w-52"
+      class="dropdown dropdown-end overflow-hidden mt-1 p-2 rounded-box bg-base-200 shadow-sm w-52"
       v-if="!isPending"
     >
-      <div
-        v-if="tags?.length"
-        class="flex flex-wrap gap-1 max-h-32 overflow-y-auto overflow-x-hidden"
-      >
-        <p v-if="tags.length === selectedTags.length" class="text-base-content/75 text-xs">You've added all possible tags!</p>
-        <TransitionGroup v-else name="list">
-          <template
-            v-for="tag in tags"
-            :key="tag.id"
-          >
-            <TagBadge
-              v-if="!selectedTags.includes(tag.id)"
-              :tag="tag"
-              class="cursor-pointer"
-              @click="() => emit('tag-select', { id: tag.id})"
-            />
-          </template>
-        </TransitionGroup>
+      <div class="flex flex-col gap-y-2 items-stretch">
+        <div
+          v-if="tags?.length"
+          class="flex flex-wrap gap-1 max-h-32 overflow-y-auto overflow-x-hidden"
+        >
+          <p v-if="tags.length === selectedTags.length" class="text-base-content/75 text-xs">You've added all possible tags!</p>
+          <TransitionGroup v-else name="list">
+            <template
+              v-for="tag in tags"
+              :key="tag.id"
+            >
+              <TagBadge
+                v-if="!selectedTags.includes(tag.id)"
+                :tag="tag"
+                class="cursor-pointer"
+                @click="() => emit('tag-select', { id: tag.id})"
+              />
+            </template>
+          </TransitionGroup>
+        </div>
+        <TagCreationForm @submit="handleTagCreation"/>
       </div>
-      <TagCreationForm @submit="handleTagCreation"/>
     </div>
   </div>
 </template>

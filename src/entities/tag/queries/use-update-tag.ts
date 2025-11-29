@@ -12,7 +12,7 @@ export const useUpdateTag = () => {
   const { onSettled } = useInvalidateTags();
   const dataTransfer = useDbDataTransfer();
 
-  return useMutation<string, DefaultError, UpdateBody>({
+  return useMutation<TagBody, DefaultError, UpdateBody>({
     mutationKey: ['tags', 'update'],
     mutationFn: body => updateTag(dataTransfer, body.id, body),
     onSettled,
