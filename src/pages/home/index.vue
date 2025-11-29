@@ -1,18 +1,46 @@
 <script lang="ts" setup>
-import { useTemplateRef } from 'vue';
-import type { Editor as TipTapEditor } from '@tiptap/vue-3';
-import Note from '@/entities/note/ui.vue';
-import Editor from '@/shared/ui/md-editor/editor.vue';
-import EditorActions from '@/shared/ui/md-editor/editor-actions.vue';
-import Button from '@/shared/ui/button.vue';
+import { provide, shallowRef } from 'vue';
 
-const editorRef = useTemplateRef<{ editor: TipTapEditor }>('editor');
+import type { Editor as TipTapEditor } from '@tiptap/vue-3';
+
+import { editorInjectionKey } from '@/entities/md-editor';
+
+import { TagBadge } from '@/entities/tag';
+import { NoteCard, useGetNotes } from '@/entities/note';
+
+const editor = shallowRef<{ editor: TipTapEditor } | null>(null);
+
+provide(editorInjectionKey, editor);
+
+const { data } = useGetNotes();
 </script>
 
 <template>
-  <RouterLink class="link" to="/drawer">asfdasdf</RouterLink>
-  <Note id="1" />
-  <EditorActions :editor="editorRef?.editor" key="1" />
-  <Editor ref="editor" key="1" />
-  <Button @click="() => console.log(editorRef?.editor.getJSON())">a</Button>
+  <div>
+    <RouterLink class="link" to="/note/1">asfdasdf</RouterLink>
+    <div class="grid grid-cols-3 gap-3 m-3">
+      <NoteCard
+        v-for="note in data"
+        :key="note.id"
+        :note="note"
+      >
+        <template #tags="{ tags }">
+          <TagBadge
+            v-for="tag in tags"
+            :key="tag.id"
+            :tag="tag"
+          />
+        </template>
+      </NoteCard>
+    </div>
+    <!-- <div>
+      <MainBubbleMenu/>
+      <Editor ref="editor" key="1" />
+    </div> -->
+  </div>
+
+  <!-- <div>
+    <ThemeController/>
+    <TagsList/>
+  </div> -->
 </template>
