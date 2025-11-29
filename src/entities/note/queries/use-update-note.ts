@@ -7,14 +7,36 @@ import type { NoteData } from '../model/types';
 import { notesOptions } from './use-get-notes';
 import { toDescription } from '@/entities/md-editor/@x/note';
 
+export type MutationNoteBody = NoteData & { __mutationId?: number };
+
 export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
   const client = useQueryClient();
   const dataTransfer = useDbDataTransfer();
-  const noteId = toValue(id);
 
-  return useMutation<string, DefaultError, Partial<NoteData>, QueryFunctionContext>({
-    mutationFn: body => updateNote(dataTransfer, noteId, body),
-    onSuccess: (_data, body) => {
+  return useMutation<MutationNoteBody, DefaultError, Partial<MutationNoteBody>, QueryFunctionContext>({
+    mutationFn: async (body) => {
+      const { __mutationId, ...data } = body;
+      return updateNote(dataTransfer, toValue(id), data);
+    },
+    onSuccess: (data, variables) => {
+      const noteId = toValue(id);
+
+      const payload: MutationNoteBody = {
+        ...data,
+        __mutationId: variables.__mutationId,
+      };
+
+      client.setQueryData<NoteData>(['note', id], (oldData) => {
+        if (!oldData) {
+          return undefined;
+        }
+
+        return {
+          ...oldData,
+          ...payload,
+        };
+      });
+
       const notes = client.getQueryData(notesOptions.queryKey);
 
       if (!notes) {
@@ -30,12 +52,11 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
       const newNotes = [...notes];
       newNotes[noteIndex] = {
         ...notes[noteIndex],
-        ...body,
-        updated_at: new Date(Date.now()),
+        ...data,
       };
 
-      if (body?.text) {
-        newNotes[noteIndex].description = toDescription(JSON.parse(body.text));
+      if (data.text) {
+        newNotes[noteIndex].description = toDescription(JSON.parse(data.text));
       }
 
       client.setQueryData(notesOptions.queryKey, newNotes);

@@ -3,10 +3,11 @@ import { queryOptions, useQuery } from '@tanstack/vue-query';
 
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import type { PrimaryKeyType } from '@/shared/types/api';
-import type { Note } from '../model/types';
+import type { MutationNoteBody } from './use-update-note';
 import { getNoteWithTags } from '../api/tags/get-note-with-tags';
+import type { Note } from '../model/types';
 
-export const noteOptions = (id: MaybeRef<string>) => queryOptions<Note>({
+export const noteOptions = (id: MaybeRef<string>) => queryOptions<MutationNoteBody & Note>({
   queryKey: ['note', id],
 });
 
