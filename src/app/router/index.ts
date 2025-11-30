@@ -3,8 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { drawerDefaultComponentGuard } from './guards';
 
 import Home from '@/pages/home/index.vue';
-import NoteDetails from '@/pages/notes/details.vue';
-import NewNote from '@/pages/notes/new.vue';
+import NoteDetails from '@/pages/note/details.vue';
+import NewNote from '@/pages/note/new.vue';
 import Drawer from '@/shared/ui/drawer/main.vue';
 
 const router = createRouter({

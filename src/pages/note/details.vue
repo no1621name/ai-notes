@@ -36,7 +36,7 @@ const selectedReminderDate = ref('');
 const minReminderDate = formatForDatetimeLocal(Date.now());
 
 const { updateTitle } = useUpdateTitle(noteId);
-const { updateReminder } = useUpdateReminder(noteId);
+const { updateReminder, isLoading: isReminderUpdating } = useUpdateReminder(noteId);
 const { updateText } = useUpdateText(noteId, () => {
   lastAppliedMutationId.value = (lastAppliedMutationId.value ?? 0) + 1;
 });
@@ -74,9 +74,13 @@ watch(data, (newData) => {
   }
 
   noteTitle.value = newData.title;
+
   if (newData.reminder_date) {
     selectedReminderDate.value = formatForDatetimeLocal(newData.reminder_date);
+  } else {
+    selectedReminderDate.value = '';
   }
+
   setEditorContent(newData.text);
 });
 
@@ -105,7 +109,7 @@ watch(selectedReminderDate, (value) => {
     return;
   }
 
-  updateReminder(value);
+  updateReminder(value, data.value?.title || 'Напоминание');
 });
 
 onUnmounted(() => {
@@ -127,7 +131,7 @@ onUnmounted(() => {
         :is-loading="isLoading"
       />
 
-      <fieldset class="fieldset">
+      <fieldset class="fieldset" :disabled="isReminderUpdating">
         <p class="label">Reminder date</p>
         <input
           type="datetime-local"
