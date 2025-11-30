@@ -2,24 +2,28 @@ import { type Ref } from 'vue';
 import { useUpdateNote } from '../../queries/use-update-note';
 
 export const useUpdateReminder = (noteId: Ref<string>) => {
-  const { mutate } = useUpdateNote(noteId);
+  const { mutate, isPending } = useUpdateNote(noteId);
 
-  const updateReminder = (date: string) => {
+  const updateReminder = (date: string, title = 'Напоминание') => {
     if (!date) {
       mutate({
-        reminder_date: null,
+        body: {
+          reminder_date: null,
+        },
       });
-      return;
+    } else {
+      const selectedDate = new Date(date);
+      mutate({
+        body: {
+          reminder_date: selectedDate,
+        },
+        reminderTitle: title,
+      });
     }
-
-    const selectedDate = new Date(date);
-
-    mutate({
-      reminder_date: selectedDate,
-    });
   };
 
   return {
     updateReminder,
+    isLoading: isPending,
   };
 };

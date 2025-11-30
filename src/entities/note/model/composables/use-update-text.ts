@@ -22,8 +22,10 @@ export const useUpdateText = (noteId: Ref<string>, onDebounced?: () => void) => 
       const mutationId = ++globalMutationId;
 
       mutate({
-        text,
-        __mutationId: mutationId,
+        body: {
+          text,
+          __mutationId: mutationId,
+        },
       });
     } catch {
       add({

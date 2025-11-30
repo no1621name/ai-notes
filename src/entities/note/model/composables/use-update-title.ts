@@ -17,7 +17,9 @@ export const useUpdateTitle = (noteId: MaybeRef<string>) => {
     }
 
     mutate({
-      title,
+      body: {
+        title,
+      },
     });
   }, 1000);
 
