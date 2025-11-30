@@ -31,3 +31,10 @@ coverage
 
 .gemini
 GEMINI.md
+
+# Env
+.env
+
+# Supabase
+.branches
+.temp
