@@ -38,3 +38,4 @@ GEMINI.md
 # Supabase
 .branches
 .temp
+supabase/**/*.schema
