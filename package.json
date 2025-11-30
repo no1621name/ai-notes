@@ -14,11 +14,14 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "supabase:deploy-functions": "supabase functions deploy"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^5.0.1",
     "@kalimahapps/vue-icons": "^1.9.5",
     "@oddbird/css-anchor-positioning": "^0.7.0",
+    "@supabase/supabase-js": "^2.86.0",
     "@tanstack/vue-query": "^5.91.2",
     "@tanstack/vue-query-devtools": "^5.91.0",
     "@tiptap/extension-bubble-menu": "^3.11.0",
