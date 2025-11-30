@@ -13,17 +13,17 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
   const client = useQueryClient();
   const dataTransfer = useDbDataTransfer();
 
-  return useMutation<MutationNoteBody, DefaultError, Partial<MutationNoteBody>, QueryFunctionContext>({
-    mutationFn: async (body) => {
+  return useMutation<MutationNoteBody, DefaultError, { body: Partial<MutationNoteBody>; reminderTitle?: string }, QueryFunctionContext>({
+    mutationFn: async ({ body, reminderTitle }) => {
       const { __mutationId, ...data } = body;
-      return updateNote(dataTransfer, toValue(id), data);
+      return updateNote(dataTransfer, toValue(id), data, { reminderTitle });
     },
     onSuccess: (data, variables) => {
       const noteId = toValue(id);
 
       const payload: MutationNoteBody = {
         ...data,
-        __mutationId: variables.__mutationId,
+        __mutationId: variables.body.__mutationId,
       };
 
       client.setQueryData<NoteData>(['note', id], (oldData) => {
