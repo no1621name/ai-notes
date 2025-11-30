@@ -1,5 +1,5 @@
 import type { DataTransfer } from '@/shared/types/api';
-import { messagesStoreConfig, type FiredReminderMessage } from './messages-store';
+import { messagesStoreConfig, type FiredReminderMessage } from '../model/messages-store';
 
 export const getFiredReminders = async (dataTransfer: DataTransfer): Promise<string[]> => {
   try {
