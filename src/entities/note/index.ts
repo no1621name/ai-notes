@@ -9,6 +9,9 @@ export { useRemoveTagFromNote } from './queries/tags/use-remove-tag-from-note';
 export { useUpdateTitle } from './model/composables/use-update-title';
 export { useUpdateText } from './model/composables/use-update-text';
 export { useUpdateReminder } from './model/composables/use-update-reminder';
+export { messagesStoreConfig } from './model/messages-store';
+
+export { setupReminders } from './lib/setup-reminders';
 
 export { default as NoteCard } from './ui/card.vue';
 export { default as NoteTitleField } from './ui/title.vue';

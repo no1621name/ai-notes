@@ -4,7 +4,15 @@ import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
 
 import App from './app.vue';
 import router from './router';
-import { createDBDataTransfer, dbDataTransferKey, createLsDataTransfer, lsDataTransferKey } from './providers/data-transfer';
+import { setupReminders } from '@/entities/note';
+import {
+  createDBDataTransfer,
+  dbDataTransferKey,
+  createLsDataTransfer,
+  lsDataTransferKey,
+  createMessagesDataTransfer,
+  messagesDataTransferKey,
+} from './providers/data-transfer';
 import { clickOutsideDirective } from '@/shared/lib/vue/click-outside-directive';
 import { broadcastQueryClient } from '@/shared/lib/tanstack-query/broadcast';
 import { ErrorNotifier } from '@/shared/api/errors/error-notifier';
@@ -16,10 +24,12 @@ const setupQuery = (app: IApp) => {
   broadcastQueryClient(queryClient);
 
   app.use(VueQueryPlugin, { queryClient });
+
+  return queryClient;
 };
 
-const configureApp = (app: IApp) => {
-  setupQuery(app);
+const configureApp = async (app: IApp) => {
+  const queryClient = setupQuery(app);
   app.use(createPinia());
   app.use(router);
 
@@ -29,9 +39,13 @@ const configureApp = (app: IApp) => {
 
   const dbDataTransfer = createDBDataTransfer(errorNotifier);
   const lsDataTransfer = createLsDataTransfer(errorNotifier);
+  const messagesDataTransfer = createMessagesDataTransfer(errorNotifier);
 
   app.provide(dbDataTransferKey, dbDataTransfer);
   app.provide(lsDataTransferKey, lsDataTransfer);
+  app.provide(messagesDataTransferKey, messagesDataTransfer);
+
+  await setupReminders(dbDataTransfer, messagesDataTransfer, errorNotifier, queryClient);
 };
 
 const app = createApp(App);
