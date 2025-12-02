@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import tailwind from '@tailwindcss/vite';
 import vueIconsPlugin from '@kalimahapps/vue-icons/vite';
-import { analyzer, unstableRolldownAdapter } from 'vite-bundle-analyzer';
+// import { analyzer, unstableRolldownAdapter } from 'vite-bundle-analyzer';
 
 const iconsPlugin = vueIconsPlugin();
 const originalTransform = iconsPlugin.transform;
@@ -20,7 +20,7 @@ if (typeof originalTransform === 'function') {
 }
 
 export default defineConfig({
-  plugins: [vue(), vueDevTools(), tailwind(), iconsPlugin, unstableRolldownAdapter(analyzer())],
+  plugins: [vue(), vueDevTools(), tailwind(), iconsPlugin],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
