@@ -8,13 +8,8 @@ import { noteToTagRelationConfig } from '../store-config';
 export const getNotesWithTags = async (dataTransfer: DBDataTransfer): Promise<WithTags<NoteShort>[]> => {
   const relationManager = new ManyToManyManager(noteToTagRelationConfig, dataTransfer);
   const notesWithTags = await relationManager.getAll<NoteBody, TagBody, 'tags'>();
-  return notesWithTags.map<WithTags<NoteShort> | null>(({ text, ...note }) => {
-    if (text) {
-      return ({
-        ...note,
-        description: toDescription(JSON.parse(text)),
-      });
-    }
-    return null;
-  }).filter(Boolean) as WithTags<NoteShort>[];
+  return notesWithTags.map<WithTags<NoteShort> | null>(({ text, ...note }) => ({
+    ...note,
+    description: text ? toDescription(JSON.parse(text)) : '',
+  })).filter(Boolean) as WithTags<NoteShort>[];
 };

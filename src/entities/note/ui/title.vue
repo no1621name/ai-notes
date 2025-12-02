@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import * as z from 'zod/mini';
 import type { ZodString } from 'zod';
 import { useField } from 'vee-validate';
@@ -8,10 +8,21 @@ import { toTypedSchema } from '@vee-validate/zod';
 import SkeletonRow from '@/shared/ui/skeleton-row.vue';
 
 withDefaults(defineProps<{
-  modelValue: string | null;
   skeleton?: boolean;
 }>(), {
   skeleton: false,
+});
+
+defineModel<string | null>();
+
+const emit = defineEmits<{
+  (e: 'blur'): void;
+}>();
+
+const textareaRef = ref<HTMLTextAreaElement | null>(null);
+
+defineExpose({
+  focus: () => textareaRef.value?.focus(),
 });
 
 const MAX_LEN = 100;
@@ -97,8 +108,10 @@ const preventPasting = (event: ClipboardEvent) => {
 
     <template v-else>
       <textarea
+        ref="textareaRef"
         @keydown="preventTyping"
         @paste="preventPasting"
+        @blur="emit('blur')"
         v-model.trim="value"
         placeholder="Note title..."
         type="text"

@@ -2,6 +2,7 @@ export { storeConfig as notesStoreConfig, relationConfig as noteTagsRelationStor
 
 export { useGetNote } from './queries/use-get-note';
 export { useUpdateNote } from './queries/use-update-note';
+export { useCreateNote } from './queries/use-create-note';
 export { useGetNotes } from './queries/use-get-notes';
 export { useAddTagToNote } from './queries/tags/use-add-tag-to-note';
 export { useRemoveTagFromNote } from './queries/tags/use-remove-tag-from-note';
@@ -14,4 +15,5 @@ export { messagesStoreConfig } from './model/messages-store';
 export { setupReminders } from './lib/setup-reminders';
 
 export { default as NoteCard } from './ui/card.vue';
+export { default as CreateNoteLink } from './ui/create-note-link.vue';
 export { default as NoteTitleField } from './ui/title.vue';
