@@ -30,6 +30,7 @@ const router = createRouter({
         },
         {
           path: 'new',
+          name: 'note-create',
           components: {
             'drawer-content': NewNote,
           },

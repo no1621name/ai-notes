@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, watch, ref, provide, shallowRef, onUnmounted, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { EditorEvents, Editor as TipTapEditor } from '@tiptap/vue-3';
 
 import ManageNoteTags from '@/features/note/manage-note-tags.vue';
@@ -46,7 +47,7 @@ const editorUpdateCallback = ({ editor: instance }: EditorEvents['update']) => {
 };
 
 const setEditorContent = (text: string) => {
-  if (!editor.value?.editor) return;
+  if (!editor.value?.editor || !text) return;
 
   try {
     const content = JSON.parse(text);
@@ -122,7 +123,7 @@ onUnmounted(() => {
     <template #header>
       <NoteTitleField
         :model-value="noteTitle"
-        @update:model-value="updateTitle"
+        @update:model-value="(value) => updateTitle(value, noteTitle)"
         :skeleton="isLoading && (!noteTitle || data?.id !== noteId)"
       />
       <ManageNoteTags
@@ -132,7 +133,13 @@ onUnmounted(() => {
       />
 
       <fieldset class="fieldset" :disabled="isReminderUpdating">
-        <p class="label">Reminder date</p>
+        <p class="label">
+          Reminder date
+          <span class="tooltip tooltip-right">
+            <VueIcon name="lu:info"/>
+            <span class="tooltip-content text-xs">We will send you a notification</span>
+          </span>
+        </p>
         <input
           type="datetime-local"
           id="event-datetime"

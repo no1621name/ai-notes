@@ -6,7 +6,7 @@ import type { Editor as TipTapEditor } from '@tiptap/vue-3';
 import { editorInjectionKey } from '@/entities/md-editor';
 
 import { TagBadge } from '@/entities/tag';
-import { NoteCard, useGetNotes } from '@/entities/note';
+import { CreateNoteLink, NoteCard, useGetNotes } from '@/entities/note';
 
 const editor = shallowRef<{ editor: TipTapEditor } | null>(null);
 
@@ -17,8 +17,8 @@ const { data } = useGetNotes();
 
 <template>
   <div>
-    <RouterLink class="link" to="/note/1">asfdasdf</RouterLink>
-    <div class="grid grid-cols-3 gap-3 m-3">
+    <div class="grid grid-cols-3 auto-rows-fr gap-3 m-3">
+      <CreateNoteLink/>
       <NoteCard
         v-for="note in data"
         :key="note.id"
@@ -33,14 +33,5 @@ const { data } = useGetNotes();
         </template>
       </NoteCard>
     </div>
-    <!-- <div>
-      <MainBubbleMenu/>
-      <Editor ref="editor" key="1" />
-    </div> -->
   </div>
-
-  <!-- <div>
-    <ThemeController/>
-    <TagsList/>
-  </div> -->
 </template>
