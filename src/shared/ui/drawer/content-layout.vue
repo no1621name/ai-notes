@@ -3,6 +3,10 @@ import { inject } from 'vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import { DRAWER_HIDE_INJECTION_KEY } from '@/shared/constants/drawer';
 
+defineProps<{
+  tootlip?: string;
+}>();
+
 const hide = inject(DRAWER_HIDE_INJECTION_KEY);
 </script>
 
@@ -16,11 +20,14 @@ const hide = inject(DRAWER_HIDE_INJECTION_KEY);
         <VueIcon name="lu:x" />
       </button>
     </header>
-    <div v-if="$slots.toolbar" class="p-2 flex-none border-b border-b-base-300">
-      <slot name="toolbar" />
+    <div class="flex flex-col h-full" :class="{'tooltip': !!tootlip}">
+      <span v-if="tootlip" class="tooltip-content">{{ tootlip }}</span>
+      <div v-if="$slots.toolbar" class="p-2 flex-none border-b border-b-base-300">
+        <slot name="toolbar" />
+      </div>
+      <main class="p-2 overflow-y-auto flex-1 flex flex-col">
+        <slot />
+      </main>
     </div>
-    <main class="p-2 overflow-y-auto flex-1 flex flex-col">
-      <slot />
-    </main>
   </div>
 </template>
