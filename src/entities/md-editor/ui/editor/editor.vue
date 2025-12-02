@@ -4,10 +4,10 @@ import { BubbleMenu as BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
 import { Placeholder } from '@tiptap/extensions';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
-import { BUBBLE_MENU_PLUGIN_KEYS } from '../model/config';
-import { plugins } from '../lib/plugins';
+import { BUBBLE_MENU_PLUGIN_KEYS } from '../../model/config';
+import { plugins } from '../../lib/plugins';
 import EditorSkeleton from './editor-skeleton.vue';
-import CodeBlock from './blocks/code-block.vue';
+import CodeBlock from './../blocks/code-block.vue';
 import { onBeforeMount, shallowRef } from 'vue';
 
 const props = withDefaults(defineProps<{ placeholder?: string; skeleton?: boolean; contentSkeleton?: boolean }>(), {

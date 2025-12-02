@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import BubbleMenu from './base/bubble-menu.vue';
-import FormattingDropdown from './formatting/formatting-dropdown.vue';
-import QuickActions from './quick-actions/quick-actions.vue';
-import QuickActionToggler from './quick-actions/quick-action-toggler.vue';
+import BubbleMenu from '../base/bubble-menu.vue';
+import FormattingDropdown from '../formatting/formatting-dropdown.vue';
+import QuickActions from '../quick-actions/quick-actions.vue';
+import QuickActionToggler from '../quick-actions/quick-action-toggler.vue';
 </script>
 
 <template>

@@ -98,3 +98,5 @@ export const DEFAULT_ADDITIONAL_ACTIONS: Record<string, EditorAction> = {
     isDisabled: editor => !editor.can().chain().focus().redo().run(),
   },
 };
+
+export const DEFAULT_ACTIONS = [...DEFAULT_FORMATTING_ACTIONS, ...Object.values(DEFAULT_ADDITIONAL_ACTIONS)];
