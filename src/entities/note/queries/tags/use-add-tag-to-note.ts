@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient, type DefaultError } from '@tanstack/vue-query';
+import { useMutation, useQueryClient, type DefaultError, type InfiniteData } from '@tanstack/vue-query';
 
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import { getTag } from '@/entities/tag/@x/note';
 import { addTagToNote } from '../../api/tags/add-tag-to-note';
+import { updateNoteInCache } from '../../lib/update-note-in-cache';
 import { notesOptions } from '../use-get-notes';
 import type { Note, NoteShort } from '../../model/types';
 import { noteOptions } from '../use-get-note';
@@ -23,21 +24,6 @@ export const useAddTagToNote = () => {
       }
 
       const noteKey = noteOptions(body.noteId).queryKey;
-      const notes = client.getQueryData<NoteShort[]>(notesOptions.queryKey);
-
-      if (notes) {
-        const noteIndex = notes.findIndex(note => note.id === body.noteId);
-
-        if (noteIndex > -1) {
-          const newNotes = [...notes];
-          newNotes[noteIndex] = {
-            ...notes[noteIndex],
-            tags: [...notes[noteIndex].tags, newTag],
-          };
-          client.setQueryData(notesOptions.queryKey, newNotes);
-        }
-      }
-
       const note = client.getQueryData<Note>(noteKey);
 
       if (note) {
@@ -47,6 +33,13 @@ export const useAddTagToNote = () => {
         };
         client.setQueryData(noteKey, newNote);
       }
+
+      const notesData = client.getQueryData<InfiniteData<NoteShort[]>>(notesOptions.queryKey);
+
+      client.setQueryData(notesOptions.queryKey, updateNoteInCache(notesData, body.noteId, note => ({
+        ...note,
+        tags: [...note.tags, newTag],
+      })));
     },
   });
 };

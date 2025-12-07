@@ -6,6 +6,7 @@ import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import type { NoteData } from '../model/types';
 import { notesOptions } from './use-get-notes';
 import { toDescription } from '@/entities/md-editor/@x/note';
+import { updateNoteInCache } from '../lib/update-note-in-cache';
 
 export type MutationNoteBody = NoteData & { __mutationId?: number };
 
@@ -37,29 +38,20 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
         };
       });
 
-      const notes = client.getQueryData(notesOptions.queryKey);
+      const notesData = client.getQueryData(notesOptions.queryKey);
 
-      if (!notes) {
-        return;
-      }
+      client.setQueryData(notesOptions.queryKey, updateNoteInCache(notesData, noteId, (note) => {
+        const updatedNote = {
+          ...note,
+          ...data,
+        };
 
-      const noteIndex = notes.findIndex(note => note.id === noteId) ?? -1;
+        if (data.text) {
+          updatedNote.description = toDescription(JSON.parse(data.text));
+        }
 
-      if (noteIndex < 0) {
-        return;
-      }
-
-      const newNotes = [...notes];
-      newNotes[noteIndex] = {
-        ...notes[noteIndex],
-        ...data,
-      };
-
-      if (data.text) {
-        newNotes[noteIndex].description = toDescription(JSON.parse(data.text));
-      }
-
-      client.setQueryData(notesOptions.queryKey, newNotes);
+        return updatedNote;
+      }));
     },
   });
 };

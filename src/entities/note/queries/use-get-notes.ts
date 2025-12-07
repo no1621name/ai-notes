@@ -1,18 +1,25 @@
-import { queryOptions, useQuery } from '@tanstack/vue-query';
+import { infiniteQueryOptions, useInfiniteQuery, type InfiniteData } from '@tanstack/vue-query';
 
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
-import type { NoteShort } from '../model/types';
 import { getNotesWithTags } from '../api/tags/get-notes-with-tags';
+import type { NoteShort } from '../model/types';
+import type { WithTags } from '@/entities/tag/@x/note';
 
-export const notesOptions = queryOptions<NoteShort[]>({
+const PAGE_SIZE = 5;
+
+export const notesOptions = infiniteQueryOptions<WithTags<NoteShort>[], Error, InfiniteData<WithTags<NoteShort>[]>, ['notes'], number>({
   queryKey: ['notes'],
+  initialPageParam: 1,
+  getNextPageParam: (lastPage, allPages) => {
+    return lastPage.length === PAGE_SIZE ? allPages.length + 1 : undefined;
+  },
 });
 
 export const useGetNotes = () => {
   const dataTransfer = useDbDataTransfer();
 
-  return useQuery({
+  return useInfiniteQuery({
     ...notesOptions,
-    queryFn: () => getNotesWithTags(dataTransfer),
+    queryFn: ({ pageParam }) => getNotesWithTags(dataTransfer, pageParam, PAGE_SIZE),
   });
 };

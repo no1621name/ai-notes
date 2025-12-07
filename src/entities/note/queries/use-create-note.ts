@@ -10,7 +10,6 @@ export const useCreateNote = () => {
 
   return useMutation<NoteData, DefaultError, string>({
     mutationFn: async (title) => {
-      console.log('SDFSDFSDF', title);
       const id = await createNote(dataTransfer, {
         title,
         text: '',
@@ -30,7 +29,7 @@ export const useCreateNote = () => {
     onSuccess: (data) => {
       client.setQueryData<NoteData>(['note', data.id], data);
 
-      client.setQueryData<NoteShort[]>(notesOptions.queryKey, (oldNotes) => {
+      client.setQueryData(notesOptions.queryKey, (oldNotes) => {
         if (!oldNotes) {
           return undefined;
         }
@@ -41,10 +40,16 @@ export const useCreateNote = () => {
           tags: [],
         };
 
-        return [
-          newNote,
+        return {
           ...oldNotes,
-        ];
+          pages: [
+            [
+              newNote,
+              ...oldNotes.pages[0],
+            ],
+            ...oldNotes.pages.slice(1),
+          ],
+        };
       });
     },
   });
