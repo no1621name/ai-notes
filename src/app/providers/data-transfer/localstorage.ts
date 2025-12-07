@@ -1,9 +1,8 @@
 import { inject } from 'vue';
 import type { DataTransfer } from '@/shared/types/api';
-import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
-import LocalStorageClient from '@/shared/api/localstorage/client';
+import LocalStorageClient, { type LocalStorageErrorNotifier } from '@/shared/api/localstorage/client';
 
-export const createLsDataTransfer = (errorNotifier: ErrorNotifier): DataTransfer => {
+export const createLsDataTransfer = (errorNotifier: LocalStorageErrorNotifier): DataTransfer => {
   return new LocalStorageClient(errorNotifier);
 };
 

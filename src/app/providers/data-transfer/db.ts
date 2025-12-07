@@ -2,10 +2,9 @@ import { inject } from 'vue';
 
 import { messagesStoreConfig, notesStoreConfig, noteTagsRelationStoreConfig } from '@/entities/note';
 import { tagsStoreConfig } from '@/entities/tag';
-import DBClient, { type DBDataTransfer } from '@/shared/api/db/client';
-import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
+import DBClient, { type DBDataTransfer, type DBErrorNotifier } from '@/shared/api/db/client';
 
-export const createDBDataTransfer = (errorNotifier: ErrorNotifier): DBDataTransfer => {
+export const createDBDataTransfer = (errorNotifier: DBErrorNotifier): DBDataTransfer => {
   return new DBClient({
     name: 'ai-notes',
     version: 1,
@@ -13,7 +12,7 @@ export const createDBDataTransfer = (errorNotifier: ErrorNotifier): DBDataTransf
   }, errorNotifier);
 };
 
-export const createMessagesDataTransfer = (errorNotifier: ErrorNotifier): DBDataTransfer => {
+export const createMessagesDataTransfer = (errorNotifier: DBErrorNotifier): DBDataTransfer => {
   return new DBClient({
     name: 'messages',
     version: 1,
