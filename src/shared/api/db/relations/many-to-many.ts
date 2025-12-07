@@ -1,5 +1,6 @@
 import type { DataStore, PrimaryKeyType } from '@/shared/types/api';
 import type { DBDataTransfer } from '../client';
+import { promisifyCursor, promisifyRequest } from '@/shared/lib/idb/promisify';
 
 export interface ManyToManyRelationConfig {
   relationStore: DataStore;
@@ -8,6 +9,10 @@ export interface ManyToManyRelationConfig {
   sourceStore: DataStore;
   relatedStore: DataStore;
   relatedField: string;
+}
+
+interface MinimalEntity {
+  id: PrimaryKeyType;
 }
 
 export class ManyToManyManager {
@@ -39,119 +44,62 @@ export class ManyToManyManager {
   }
 
   public async get<
-    S extends { id: PrimaryKeyType },
-    R extends { id: PrimaryKeyType },
+    S extends MinimalEntity,
+    R extends MinimalEntity,
     K extends string,
   >(sourceId: PrimaryKeyType): Promise<S & { [key in K]: R[] }> {
-    const [sourceObjectStore, relationObjectStore, relatedObjectStore] = await this.getStores();
+    const [sourceStore, relationStore, relatedStore] = await this.getStores();
 
-    const sourceEntity = await new Promise<S>((resolve, reject) => {
-      const request = sourceObjectStore.get(sourceId);
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+    const sourceEntity = await promisifyRequest<S>(sourceStore.get(sourceId));
 
     if (!sourceEntity) {
       throw new Error(`Entity with id ${sourceId} not found in ${this.sourceStore.name}`);
     }
 
-    const relationIndex = relationObjectStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+    const relationIndex = relationStore.index(this.relationStore.indexes![this.sourceForeignKey].keyPath);
+    const relations = await promisifyRequest<Record<string, PrimaryKeyType>[]>(relationIndex.getAll(IDBKeyRange.only(sourceId)));
+    const relatedIds = relations.map(r => r[this.relatedForeignKey]);
 
-    const relatedIds = await new Promise<PrimaryKeyType[]>((resolve, reject) => {
-      const request = relationIndex.getAll(sourceId);
-      request.onsuccess = () =>
-        resolve(request.result.map(relation => relation[this.relatedForeignKey]));
-      request.onerror = () => reject(request.error);
-    });
-
-    const relatedEntities: R[] = await Promise.all(
-      relatedIds.map(
-        id =>
-          new Promise<R>((resolve, reject) => {
-            const request = relatedObjectStore.get(id);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-          }),
-      ),
+    const relatedEntities = await Promise.all(
+      relatedIds.map(id => promisifyRequest<R>(relatedStore.get(id))),
     );
 
     return {
       ...sourceEntity,
-      [this.relatedField]: relatedEntities,
+      [this.relatedField]: relatedEntities.filter(Boolean),
     } as S & { [key in K]: R[] };
   }
 
   public async getAll<
-    S extends { id: PrimaryKeyType },
-    R extends { id: PrimaryKeyType },
+    S extends MinimalEntity,
+    R extends MinimalEntity,
     K extends string,
   >(): Promise<(S & { [key in K]: R[] })[]> {
     const [sourceObjectStore, relationObjectStore, relatedObjectStore] = await this.getStores();
 
-    const sourceEntities = await new Promise<S[]>((resolve, reject) => {
-      const request = sourceObjectStore.getAll();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+    const sourceEntities = await promisifyRequest<S[]>(sourceObjectStore.getAll());
 
-    const sourceMap = new Map(sourceEntities.map(entity => [entity.id, entity]));
+    const sourceToRelateMap = await this.buildSourceToRelatedMap(relationObjectStore);
+    const relatedMap = await this.buildRelatedMap<R>(relatedObjectStore);
 
-    const sourceToRelatedMap = await new Promise<Map<PrimaryKeyType, PrimaryKeyType[]>>(
-      (resolve, reject) => {
-        const relationIndex = relationObjectStore.index(
-          this.relationStore.indexes![this.sourceForeignKey].name,
-        );
-        const request = relationIndex.openCursor();
-        const relationsMap = new Map<PrimaryKeyType, PrimaryKeyType[]>();
-
-        request.onsuccess = () => {
-          const cursor = request.result;
-          if (cursor) {
-            const relation = cursor.value;
-            const sourceId = relation[this.sourceForeignKey];
-            const relatedId = relation[this.relatedForeignKey];
-            if (!relationsMap.has(sourceId)) {
-              relationsMap.set(sourceId, []);
-            }
-            relationsMap.get(sourceId)!.push(relatedId);
-            cursor.continue();
-          } else {
-            resolve(relationsMap);
-          }
-        };
-        request.onerror = () => reject(request.error);
-      },
-    );
-
-    const allRelatedIds = new Set(Array.from(sourceToRelatedMap.values()).flat());
-    if (!allRelatedIds.size) {
-      return Array.from(sourceMap.values()).map(entity => ({
-        ...entity,
-        [this.relatedField]: [],
-      })) as (S & { [key in K]: R[] })[];
-    }
-
-    const relatedEntities = await new Promise<R[]>((resolve, reject) => {
-      const request = relatedObjectStore.getAll();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-
-    const relatedMap = new Map(relatedEntities.map(entity => [entity.id, entity]));
-
-    return Array.from(sourceMap.values()).map((entity) => {
-      const relatedIds = sourceToRelatedMap.get(entity.id) || [];
-      const populatedRelated = relatedIds
-        .map(id => relatedMap.get(id))
-        .filter((related): related is R => typeof related !== 'undefined');
-
-      return {
-        ...entity,
-        [this.relatedField]: populatedRelated,
-      };
-    }) as (S & { [key in K]: R[] })[];
+    return this.attachRelations<S, R, K>(sourceEntities, sourceToRelateMap, relatedMap);
   }
 
+  public async populateRelations<
+    S extends MinimalEntity,
+    R extends MinimalEntity,
+    K extends string,
+  >(entities: S[]): Promise<(S & { [key in K]: R[] })[]> {
+    const [, relationObjectStore, relatedObjectStore] = await this.getStores();
+    const sourceIds = new Set(entities.map(entity => entity.id));
+
+    const sourceToRelateMap = await this.buildSourceToRelatedMap(relationObjectStore, sourceIds);
+    const relatedMap = await this.buildRelatedMap<R>(relatedObjectStore);
+
+    return this.attachRelations<S, R, K>(entities, sourceToRelateMap, relatedMap);
+  }
+
+  // TESTED
   public addRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType): Promise<PrimaryKeyType> {
     const relationRecord: Record<string, PrimaryKeyType> = {
       [this.sourceForeignKey]: sourceId,
@@ -161,74 +109,118 @@ export class ManyToManyManager {
     return this.dataTransfer.create(this.relationStore.name, relationRecord);
   }
 
-  public async deleteRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType): Promise<void> {
-    const [, relationObjectStore] = await this.getStores();
+  public async deleteRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType) {
+    const [, relationStore] = await this.getStores();
 
-    const sourceIndex = relationObjectStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+    const index = relationStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
 
-    await new Promise<void>((resolve, reject) => {
-      const request = sourceIndex.openCursor(IDBKeyRange.only(sourceId));
-
-      request.onsuccess = () => {
-        const cursor = request.result;
-        if (cursor) {
-          const relation = cursor.value;
-          if (relation[this.relatedForeignKey] === relatedId) {
-            const deleteRequest = cursor.delete();
-            deleteRequest.onsuccess = () => resolve();
-            deleteRequest.onerror = () => reject(deleteRequest.error);
-            return;
-          }
-          cursor.continue();
-        } else {
-          resolve();
+    return promisifyCursor(
+      index.openCursor(IDBKeyRange.only(sourceId)),
+      (cursor) => {
+        const value = cursor.value;
+        if (value[this.relatedForeignKey] === relatedId) {
+          cursor.delete();
         }
-      };
-      request.onerror = () => reject(request.error);
-    });
+      },
+    );
   }
 
   public async deleteRelationsBySourceId(sourceId: PrimaryKeyType): Promise<void> {
-    const [, relationObjectStore] = await this.getStores();
+    const [, relationStore] = await this.getStores();
 
-    const sourceIndex = relationObjectStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+    const index = relationStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
 
-    await new Promise<void>((resolve, reject) => {
-      const request = sourceIndex.openCursor(IDBKeyRange.only(sourceId));
+    return promisifyCursor(
+      index.openCursor(IDBKeyRange.only(sourceId)),
+      (cursor) => {
+        cursor.delete();
+      },
+    );
+  }
+
+  public async deleteRelationsByRelatedId(relatedId: PrimaryKeyType): Promise<void> {
+    const [, relationStore] = await this.getStores();
+
+    const index = relationStore.index(this.relationStore.indexes![this.relatedForeignKey].name);
+
+    return promisifyCursor(
+      index.openCursor(IDBKeyRange.only(relatedId)),
+      (cursor) => {
+        cursor.delete();
+      },
+    );
+  }
+
+  private buildSourceToRelatedMap(
+    relationObjectStore: IDBObjectStore,
+    sourceIds?: Set<PrimaryKeyType>,
+  ) {
+    return new Promise<Map<PrimaryKeyType, PrimaryKeyType[]>>((resolve, reject) => {
+      const relationIndex = relationObjectStore.index(
+        this.relationStore.indexes![this.sourceForeignKey].name,
+      );
+
+      const request = relationIndex.openCursor();
+      const map = new Map<PrimaryKeyType, PrimaryKeyType[]>();
 
       request.onsuccess = () => {
         const cursor = request.result;
-        if (cursor) {
-          cursor.delete();
-          cursor.continue();
-        } else {
-          resolve();
+
+        if (!cursor) {
+          resolve(map);
+          return;
         }
+
+        const relation = cursor.value;
+        const sourceId = relation[this.sourceForeignKey];
+
+        if (!sourceIds || sourceIds.has(sourceId)) {
+          const relatedId = relation[this.relatedForeignKey];
+          if (!map.has(sourceId)) {
+            map.set(sourceId, []);
+          }
+
+          map.get(sourceId)!.push(relatedId);
+        }
+
+        cursor.continue();
       };
 
       request.onerror = () => reject(request.error);
     });
   }
 
-  public async deleteRelationsByRelatedId(relatedId: PrimaryKeyType): Promise<void> {
-    const [, relationObjectStore] = await this.getStores();
-
-    const relatedIndex = relationObjectStore.index(this.relationStore.indexes![this.relatedForeignKey].name);
-
-    await new Promise<void>((resolve, reject) => {
-      const request = relatedIndex.openCursor(IDBKeyRange.only(relatedId));
-
-      request.onsuccess = () => {
-        const cursor = request.result;
-        if (cursor) {
-          cursor.delete();
-          cursor.continue();
-        } else {
-          resolve();
-        }
-      };
-
+  private async buildRelatedMap<R extends MinimalEntity>(
+    relatedObjectStore: IDBObjectStore,
+  ) {
+    const relatedEntities = await new Promise<R[]>((resolve, reject) => {
+      const request = relatedObjectStore.getAll();
+      request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
+
+    return new Map(relatedEntities.map(entity => [entity.id, entity]));
+  }
+
+  private async attachRelations<
+    S extends MinimalEntity,
+    R extends MinimalEntity,
+    K extends string,
+  >(
+    entities: S[],
+    sourceToRelatedMap: Map<PrimaryKeyType, PrimaryKeyType[]>,
+    relatedMap: Map<PrimaryKeyType, R>,
+  ) {
+    return entities.map((entity) => {
+      const relatedIds = sourceToRelatedMap.get(entity.id) || [];
+      const populatedRelated = relatedIds
+        .map(id => relatedMap.get(id))
+        .filter((related): related is R => Boolean(related));
+
+      return {
+        ...entity,
+        [this.relatedField]: populatedRelated,
+      };
+    }) as (S & { [key in K]: R[] })[];
   }
 }
