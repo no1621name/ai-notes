@@ -60,136 +60,148 @@ describe('LocalStorageClient', () => {
     vi.clearAllMocks();
   });
 
-  it('should throw error and notify about localhost read error when getting item(s)', async () => {
-    vi.spyOn(global.localStorage, 'getItem').mockImplementation(() => {
-      throw new Error('Corrupted data');
+  describe('common errors', () => {
+    it('should throw error and notify about localhost read error when getting item(s)', async () => {
+      vi.spyOn(global.localStorage, 'getItem').mockImplementation(() => {
+        throw new Error('Corrupted data');
+      });
+
+      await expect(client.getById<TestItem>(storeName, '1')).rejects.toThrow();
+      expect(mockErrorNotifier.add).toHaveBeenCalledWith({
+        type: 'danger',
+        title: 'Storage read error',
+        message: `Failed to read data from store "${storeName}"`,
+      });
     });
 
-    await expect(client.getById<TestItem>(storeName, '1')).rejects.toThrow();
-    expect(mockErrorNotifier.add).toHaveBeenCalledWith({
-      type: 'danger',
-      title: 'Storage read error',
-      message: `Failed to read data from store "${storeName}"`,
+    it('should throw error and notify about localhost write error when writing item', async () => {
+      vi.spyOn(global.localStorage, 'setItem').mockImplementation(() => {
+        throw new Error('Corrupted data');
+      });
+
+      await expect(client.create<TestItem>(storeName, { id: '1', name: 'Bob' })).rejects.toThrow();
+      expect(mockErrorNotifier.add).toHaveBeenCalledWith({
+        type: 'danger',
+        title: 'Storage write error',
+        message: `Failed to save data to store "${storeName}"`,
+      });
     });
   });
 
-  it('should throw error and notify about localhost write error when writing item', async () => {
-    vi.spyOn(global.localStorage, 'setItem').mockImplementation(() => {
-      throw new Error('Corrupted data');
+  describe('read - getById', () => {
+    it('should notify and throw error when item not found in getById', async () => {
+      await expect(client.getById<TestItem>(storeName, '1')).rejects.toThrow();
+      expect(mockErrorNotifier.itemNotFound).toHaveBeenCalled();
     });
 
-    await expect(client.create<TestItem>(storeName, { id: '1', name: 'Bob' })).rejects.toThrow();
-    expect(mockErrorNotifier.add).toHaveBeenCalledWith({
-      type: 'danger',
-      title: 'Storage write error',
-      message: `Failed to save data to store "${storeName}"`,
+    it('should return item data when found in getById', async () => {
+      const item = { id: '1', name: 'Alice' };
+      mockLocalStorage.setItem('test:testStore', JSON.stringify([{ id: '1', data: item }]));
+
+      const result = await client.getById<TestItem>(storeName, '1');
+      expect(result).toEqual(item);
     });
   });
 
-  it('should notify and throw error when item not found in getById', async () => {
-    await expect(client.getById<TestItem>(storeName, '1')).rejects.toThrow();
-    expect(mockErrorNotifier.itemNotFound).toHaveBeenCalled();
+  describe('read - getAll', () => {
+    it('should return empty array when store is empty in getAll', async () => {
+      const result = await client.getAll<TestItem>(storeName);
+      expect(result).toEqual([]);
+    });
+
+    it('should return all items in getAll', async () => {
+      const items = [
+        { id: '1', name: 'Alice' },
+        { id: '2', name: 'Bob' },
+      ];
+      mockLocalStorage.setItem(
+        'test:testStore',
+        JSON.stringify(items.map(data => ({ id: data.id, data }))),
+      );
+
+      const result = await client.getAll<TestItem>(storeName);
+      expect(result).toEqual(items);
+    });
   });
 
-  it('should return item data when found in getById', async () => {
-    const item = { id: '1', name: 'Alice' };
-    mockLocalStorage.setItem('test:testStore', JSON.stringify([{ id: '1', data: item }]));
+  describe('create', () => {
+    it('should create item with provided id and return it', async () => {
+      const item = { id: '100', name: 'Charlie' };
+      const id = await client.create<TestItem>(storeName, item);
 
-    const result = await client.getById<TestItem>(storeName, '1');
-    expect(result).toEqual(item);
+      expect(id).toBe('100');
+      const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
+      expect(stored).toEqual([{ id: '100', data: item }]);
+      expect(mockErrorNotifier.duplicateItem).not.toHaveBeenCalled();
+    });
+
+    it('should generate id if not provided and return it', async () => {
+      const item = { name: 'Charlie' };
+      const id = await client.create<{ name: string; id?: string }>(storeName, item);
+
+      expect(typeof id).toBe('string');
+      expect(id).toMatch(/^\d+-[a-z0-9]{1,9}$/);
+
+      const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
+      expect(stored).toEqual([{ id, data: { id, name: 'Charlie' } }]);
+    });
+
+    it('should notify and throw error when creating item with duplicate id', async () => {
+      const item1 = { id: 'dup', name: 'First' };
+      await client.create<TestItem>(storeName, item1);
+
+      const item2 = { id: 'dup', name: 'Second' };
+      await expect(client.create<TestItem>(storeName, item2)).rejects.toThrow(
+        'Item with id dup already exists in store testStore',
+      );
+      expect(mockErrorNotifier.duplicateItem).toHaveBeenCalledWith('dup', storeName);
+    });
   });
 
-  it('should return empty array when store is empty in getAll', async () => {
-    const result = await client.getAll<TestItem>(storeName);
-    expect(result).toEqual([]);
+  describe('update', () => {
+    it('should update existing item and return its id', async () => {
+      const original = { id: '5', name: 'Old' };
+      await client.create<TestItem>(storeName, original);
+
+      const updated = { id: '5', name: 'New' };
+      const response = await client.update<TestItem>(storeName, updated);
+
+      expect(response).toEqual(updated);
+      const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
+      expect(stored).toEqual([{ id: '5', data: updated }]);
+    });
+
+    it('should notify and throw error when updating item without id', async () => {
+      const item = { name: 'NoId' };
+      await expect(client.update(storeName, item)).rejects.toThrow(
+        'Item must have an id field to be updated',
+      );
+      expect(mockErrorNotifier.missingIdForUpdate).toHaveBeenCalled();
+    });
+
+    it('should notify and throw error when updating non-existent item', async () => {
+      const item = { id: 'missing', name: 'Ghost' };
+      await expect(client.update<TestItem>(storeName, item)).rejects.toThrow(
+        'Item with id missing not found in store testStore',
+      );
+      expect(mockErrorNotifier.itemNotFound).toHaveBeenCalledWith('missing', storeName);
+    });
   });
 
-  it('should return all items in getAll', async () => {
-    const items = [
-      { id: '1', name: 'Alice' },
-      { id: '2', name: 'Bob' },
-    ];
-    mockLocalStorage.setItem(
-      'test:testStore',
-      JSON.stringify(items.map(data => ({ id: data.id, data }))),
-    );
+  describe('delete', () => {
+    it('should delete existing item', async () => {
+      await client.create<TestItem>(storeName, { id: 'del', name: 'ToBeDeleted' });
+      await client.delete(storeName, 'del');
 
-    const result = await client.getAll<TestItem>(storeName);
-    expect(result).toEqual(items);
-  });
+      const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
+      expect(stored).toEqual([]);
+    });
 
-  it('should create item with provided id and return it', async () => {
-    const item = { id: '100', name: 'Charlie' };
-    const id = await client.create<TestItem>(storeName, item);
-
-    expect(id).toBe('100');
-    const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
-    expect(stored).toEqual([{ id: '100', data: item }]);
-    expect(mockErrorNotifier.duplicateItem).not.toHaveBeenCalled();
-  });
-
-  it('should generate id if not provided and return it', async () => {
-    const item = { name: 'Charlie' };
-    const id = await client.create<{ name: string; id?: string }>(storeName, item);
-
-    expect(typeof id).toBe('string');
-    expect(id).toMatch(/^\d+-[a-z0-9]{1,9}$/);
-
-    const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
-    expect(stored).toEqual([{ id, data: { id, name: 'Charlie' } }]);
-  });
-
-  it('should notify and throw error when creating item with duplicate id', async () => {
-    const item1 = { id: 'dup', name: 'First' };
-    await client.create<TestItem>(storeName, item1);
-
-    const item2 = { id: 'dup', name: 'Second' };
-    await expect(client.create<TestItem>(storeName, item2)).rejects.toThrow(
-      'Item with id dup already exists in store testStore',
-    );
-    expect(mockErrorNotifier.duplicateItem).toHaveBeenCalledWith('dup', storeName);
-  });
-
-  it('should update existing item and return its id', async () => {
-    const original = { id: '5', name: 'Old' };
-    await client.create<TestItem>(storeName, original);
-
-    const updated = { id: '5', name: 'New' };
-    const response = await client.update<TestItem>(storeName, updated);
-
-    expect(response).toEqual(updated);
-    const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
-    expect(stored).toEqual([{ id: '5', data: updated }]);
-  });
-
-  it('should notify and throw error when updating item without id', async () => {
-    const item = { name: 'NoId' };
-    await expect(client.update(storeName, item)).rejects.toThrow(
-      'Item must have an id field to be updated',
-    );
-    expect(mockErrorNotifier.missingIdForUpdate).toHaveBeenCalled();
-  });
-
-  it('should notify and throw error when updating non-existent item', async () => {
-    const item = { id: 'missing', name: 'Ghost' };
-    await expect(client.update<TestItem>(storeName, item)).rejects.toThrow(
-      'Item with id missing not found in store testStore',
-    );
-    expect(mockErrorNotifier.itemNotFound).toHaveBeenCalledWith('missing', storeName);
-  });
-
-  it('should delete existing item', async () => {
-    await client.create<TestItem>(storeName, { id: 'del', name: 'ToBeDeleted' });
-    await client.delete(storeName, 'del');
-
-    const stored = JSON.parse(mockLocalStorage.getItem('test:testStore')!);
-    expect(stored).toEqual([]);
-  });
-
-  it('should notify and throw error when deleting non-existent item', async () => {
-    await expect(client.delete(storeName, 'nonexistent')).rejects.toThrow(
-      'Item with id nonexistent not found in store testStore',
-    );
-    expect(mockErrorNotifier.itemNotFound).toHaveBeenCalledWith('nonexistent', storeName);
+    it('should notify and throw error when deleting non-existent item', async () => {
+      await expect(client.delete(storeName, 'nonexistent')).rejects.toThrow(
+        'Item with id nonexistent not found in store testStore',
+      );
+      expect(mockErrorNotifier.itemNotFound).toHaveBeenCalledWith('nonexistent', storeName);
+    });
   });
 });
