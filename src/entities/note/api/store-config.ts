@@ -15,6 +15,12 @@ export const storeConfig: DataStore = {
   name: 'notes',
   primaryKey: 'id',
   schema: noteSchema,
+  indexes: {
+    created_at: {
+      name: 'created_at',
+      keyPath: 'created_at',
+    },
+  },
 };
 
 export const relationConfig: DataStore = {
