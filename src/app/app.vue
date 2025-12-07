@@ -7,7 +7,7 @@ import Notifications from '@/app/providers/notifications/ui.vue';
 <template>
   <div class="w-full flex flex-col items-center min-h-screen">
     <Header />
-    <div class="grow min-h-0 w-full h-max">
+    <div class="grow min-h-full w-full">
       <RouterView />
     </div>
 

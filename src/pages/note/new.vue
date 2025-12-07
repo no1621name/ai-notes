@@ -6,6 +6,7 @@ import { NoteTitleField, useCreateNote } from '@/entities/note';
 import { FormattingActionsPreview, EditorPreview } from '@/entities/md-editor';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 import { useToasterStore } from '@/app/stores/toaster';
+import { debounce } from '@/shared/lib/debounce';
 
 const router = useRouter();
 const { mutateAsync: createNote, isPending: isCreating } = useCreateNote();
@@ -18,7 +19,7 @@ onMounted(() => {
   titleFieldRef.value?.focus();
 });
 
-const handleBlur = async () => {
+const triggerCreate = debounce(async () => {
   if (!noteTitle.value.trim()) return;
 
   try {
@@ -31,7 +32,7 @@ const handleBlur = async () => {
       type: 'danger',
     });
   }
-};
+}, 1000);
 </script>
 
 <template>
@@ -39,8 +40,8 @@ const handleBlur = async () => {
     <template #header>
       <NoteTitleField
         ref="titleFieldRef"
+        @update:model-value="triggerCreate"
         v-model="noteTitle"
-        @blur="handleBlur"
         :disabled="isCreating"
       />
     </template>
