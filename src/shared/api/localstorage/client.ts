@@ -1,16 +1,31 @@
 import type { DataTransfer, PrimaryKeyType } from '@/shared/types/api';
-import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
 
 interface StoredItem<T> {
   id: PrimaryKeyType;
   data: T;
 }
 
+interface LocalStorageErrorBody {
+  type: 'danger';
+  title: string;
+  message: string;
+}
+
+export interface LocalStorageErrorNotifier {
+  add: (error: LocalStorageErrorBody) => void;
+  invalidStoreName: () => void;
+  missingPrimaryKey: () => void;
+  requestFailed: (error?: DOMException | null) => void;
+  itemNotFound: (id: PrimaryKeyType, store: string) => void;
+  duplicateItem: (id: PrimaryKeyType, store: string) => void;
+  missingIdForUpdate: () => void;
+}
+
 export default class LocalStorageClient implements DataTransfer {
   private prefix: string;
   private idField: string;
 
-  constructor(private notifier: ErrorNotifier, prefix: string = 'app', idField: string = 'id') {
+  constructor(private notifier: LocalStorageErrorNotifier, prefix: string = 'app', idField: string = 'id') {
     this.prefix = prefix;
     this.idField = idField;
   }
