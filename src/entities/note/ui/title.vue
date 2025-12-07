@@ -15,10 +15,6 @@ withDefaults(defineProps<{
 
 defineModel<string | null>();
 
-const emit = defineEmits<{
-  (e: 'blur'): void;
-}>();
-
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
 defineExpose({
@@ -111,7 +107,6 @@ const preventPasting = (event: ClipboardEvent) => {
         ref="textareaRef"
         @keydown="preventTyping"
         @paste="preventPasting"
-        @blur="emit('blur')"
         v-model.trim="value"
         placeholder="Note title..."
         type="text"

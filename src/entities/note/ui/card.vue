@@ -37,7 +37,7 @@ const dateItems = computed<DateItem[]>(() => {
       </div>
 
       <div class="card-actions mt-auto">
-        <div class="flex-grow">
+        <div class="grow">
           <div v-if="note.tags && note.tags.length" class="flex flex-wrap gap-2">
             <slot name="tags" :tags="note.tags" />
           </div>
