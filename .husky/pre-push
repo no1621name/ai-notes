@@ -1,2 +1,2 @@
 pnpm lint
-pnpm test:unit run
+pnpm test run
