@@ -6,7 +6,6 @@ import {
   type DataStore,
   SchemaFieldType,
 } from '../../types/api';
-import { ErrorNotifier } from '../errors/error-notifier';
 
 interface DBConfig {
   name: string;
@@ -14,15 +13,39 @@ interface DBConfig {
   stores: DataStore[];
 }
 
+interface PageOptions {
+  page: number;
+  pageSize: number;
+  orderBy?: string;
+  order?: 'asc' | 'desc';
+  search?: {
+    text: string;
+    field: string;
+  };
+}
+
+interface DBErrorBody {
+  type: 'danger';
+  title: string;
+  message: string;
+}
+
+export interface DBErrorNotifier {
+  add: (error: DBErrorBody) => void;
+  invalidStoreName: () => void;
+  missingPrimaryKey: () => void;
+  requestFailed: (error?: DOMException | null) => void;
+}
+
 export interface DBDataTransfer extends DataTransfer {
   getStores(storesNames: string[]): Promise<IDBObjectStore[]>;
-  getAllByCreatedAt<T>(storeName: string): Promise<T[]>;
+  getPage<T>(storeName: string, options: PageOptions): Promise<T[]>;
 }
 
 export default class DBClient implements DBDataTransfer {
   private db: IDBDatabase | null = null;
 
-  constructor(private config: DBConfig, private errorNotifier: ErrorNotifier) { }
+  constructor(private config: DBConfig, private errorNotifier: DBErrorNotifier) {}
 
   private async connect() {
     return new Promise<void>((resolve, reject) => {
@@ -59,11 +82,13 @@ export default class DBClient implements DBDataTransfer {
 
   private createDB(db: IDBDatabase) {
     for (const storeInfo of this.config.stores) {
+      let store: IDBObjectStore | null = null;
+
       if (db.objectStoreNames.contains(storeInfo.name)) {
-        continue;
+        store = db.transaction(storeInfo.name, 'readwrite').objectStore(storeInfo.name);
       }
 
-      const store = db.createObjectStore(storeInfo.name, { keyPath: storeInfo.primaryKey });
+      store = db.createObjectStore(storeInfo.name, { keyPath: storeInfo.primaryKey });
 
       const fields = Object.keys(storeInfo.schema);
 
@@ -91,6 +116,14 @@ export default class DBClient implements DBDataTransfer {
     }
   }
 
+  private matchesSearch<T>(value: T, search: { text: string; field: string }): boolean {
+    const fieldValue = (value as Record<string, unknown>)[search.field];
+    if (typeof fieldValue !== 'string') {
+      return false;
+    }
+    return fieldValue.toLowerCase().includes(search.text.toLowerCase());
+  }
+
   private async performRequest<R, I = object>(
     requestFn: () => IDBRequest<R> | Promise<IDBRequest<R>> | undefined,
     storeName: string,
@@ -114,13 +147,14 @@ export default class DBClient implements DBDataTransfer {
       }
 
       const request = await requestFn();
-
       if (!request) {
         this.errorNotifier.requestFailed();
         return reject();
       }
 
-      request.onsuccess = () => resolve(request.result);
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
       request.onerror = (event) => {
         this.errorNotifier.requestFailed((event.target as IDBRequest).error);
         reject();
@@ -234,7 +268,16 @@ export default class DBClient implements DBDataTransfer {
     });
   }
 
-  public async getAllByCreatedAt<T>(storeName: string) {
+  public async getPage<T>(
+    storeName: string,
+    {
+      page,
+      pageSize,
+      order = 'desc',
+      orderBy = 'created_at',
+      search,
+    }: PageOptions,
+  ) {
     if (!this.db) {
       await this.connect();
     }
@@ -247,30 +290,56 @@ export default class DBClient implements DBDataTransfer {
         return reject();
       }
 
-      if (!storeConfig.indexes?.created_at) {
-        this.errorNotifier.add({
-          title: 'No index',
-          message: 'This store could not be indexed by created date',
-          type: 'danger',
-        });
+      const transaction = this.db.transaction(storeName, 'readonly');
+      const store = transaction.objectStore(storeName);
+      let source: IDBObjectStore | IDBIndex = store;
 
-        return reject();
+      if (orderBy !== storeConfig.primaryKey) {
+        const indexConfig = storeConfig.indexes?.[orderBy];
+        if (!indexConfig) {
+          this.errorNotifier.add({
+            title: 'No index',
+            message: `Store ${storeName} has no index for field ${orderBy}`,
+            type: 'danger',
+          });
+          return reject();
+        }
+        source = store.index(indexConfig.keyPath);
       }
 
-      const store = this.db.transaction(storeName, 'readonly').objectStore(storeName);
-      const index = store.index(storeConfig.indexes.created_at.name);
-
       const result: T[] = [];
-      const request = index.openCursor(null, 'next');
+      const direction = order === 'desc' ? 'prev' : 'next';
+      const request = source.openCursor(null, direction);
+      let skipped = 0;
+      const skipCount = (page - 1) * pageSize;
+      const getAll = pageSize < 0;
 
       request.onsuccess = () => {
         const cursor = request.result;
 
-        if (cursor) {
-          result.push(cursor.value);
-          cursor.continue();
-        } else {
+        if (!cursor) {
           resolve(result);
+          return;
+        }
+
+        const value = cursor.value as T;
+        const matchesSearch = !search || this.matchesSearch(value, search);
+
+        if (matchesSearch) {
+          if (skipped < skipCount) {
+            skipped++;
+            cursor.continue();
+            return;
+          }
+
+          if (getAll || result.length < pageSize) {
+            result.push(value);
+            cursor.continue();
+          } else {
+            resolve(result);
+          }
+        } else {
+          cursor.continue();
         }
       };
 
