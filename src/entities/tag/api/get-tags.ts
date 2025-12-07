@@ -3,5 +3,5 @@ import type { TagBody } from './contracts';
 import { storeConfig } from './store-config';
 
 export const getTags = async (dataTransfer: DBDataTransfer) => {
-  return dataTransfer.getAllByCreatedAt<TagBody>(storeConfig.name);
+  return dataTransfer.getPage<TagBody>(storeConfig.name, { page: 1, pageSize: -1 });
 };
