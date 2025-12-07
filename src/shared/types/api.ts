@@ -15,7 +15,7 @@ export interface DataTransfer {
 
 interface StoreIndex {
   name: string;
-  keyPath: string | string[];
+  keyPath: string;
   unique?: boolean;
   multiEntry?: boolean;
 }
