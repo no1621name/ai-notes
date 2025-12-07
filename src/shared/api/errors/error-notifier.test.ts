@@ -8,109 +8,113 @@ describe('ErrorNotifier', () => {
     setActivePinia(createPinia());
   });
 
-  it('should add a toast for invalidStoreName', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
+  describe('basic functional', () => {
+    it('should add a custom toast payload', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
+      const customPayload = {
+        type: 'success',
+        title: 'Custom Title',
+        message: 'Custom Message',
+      } as const;
 
-    notifier.invalidStoreName();
+      notifier.add(customPayload);
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Store error occurred');
-    expect(toast.message).toBe('Invalid store name');
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe(customPayload.type);
+      expect(toast.title).toBe(customPayload.title);
+      expect(toast.message).toBe(customPayload.message);
+    });
   });
 
-  it('should add a toast for missingPrimaryKey', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
+  describe('prepared errors', () => {
+    it('should add a toast for invalidStoreName', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
 
-    notifier.missingPrimaryKey();
+      notifier.invalidStoreName();
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Store error occurred');
-    expect(toast.message).toBe('Missing primary key');
-  });
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Store error occurred');
+      expect(toast.message).toBe('Invalid store name');
+    });
 
-  it('should add a toast for requestFailed without an error', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
+    it('should add a toast for missingPrimaryKey', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
 
-    notifier.requestFailed();
+      notifier.missingPrimaryKey();
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Request error occurred');
-    expect(toast.message).toBe('Request failed');
-  });
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Store error occurred');
+      expect(toast.message).toBe('Missing primary key');
+    });
 
-  it('should add a toast for requestFailed with an error', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
-    const error = new DOMException('Permission denied');
+    it('should add a toast for requestFailed without an error', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
 
-    notifier.requestFailed(error);
+      notifier.requestFailed();
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Request error occurred');
-  });
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Request error occurred');
+      expect(toast.message).toBe('Request failed');
+    });
 
-  it('should add a toast for duplicateItem', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
+    it('should add a toast for requestFailed with an error', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
+      const error = new DOMException('Permission denied');
 
-    notifier.duplicateItem('123', 'notes');
+      notifier.requestFailed(error);
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Duplicate item');
-  });
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Request error occurred');
+    });
 
-  it('should add a toast for itemNotFound', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
+    it('should add a toast for duplicateItem', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
 
-    notifier.itemNotFound('456', 'tags');
+      notifier.duplicateItem('123', 'notes');
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Item not found');
-  });
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Duplicate item');
+    });
 
-  it('should add a toast for missingIdForUpdate', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
+    it('should add a toast for itemNotFound', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
 
-    notifier.missingIdForUpdate();
+      notifier.itemNotFound('456', 'tags');
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('danger');
-    expect(toast.title).toBe('Invalid item');
-  });
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Item not found');
+    });
 
-  it('should add a custom toast payload', () => {
-    const notifier = new ErrorNotifier();
-    const toasterStore = useToasterStore();
-    const customPayload = {
-      type: 'success',
-      title: 'Custom Title',
-      message: 'Custom Message',
-    } as const;
+    it('should add a toast for missingIdForUpdate', () => {
+      const notifier = new ErrorNotifier();
+      const toasterStore = useToasterStore();
 
-    notifier.add(customPayload);
+      notifier.missingIdForUpdate();
 
-    expect(toasterStore.toasts).toHaveLength(1);
-    const toast = toasterStore.toasts[0];
-    expect(toast.type).toBe('success');
-    expect(toast.title).toBe('Custom Title');
-    expect(toast.message).toBe('Custom Message');
+      expect(toasterStore.toasts).toHaveLength(1);
+      const toast = toasterStore.toasts[0];
+      expect(toast.type).toBe('danger');
+      expect(toast.title).toBe('Invalid item');
+    });
   });
 });
