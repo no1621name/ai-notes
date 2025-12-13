@@ -5,7 +5,7 @@ import { Placeholder } from '@tiptap/extensions';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 
 import { BUBBLE_MENU_PLUGIN_KEYS } from '../../model/config';
-import { plugins } from '../../lib/plugins';
+import { plugins } from '@/shared/lib/tiptap/plugins';
 import EditorSkeleton from './editor-skeleton.vue';
 import CodeBlock from './../blocks/code-block.vue';
 import { onBeforeMount, shallowRef } from 'vue';

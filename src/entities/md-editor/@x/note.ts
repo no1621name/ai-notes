@@ -1,1 +1,1 @@
-export { toDescription, toText } from '../lib/to-text';
+export { toDescription } from '../lib/to-text';
