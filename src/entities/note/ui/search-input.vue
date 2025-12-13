@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { nextTick, ref, useTemplateRef } from 'vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { debounce } from '@/shared/lib/debounce';
 import Button from '@/shared/ui/button.vue';
 
 const search = ref('');
+const serachInput = useTemplateRef<HTMLInputElement>('search-input');
 const isVisible = ref(false);
 
 const emit = defineEmits<{
@@ -19,11 +20,23 @@ const updateSerach = (value: string) => {
 };
 
 const handleUpdate = debounce(updateSerach, 500);
+
+const toggleVisible = async () => {
+  isVisible.value = !isVisible.value;
+
+  if (!isVisible.value) {
+    search.value = '';
+    emit('update:search', '');
+  } else {
+    await nextTick();
+    serachInput.value?.focus();
+  }
+};
 </script>
 
 <template>
   <div class="flex gap-2">
-    <Button @click="isVisible = !isVisible">
+    <Button @click="toggleVisible">
       <VueIcon :name="isVisible ? 'lu:x' : 'lu:search'"/>
     </Button>
     <Transition name="fade-up">
@@ -32,6 +45,7 @@ const handleUpdate = debounce(updateSerach, 500);
         v-if="isVisible"
       >
         <input
+          ref="search-input"
           type="text"
           class="input join-item"
           placeholder="Write to search..."
