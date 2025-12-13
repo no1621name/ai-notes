@@ -17,3 +17,5 @@ export { setupReminders } from './lib/setup-reminders';
 export { default as NoteCard } from './ui/card.vue';
 export { default as CreateNoteLink } from './ui/create-note-link.vue';
 export { default as NoteTitleField } from './ui/title.vue';
+export { default as NoteSearchInput } from './ui/search-input.vue';
+export { default as NoteBaseCard } from './ui/base-card.vue';
