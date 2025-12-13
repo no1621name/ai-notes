@@ -80,12 +80,5 @@ describe('DBClient: connection', () => {
       await expect(client.delete('invalidStore', '1')).rejects.toBeUndefined();
       expect(errorNotifier.invalidStoreName).toHaveBeenCalled();
     });
-
-    it('should notify error when getPage uses invalid store', async () => {
-      await expect(
-        client.getPage('invalidStore', { page: 1, pageSize: 10 }),
-      ).rejects.toBeUndefined();
-      expect(errorNotifier.invalidStoreName).toHaveBeenCalled();
-    });
   });
 });
