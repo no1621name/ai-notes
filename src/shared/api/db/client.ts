@@ -1,5 +1,6 @@
 import { v4 } from 'uuid';
 
+import { toText } from '@/shared/lib/tiptap/to-text';
 import {
   type PrimaryKeyType,
   type DataTransfer,
@@ -20,7 +21,7 @@ interface PageOptions {
   order?: 'asc' | 'desc';
   search?: {
     text: string;
-    field: string;
+    fields: string[];
   };
 }
 
@@ -116,12 +117,28 @@ export default class DBClient implements DBDataTransfer {
     }
   }
 
-  private matchesSearch<T>(value: T, search: { text: string; field: string }): boolean {
-    const fieldValue = (value as Record<string, unknown>)[search.field];
-    if (typeof fieldValue !== 'string') {
+  private validateFieldValue(value: unknown): value is string {
+    return typeof value === 'string';
+  }
+
+  private valueHasField(value: unknown, key: string): key is keyof typeof value {
+    return typeof value === 'object' && value !== null && key in value;
+  }
+
+  private matchesSearch(value: unknown, query: string): boolean {
+    let fieldValue = value;
+
+    if (this.validateFieldValue(fieldValue) && fieldValue.match(/[:,\{\}\[\]]|(\".*?\")|('.*?')|[-\w.]+/g)?.length) {
+      try {
+        fieldValue = toText(JSON.parse(fieldValue));
+      } catch { }
+    }
+
+    if (!this.validateFieldValue(fieldValue)) {
       return false;
     }
-    return fieldValue.toLowerCase().includes(search.text.toLowerCase());
+
+    return fieldValue.toLowerCase().includes(query.toLowerCase());
   }
 
   private async performRequest<R, I = object>(
@@ -323,7 +340,11 @@ export default class DBClient implements DBDataTransfer {
         }
 
         const value = cursor.value as T;
-        const matchesSearch = !search || this.matchesSearch(value, search);
+
+        const matchesSearch = !search
+          || search.fields.some(field =>
+            this.valueHasField(value, field) && this.matchesSearch(value[field], search.text),
+          );
 
         if (matchesSearch) {
           if (skipped < skipCount) {
