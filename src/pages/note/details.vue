@@ -13,12 +13,11 @@ import {
   useUpdateText,
   useUpdateReminder } from '@/entities/note';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
-import { useToasterStore } from '@/app/stores/toaster';
 import FormattingActions from '@/entities/md-editor/ui/formatting/formatting-actions.vue';
 import { formatForDatetimeLocal } from '@/shared/lib/date';
+import { addToast } from '@/app/providers/toasts';
 
 const route = useRoute();
-const { add: addToast } = useToasterStore();
 
 const noteId = computed<string>(() => {
   if (Array.isArray(route.params.id)) {

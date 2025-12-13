@@ -2,15 +2,14 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { addToast } from '@/app/providers/toasts';
 import { NoteTitleField, useCreateNote } from '@/entities/note';
 import { FormattingActionsPreview, EditorPreview } from '@/entities/md-editor';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
-import { useToasterStore } from '@/app/stores/toaster';
 import { debounce } from '@/shared/lib/debounce';
 
 const router = useRouter();
 const { mutateAsync: createNote, isPending: isCreating } = useCreateNote();
-const { add: addToast } = useToasterStore();
 
 const noteTitle = ref('');
 const titleFieldRef = ref<InstanceType<typeof NoteTitleField> | null>(null);

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+import { Toaster } from '@/app/providers/toasts';
 import Header from '@/shared/ui/header.vue';
-import Notifications from '@/app/providers/notifications/ui.vue';
 </script>
 
 <template>
@@ -17,6 +17,6 @@ import Notifications from '@/app/providers/notifications/ui.vue';
       </KeepAlive>
     </RouterView>
   </div>
-  <Notifications />
+  <Toaster />
   <VueQueryDevtools />
 </template>

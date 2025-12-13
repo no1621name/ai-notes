@@ -1,4 +1,5 @@
-import { useToasterStore, type ToastType } from '@/app/stores/toaster';
+import { addToast } from '@/app/providers/toasts';
+import { type ToastType } from '@/app/stores/toaster';
 
 type ToastPayload = {
   type: ToastType;
@@ -7,8 +8,6 @@ type ToastPayload = {
 };
 
 export class ErrorNotifier {
-  private toaster = useToasterStore();
-
   public invalidStoreName() {
     this.add({
       type: 'danger',
@@ -58,6 +57,6 @@ export class ErrorNotifier {
   }
 
   public add(payload: ToastPayload) {
-    this.toaster.add(payload);
+    addToast(payload);
   }
 }
