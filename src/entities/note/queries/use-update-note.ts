@@ -38,9 +38,9 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
         };
       });
 
-      const notesData = client.getQueryData(notesOptions.queryKey);
+      const notesData = client.getQueryData(notesOptions().queryKey);
 
-      client.setQueryData(notesOptions.queryKey, updateNoteInCache(notesData, noteId, (note) => {
+      client.setQueryData(notesOptions().queryKey, updateNoteInCache(notesData, noteId, (note) => {
         const updatedNote = {
           ...note,
           ...data,

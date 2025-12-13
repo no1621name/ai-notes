@@ -26,9 +26,9 @@ export const useRemoveTagFromNote = () => {
         client.setQueryData(noteKey, newNote);
       }
 
-      const notesData = client.getQueryData<InfiniteData<NoteShort[]>>(notesOptions.queryKey);
+      const notesData = client.getQueryData<InfiniteData<NoteShort[]>>(notesOptions().queryKey);
 
-      client.setQueryData(notesOptions.queryKey, updateNoteInCache(notesData, body.noteId, note => ({
+      client.setQueryData(notesOptions().queryKey, updateNoteInCache(notesData, body.noteId, note => ({
         ...note,
         tags: note.tags.filter(tag => tag.id !== body.tagId),
       })));

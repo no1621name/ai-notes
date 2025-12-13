@@ -34,9 +34,9 @@ export const useAddTagToNote = () => {
         client.setQueryData(noteKey, newNote);
       }
 
-      const notesData = client.getQueryData<InfiniteData<NoteShort[]>>(notesOptions.queryKey);
+      const notesData = client.getQueryData<InfiniteData<NoteShort[]>>(notesOptions().queryKey);
 
-      client.setQueryData(notesOptions.queryKey, updateNoteInCache(notesData, body.noteId, note => ({
+      client.setQueryData(notesOptions().queryKey, updateNoteInCache(notesData, body.noteId, note => ({
         ...note,
         tags: [...note.tags, newTag],
       })));

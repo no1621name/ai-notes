@@ -29,7 +29,7 @@ export const useCreateNote = () => {
     onSuccess: (data) => {
       client.setQueryData<NoteData>(['note', data.id], data);
 
-      client.setQueryData(notesOptions.queryKey, (oldNotes) => {
+      client.setQueryData(notesOptions().queryKey, (oldNotes) => {
         if (!oldNotes) {
           return undefined;
         }
