@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { computed, ref, watchEffect } from 'vue';
-import { TagBadge } from '@/entities/tag';
+import { TagBadge, TagsSelectingList, type Tag } from '@/entities/tag';
 import { CreateNoteLink, NoteBaseCard, NoteCard, NoteSearchInput, useGetNotes } from '@/entities/note';
 import { useIntersectionObserver } from '@/shared/composables/use-intersection-observer';
 
 const loader = ref<HTMLElement | null>(null);
 
 const search = ref('');
-const { data, fetchNextPage, isLoading, hasNextPage, isFetchingNextPage } = useGetNotes(search);
+const selectedTags = ref<Tag['id'][]>([]);
+const { data, fetchNextPage, isLoading, hasNextPage, isFetchingNextPage } = useGetNotes({
+  search,
+  tags: selectedTags,
+});
 const notes = computed(() => data.value?.pages.flat() ?? []);
 
 const { isIntersecting } = useIntersectionObserver(loader);
@@ -21,11 +25,22 @@ watchEffect(() => {
 const updateSearch = (value: string) => {
   search.value = value;
 };
+
+const updateSelectedTags = (value: Tag['id']) => {
+  if (selectedTags.value.includes(value)) {
+    selectedTags.value = selectedTags.value.filter(tag => tag !== value);
+  } else {
+    selectedTags.value.push(value);
+  }
+};
 </script>
 
 <template>
   <div class="flex flex-col gap-3 m-3">
     <NoteSearchInput @update:search="updateSearch"/>
+
+    <TagsSelectingList :selectedTags="selectedTags" @tag-select="updateSelectedTags"/>
+
     <div class="relative grid grid-cols-3 auto-rows-fr gap-3">
       <CreateNoteLink/>
 
