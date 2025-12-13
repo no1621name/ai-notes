@@ -1,6 +1,5 @@
 import { v4 } from 'uuid';
 
-import { toText } from '@/shared/lib/tiptap/to-text';
 import {
   type PrimaryKeyType,
   type DataTransfer,
@@ -8,21 +7,10 @@ import {
   SchemaFieldType,
 } from '../../types/api';
 
-interface DBConfig {
+export interface DBConfig {
   name: string;
   version: number;
   stores: DataStore[];
-}
-
-interface PageOptions {
-  page: number;
-  pageSize: number;
-  orderBy?: string;
-  order?: 'asc' | 'desc';
-  search?: {
-    text: string;
-    fields: string[];
-  };
 }
 
 interface DBErrorBody {
@@ -40,7 +28,6 @@ export interface DBErrorNotifier {
 
 export interface DBDataTransfer extends DataTransfer {
   getStores(storesNames: string[]): Promise<IDBObjectStore[]>;
-  getPage<T>(storeName: string, options: PageOptions): Promise<T[]>;
 }
 
 export default class DBClient implements DBDataTransfer {
@@ -115,30 +102,6 @@ export default class DBClient implements DBDataTransfer {
         });
       }
     }
-  }
-
-  private validateFieldValue(value: unknown): value is string {
-    return typeof value === 'string';
-  }
-
-  private valueHasField(value: unknown, key: string): key is keyof typeof value {
-    return typeof value === 'object' && value !== null && key in value;
-  }
-
-  private matchesSearch(value: unknown, query: string): boolean {
-    let fieldValue = value;
-
-    if (this.validateFieldValue(fieldValue) && fieldValue.match(/[:,\{\}\[\]]|(\".*?\")|('.*?')|[-\w.]+/g)?.length) {
-      try {
-        fieldValue = toText(JSON.parse(fieldValue));
-      } catch { }
-    }
-
-    if (!this.validateFieldValue(fieldValue)) {
-      return false;
-    }
-
-    return fieldValue.toLowerCase().includes(query.toLowerCase());
   }
 
   private async performRequest<R, I = object>(
@@ -282,89 +245,6 @@ export default class DBClient implements DBDataTransfer {
           .map(name => transaction?.objectStore(name))
           .filter(store => typeof store !== 'undefined'),
       );
-    });
-  }
-
-  public async getPage<T>(
-    storeName: string,
-    {
-      page,
-      pageSize,
-      order = 'desc',
-      orderBy = 'created_at',
-      search,
-    }: PageOptions,
-  ) {
-    if (!this.db) {
-      await this.connect();
-    }
-
-    return new Promise<T[]>((resolve, reject) => {
-      const storeConfig = this.config.stores.find(({ name }) => name === storeName);
-
-      if (!this.db?.objectStoreNames.contains(storeName) || !storeConfig) {
-        this.errorNotifier.invalidStoreName();
-        return reject();
-      }
-
-      const transaction = this.db.transaction(storeName, 'readonly');
-      const store = transaction.objectStore(storeName);
-      let source: IDBObjectStore | IDBIndex = store;
-
-      if (orderBy !== storeConfig.primaryKey) {
-        const indexConfig = storeConfig.indexes?.[orderBy];
-        if (!indexConfig) {
-          this.errorNotifier.add({
-            title: 'No index',
-            message: `Store ${storeName} has no index for field ${orderBy}`,
-            type: 'danger',
-          });
-          return reject();
-        }
-        source = store.index(indexConfig.keyPath);
-      }
-
-      const result: T[] = [];
-      const direction = order === 'desc' ? 'prev' : 'next';
-      const request = source.openCursor(null, direction);
-      let skipped = 0;
-      const skipCount = (page - 1) * pageSize;
-      const getAll = pageSize < 0;
-
-      request.onsuccess = () => {
-        const cursor = request.result;
-
-        if (!cursor) {
-          resolve(result);
-          return;
-        }
-
-        const value = cursor.value as T;
-
-        const matchesSearch = !search
-          || search.fields.some(field =>
-            this.valueHasField(value, field) && this.matchesSearch(value[field], search.text),
-          );
-
-        if (matchesSearch) {
-          if (skipped < skipCount) {
-            skipped++;
-            cursor.continue();
-            return;
-          }
-
-          if (getAll || result.length < pageSize) {
-            result.push(value);
-            cursor.continue();
-          } else {
-            resolve(result);
-          }
-        } else {
-          cursor.continue();
-        }
-      };
-
-      request.onerror = () => reject(request.error);
     });
   }
 }

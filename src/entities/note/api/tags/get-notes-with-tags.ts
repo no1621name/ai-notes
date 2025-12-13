@@ -5,6 +5,7 @@ import { ManyToManyManager } from '@/shared/api/db/relations/many-to-many';
 import type { NoteBody, NoteShort } from '../contracts';
 import { noteToTagRelationConfig, storeConfig } from '../store-config';
 import { delay } from '@/shared/lib/delay';
+import PaginationService from '@/shared/api/db/services/pagination';
 
 interface GetNotesWithTagsParams {
   page?: number;
@@ -20,8 +21,9 @@ export const getNotesWithTags = async (
   { page = 1, pageSize = 5, search }: GetNotesWithTagsParams,
 ): Promise<WithTags<NoteShort>[]> => {
   const relationManager = new ManyToManyManager(noteToTagRelationConfig, dataTransfer);
+  const pagination = new PaginationService(storeConfig, dataTransfer);
 
-  const notes = await dataTransfer.getPage<NoteBody>(
+  const notes = await pagination.getPage<NoteBody>(
     storeConfig.name,
     {
       page,

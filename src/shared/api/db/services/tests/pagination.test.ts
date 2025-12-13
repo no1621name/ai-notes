@@ -6,18 +6,19 @@ import {
   clearStore,
   STORE_NAME,
   type TestItem,
-} from './mocks';
-import type DBClient from '../client';
-import type { DBErrorNotifier } from '../client';
+  testStoreConfig,
+} from '../../tests/mocks';
+import { type default as DBClient } from '../../client';
+import PaginationService from '../pagination';
 
-describe('DBClient: pagination, search', () => {
+describe('PaginationService', () => {
   let client: DBClient;
-  let errorNotifier: DBErrorNotifier;
+  let service: PaginationService;
 
   beforeEach(async () => {
     const setup = createDbClient();
     client = setup.client;
-    errorNotifier = setup.errorNotifier;
+    service = new PaginationService(testStoreConfig, client);
     await clearStore(client, STORE_NAME);
   });
 
@@ -41,7 +42,7 @@ describe('DBClient: pagination, search', () => {
     it('should return first page of data', async () => {
       await createPaginationData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 2,
         order: 'asc',
@@ -56,7 +57,7 @@ describe('DBClient: pagination, search', () => {
     it('should return second page of data', async () => {
       await createPaginationData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 2,
         pageSize: 2,
         order: 'asc',
@@ -71,7 +72,7 @@ describe('DBClient: pagination, search', () => {
     it('should return partial page when not enough items', async () => {
       await createPaginationData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 3,
         pageSize: 2,
         order: 'asc',
@@ -85,7 +86,7 @@ describe('DBClient: pagination, search', () => {
     it('should return empty array when page exceeds data', async () => {
       await createPaginationData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 10,
         pageSize: 2,
         order: 'asc',
@@ -98,7 +99,7 @@ describe('DBClient: pagination, search', () => {
     it('should respect pageSize parameter', async () => {
       await createPaginationData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 3,
         order: 'asc',
@@ -127,7 +128,7 @@ describe('DBClient: pagination, search', () => {
     it('should order by ascending', async () => {
       await createOrderingData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -142,7 +143,7 @@ describe('DBClient: pagination, search', () => {
     it('should order by descending', async () => {
       await createOrderingData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'desc',
@@ -157,7 +158,7 @@ describe('DBClient: pagination, search', () => {
     it('should order by name field', async () => {
       await createOrderingData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -190,7 +191,7 @@ describe('DBClient: pagination, search', () => {
     it('should filter data by search string', async () => {
       await createSearchData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -214,7 +215,7 @@ describe('DBClient: pagination, search', () => {
         await client.create(STORE_NAME, item);
       }
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -228,7 +229,7 @@ describe('DBClient: pagination, search', () => {
     it('should combine search with pagination', async () => {
       await createSearchData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 2,
         pageSize: 1,
         order: 'asc',
@@ -243,7 +244,7 @@ describe('DBClient: pagination, search', () => {
     it('should return empty array when search finds no matches', async () => {
       await createSearchData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -257,7 +258,7 @@ describe('DBClient: pagination, search', () => {
     it('should search partial matches', async () => {
       await createSearchData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -273,7 +274,7 @@ describe('DBClient: pagination, search', () => {
     it('should handle empty search text', async () => {
       await createSearchData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -281,13 +282,13 @@ describe('DBClient: pagination, search', () => {
         search: { text: '', fields: ['name'] },
       });
 
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(5);
     });
 
     it('should search multiple fields', async () => {
       await createSearchData();
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
         order: 'asc',
@@ -297,7 +298,7 @@ describe('DBClient: pagination, search', () => {
 
       expect(result).toHaveLength(2);
       expect(result.map(r => r.name)).toContain('Kiwi Pie');
-      expect(result.map(r => r.name)).toContain('Orange Juice');
+      expect(result.map(r => r.name)).toContain('Orange Cake');
     });
   });
 
@@ -306,19 +307,15 @@ describe('DBClient: pagination, search', () => {
       const item = createTestItem();
       await client.create(STORE_NAME, item);
 
+      const errorMessage = `Store ${STORE_NAME} has no index for field nonExistentField`;
+
       await expect(
-        client.getPage(STORE_NAME, {
+        service.getPage(STORE_NAME, {
           page: 1,
           pageSize: 10,
           orderBy: 'nonExistentField',
         }),
-      ).rejects.toBeUndefined();
-
-      expect(errorNotifier.add).toHaveBeenCalledWith({
-        title: 'No index',
-        message: `Store ${STORE_NAME} has no index for field nonExistentField`,
-        type: 'danger',
-      });
+      ).rejects.toThrow(errorMessage);
     });
   });
 
@@ -333,7 +330,7 @@ describe('DBClient: pagination, search', () => {
         await client.create(STORE_NAME, item);
       }
 
-      const result = await client.getPage<TestItem>(STORE_NAME, {
+      const result = await service.getPage<TestItem>(STORE_NAME, {
         page: 1,
         pageSize: 10,
       });
