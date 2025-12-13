@@ -7,6 +7,7 @@ export interface TestItem {
   id: string;
   name: string;
   created_at: string;
+  title: string;
 }
 
 export const testStoreConfig: DataStore = {
@@ -18,6 +19,10 @@ export const testStoreConfig: DataStore = {
     created_at: SchemaFieldType.NOT_UNIQUE,
   },
   indexes: {
+    title: {
+      name: 'title_index',
+      keyPath: 'title',
+    },
     name: {
       name: 'name_index',
       keyPath: 'name',
@@ -73,6 +78,7 @@ export const createTestItem = (overrides: Partial<TestItem> = {}): TestItem => (
   id: `item_${Date.now()}_${Math.random().toString(36).slice(2)}`,
   name: 'Test Item',
   created_at: new Date().toISOString(),
+  title: 'Test Item',
   ...overrides,
 });
 
@@ -82,6 +88,7 @@ export const createTestItems = (count: number, namePrefix = 'Item'): TestItem[] 
     id: `item_${i}`,
     name: `${namePrefix} ${i}`,
     created_at: new Date(now + i * 1000).toISOString(),
+    title: `${namePrefix} ${i}`,
   }));
 };
 

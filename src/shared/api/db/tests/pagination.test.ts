@@ -173,10 +173,11 @@ describe('DBClient: pagination, search', () => {
   describe('search functionality', () => {
     const createSearchData = async () => {
       const items = [
-        createTestItem({ id: '1', name: 'Apple Pie', created_at: '2025-12-01T00:00:00Z' }),
-        createTestItem({ id: '2', name: 'Banana Bread', created_at: '2025-12-02T00:00:00Z' }),
-        createTestItem({ id: '3', name: 'Apple Juice', created_at: '2025-12-03T00:00:00Z' }),
-        createTestItem({ id: '4', name: 'Orange Cake', created_at: '2025-12-04T00:00:00Z' }),
+        createTestItem({ id: '1', name: 'Apple Pie', title: 'Apple', created_at: '2025-12-01T00:00:00Z' }),
+        createTestItem({ id: '2', name: 'Banana Bread', title: 'Banana', created_at: '2025-12-02T00:00:00Z' }),
+        createTestItem({ id: '3', name: 'Apple Juice', title: 'Apple', created_at: '2025-12-03T00:00:00Z' }),
+        createTestItem({ id: '4', name: 'Orange Cake', title: 'Orange+Kiwi', created_at: '2025-12-04T00:00:00Z' }),
+        createTestItem({ id: '5', name: 'Kiwi Pie', title: 'Kiwi', created_at: '2025-12-05T00:00:00Z' }),
       ];
 
       for (const item of items) {
@@ -194,7 +195,7 @@ describe('DBClient: pagination, search', () => {
         pageSize: 10,
         order: 'asc',
         orderBy: 'created_at',
-        search: { text: 'apple', field: 'name' },
+        search: { text: 'apple', fields: ['name'] },
       });
 
       expect(result).toHaveLength(2);
@@ -218,7 +219,7 @@ describe('DBClient: pagination, search', () => {
         pageSize: 10,
         order: 'asc',
         orderBy: 'created_at',
-        search: { text: 'ApPlE', field: 'name' },
+        search: { text: 'ApPlE', fields: ['name'] },
       });
 
       expect(result).toHaveLength(3);
@@ -232,7 +233,7 @@ describe('DBClient: pagination, search', () => {
         pageSize: 1,
         order: 'asc',
         orderBy: 'created_at',
-        search: { text: 'apple', field: 'name' },
+        search: { text: 'apple', fields: ['name'] },
       });
 
       expect(result).toHaveLength(1);
@@ -247,7 +248,7 @@ describe('DBClient: pagination, search', () => {
         pageSize: 10,
         order: 'asc',
         orderBy: 'created_at',
-        search: { text: 'cherry', field: 'name' },
+        search: { text: 'cherry', fields: ['name'] },
       });
 
       expect(result).toHaveLength(0);
@@ -261,7 +262,7 @@ describe('DBClient: pagination, search', () => {
         pageSize: 10,
         order: 'asc',
         orderBy: 'created_at',
-        search: { text: 'an', field: 'name' },
+        search: { text: 'an', fields: ['name'] },
       });
 
       expect(result).toHaveLength(2);
@@ -277,10 +278,26 @@ describe('DBClient: pagination, search', () => {
         pageSize: 10,
         order: 'asc',
         orderBy: 'created_at',
-        search: { text: '', field: 'name' },
+        search: { text: '', fields: ['name'] },
       });
 
       expect(result).toHaveLength(4);
+    });
+
+    it('should search multiple fields', async () => {
+      await createSearchData();
+
+      const result = await client.getPage<TestItem>(STORE_NAME, {
+        page: 1,
+        pageSize: 10,
+        order: 'asc',
+        orderBy: 'created_at',
+        search: { text: 'kiwi', fields: ['name', 'title'] },
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result.map(r => r.name)).toContain('Kiwi Pie');
+      expect(result.map(r => r.name)).toContain('Orange Juice');
     });
   });
 
