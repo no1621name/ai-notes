@@ -8,12 +8,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test": "vitest",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix",
+    "build": "vite build",
+    "lint": "run-p lint:type-check \"lint:eslint {@}\" --",
+    "lint:type-check": "vue-tsc",
+    "lint:eslint": "eslint . --fix",
     "prepare": "husky",
     "supabase:deploy-functions": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase functions deploy --project-id $SUPABASE_PROJECT_ID",
     "supabase:generate": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/shared/api/supabase/supabase-generated.types.ts && eslint src/shared/api/supabase/supabase-generated.types.ts --fix"
