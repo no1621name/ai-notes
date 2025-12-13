@@ -1,10 +1,9 @@
 import type { PrimaryKeyType } from '@/shared/types/api';
-import { useMutation, useQueryClient, type DefaultError, type QueryFunctionContext } from '@tanstack/vue-query';
+import { useMutation, useQueryClient, type DefaultError, type InfiniteData, type QueryFunctionContext } from '@tanstack/vue-query';
 import { toValue, type MaybeRef } from 'vue';
 import { updateNote } from '../api/update-note';
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
-import type { NoteData } from '../model/types';
-import { notesOptions } from './use-get-notes';
+import type { NoteData, NoteShort } from '../model/types';
 import { toDescription } from '@/entities/md-editor/@x/note';
 import { updateNoteInCache } from '../lib/update-note-in-cache';
 
@@ -38,20 +37,21 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
         };
       });
 
-      const notesData = client.getQueryData(notesOptions().queryKey);
+      client.getQueriesData<InfiniteData<NoteShort[]>>({ queryKey: ['notes'], exact: false })
+        .map(([queryKey, queryData]) => {
+          client.setQueryData(queryKey, updateNoteInCache(queryData, noteId, (note) => {
+            const updatedNote = {
+              ...note,
+              ...data,
+            };
 
-      client.setQueryData(notesOptions().queryKey, updateNoteInCache(notesData, noteId, (note) => {
-        const updatedNote = {
-          ...note,
-          ...data,
-        };
+            if (data.text) {
+              updatedNote.description = toDescription(JSON.parse(data.text));
+            }
 
-        if (data.text) {
-          updatedNote.description = toDescription(JSON.parse(data.text));
-        }
-
-        return updatedNote;
-      }));
+            return updatedNote;
+          }));
+        });
     },
   });
 };

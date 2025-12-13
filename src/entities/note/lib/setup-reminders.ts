@@ -4,8 +4,9 @@ import { registerPush } from './register-reminder-service';
 import { updateNote } from '../api/update-note';
 import { getFiredReminders, clearAllFiredReminders } from './fired-reminders';
 import { onBroadcastMessage } from '@/shared/lib/broadcast';
-import type { QueryClient } from '@tanstack/vue-query';
+import type { InfiniteData, QueryClient } from '@tanstack/vue-query';
 import type { Note, NoteShort } from '../model/types';
+import { updateNoteInCache } from './update-note-in-cache';
 
 const clearFiredReminders = async (
   dataTransfer: DataTransfer,
@@ -26,12 +27,13 @@ const clearFiredReminders = async (
           return { ...oldData, reminder_date: null };
         });
 
-        queryClient.setQueryData<NoteShort[]>(['notes'], (oldData) => {
-          if (!oldData) return oldData;
-          return oldData.map(note =>
-            note.id === noteId ? { ...note, reminder_date: null } : note,
-          );
-        });
+        queryClient.getQueriesData<InfiniteData<NoteShort[]>>({ queryKey: ['notes'], exact: false })
+          .map(([queryKey, queryData]) => {
+            queryClient.setQueryData(queryKey, updateNoteInCache(queryData, noteId, note => ({
+              ...note,
+              reminder_date: null,
+            })));
+          });
       }
     }
     await clearAllFiredReminders(messagesDataTransfer);

@@ -3,7 +3,6 @@ import { useMutation, useQueryClient, type DefaultError, type InfiniteData } fro
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import { removeTagFromNote } from '../../api/tags/remove-tag-from-note';
 import { updateNoteInCache } from '../../lib/update-note-in-cache';
-import { notesOptions } from '../use-get-notes';
 import type { NoteShort } from '../../model/types';
 import { noteOptions } from '../use-get-note';
 
@@ -26,12 +25,13 @@ export const useRemoveTagFromNote = () => {
         client.setQueryData(noteKey, newNote);
       }
 
-      const notesData = client.getQueryData<InfiniteData<NoteShort[]>>(notesOptions().queryKey);
-
-      client.setQueryData(notesOptions().queryKey, updateNoteInCache(notesData, body.noteId, note => ({
-        ...note,
-        tags: note.tags.filter(tag => tag.id !== body.tagId),
-      })));
+      client.getQueriesData<InfiniteData<NoteShort[]>>({ queryKey: ['notes'], exact: false })
+        .map(([queryKey, queryData]) => {
+          client.setQueryData(queryKey, updateNoteInCache(queryData, body.noteId, note => ({
+            ...note,
+            tags: note.tags.filter(tag => tag.id !== body.tagId),
+          })));
+        });
     },
   });
 };
