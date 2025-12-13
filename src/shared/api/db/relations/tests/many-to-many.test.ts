@@ -141,4 +141,19 @@ describe('ManyToManyManager', () => {
       },
     ]));
   });
+
+  it('should find source ids by related ids', async () => {
+    await dbClient.create<Source>(sourceConfig.name, {
+      name: 'Test source name 2',
+      id: 'source_2',
+    });
+
+    await manager.addRelation('source_1', 'related_1');
+    await manager.addRelation('source_2', 'related_1');
+
+    const sourceIds = await manager.findSourceIdsByRelatedIds(['related_1']);
+
+    expect(sourceIds).toHaveLength(2);
+    expect(sourceIds.sort()).toEqual(['source_1', 'source_2']);
+  });
 });

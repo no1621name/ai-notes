@@ -151,6 +151,26 @@ export class ManyToManyManager {
     );
   }
 
+  public async findSourceIdsByRelatedIds(relatedIds: PrimaryKeyType[]): Promise<PrimaryKeyType[]> {
+    const [, relationStore] = await this.getStores();
+    const index = relationStore.index(this.relationStore.indexes![this.relatedForeignKey].name);
+
+    const result = new Set<PrimaryKeyType>();
+
+    await Promise.all(
+      relatedIds.map(async (relatedId) => {
+        const relations = await promisifyRequest<Record<string, PrimaryKeyType>[]>(
+          index.getAll(IDBKeyRange.only(relatedId)),
+        );
+        relations.forEach((relation) => {
+          result.add(relation[this.sourceForeignKey]);
+        });
+      }),
+    );
+
+    return Array.from(result);
+  }
+
   private buildSourceToRelatedMap(
     relationObjectStore: IDBObjectStore,
     sourceIds?: Set<PrimaryKeyType>,
