@@ -8,7 +8,7 @@ export const useInvalidateTags = () => {
   return {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: tagsOptions.queryKey });
-      queryClient.invalidateQueries({ queryKey: notesOptions.queryKey });
+      queryClient.invalidateQueries({ queryKey: notesOptions().queryKey });
     },
   };
 };
