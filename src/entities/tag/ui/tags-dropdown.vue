@@ -12,7 +12,7 @@ withDefaults(defineProps<{
   selectedTags?: string[];
 }>(), {
   smallButton: false,
-  selectedTags: () => [] as string[],
+  selectedTags: () => [],
 });
 
 const { data: tags, isPending } = useGetTags();
