@@ -6,10 +6,18 @@ import type { NoteBody, NoteShort } from '../contracts';
 import { noteToTagRelationConfig, storeConfig } from '../store-config';
 import { delay } from '@/shared/lib/delay';
 
+interface GetNotesWithTagsParams {
+  page?: number;
+  pageSize?: number;
+  search?: {
+    fields: string[];
+    text: string;
+  };
+}
+
 export const getNotesWithTags = async (
   dataTransfer: DBDataTransfer,
-  page = 1,
-  pageSize = 5,
+  { page = 1, pageSize = 5, search }: GetNotesWithTagsParams,
 ): Promise<WithTags<NoteShort>[]> => {
   const relationManager = new ManyToManyManager(noteToTagRelationConfig, dataTransfer);
 
@@ -18,6 +26,7 @@ export const getNotesWithTags = async (
     {
       page,
       pageSize,
+      search,
     },
   );
 
