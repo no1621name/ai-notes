@@ -1,6 +1,6 @@
 import { toText } from '@/shared/lib/tiptap/to-text';
 import type { DBDataTransfer } from '../client';
-import type { DataStore } from '@/shared/types/api';
+import type { DataStore, PrimaryKeyType } from '@/shared/types/api';
 
 interface PageOptions {
   page: number;
@@ -11,6 +11,7 @@ interface PageOptions {
     text: string;
     fields: string[];
   };
+  allowedIds?: PrimaryKeyType[];
 }
 
 export default class PaginationService {
@@ -50,6 +51,7 @@ export default class PaginationService {
       order = 'desc',
       orderBy = 'created_at',
       search,
+      allowedIds,
     }: PageOptions,
   ): Promise<T[]> {
     const [store] = await this.db.getStores([storeName]);
@@ -63,6 +65,8 @@ export default class PaginationService {
       }
       source = store.index(indexConfig.keyPath);
     }
+
+    const allowedIdsSet = allowedIds ? new Set(allowedIds) : null;
 
     return new Promise((resolve, reject) => {
       const result: T[] = [];
@@ -81,6 +85,12 @@ export default class PaginationService {
         }
 
         const value = cursor.value as T;
+        const id = (value as Record<string, unknown>)[this.config.primaryKey] as PrimaryKeyType;
+
+        if (allowedIdsSet && !allowedIdsSet.has(id)) {
+          cursor.continue();
+          return;
+        }
 
         const matchesSearch = !search
           || search.fields.some(field =>

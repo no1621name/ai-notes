@@ -302,6 +302,35 @@ describe('PaginationService', () => {
     });
   });
 
+  describe('filtering', () => {
+    const createFilterData = async () => {
+      const items = [
+        createTestItem({ id: '1', name: 'Item 1' }),
+        createTestItem({ id: '2', name: 'Item 2' }),
+        createTestItem({ id: '3', name: 'Item 3' }),
+      ];
+
+      for (const item of items) {
+        await client.create(STORE_NAME, item);
+      }
+
+      return items;
+    };
+
+    it('should filter by allowedIds', async () => {
+      await createFilterData();
+
+      const result = await service.getPage<TestItem>(STORE_NAME, {
+        page: 1,
+        pageSize: 10,
+        allowedIds: ['1', '3'],
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result.map(r => r.id).sort()).toEqual(['1', '3']);
+    });
+  });
+
   describe('error cases', () => {
     it('should add error when orderBy field has no index', async () => {
       const item = createTestItem();
