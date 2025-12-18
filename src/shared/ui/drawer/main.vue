@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onActivated, ref, provide } from 'vue';
+import { onMounted, onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useDrawerHide } from '@/shared/composables/use-drawer-hide';
 
-import { DRAWER_HIDE_INJECTION_KEY } from '@/shared/constants/drawer';
+const { setHide } = useDrawerHide();
 
 const router = useRouter();
 const show = ref(false);
@@ -16,17 +17,20 @@ async function afterLeave() {
   if (closing) return;
   closing = true;
   router.push('/');
+  document.body.style.overflow = 'auto';
 }
 
-provide(DRAWER_HIDE_INJECTION_KEY, hide);
+setHide(hide);
 
 onMounted(() => {
   show.value = true;
+  document.body.style.overflow = 'hidden';
 });
 
 onActivated(() => {
   show.value = true;
   closing = false;
+  document.body.style.overflow = 'hidden';
 });
 </script>
 
