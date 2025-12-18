@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed, watch, ref, provide, shallowRef, onUnmounted, onMounted } from 'vue';
+import { computed, watch, ref, shallowRef, onUnmounted, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { EditorEvents, Editor as TipTapEditor } from '@tiptap/vue-3';
 
 import ManageNoteTags from '@/features/note/manage-note-tags.vue';
-import { MainBubbleMenu, Editor, editorInjectionKey, resetEditorContent } from '@/entities/md-editor';
+import MainBubbleMenu from '@/widgets/md-editor/main-bubble-menu.vue';
+import { Editor, resetEditorContent, useEditor } from '@/entities/md-editor';
 import {
   useGetNote,
   NoteTitleField,
@@ -13,7 +14,7 @@ import {
   useUpdateText,
   useUpdateReminder } from '@/entities/note';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
-import FormattingActions from '@/entities/md-editor/ui/formatting/formatting-actions.vue';
+import { FormattingActions } from '@/features/md-editor/formatting';
 import { formatForDatetimeLocal } from '@/shared/lib/date';
 import { addToast } from '@/app/providers/toasts';
 
@@ -28,6 +29,8 @@ const noteId = computed<string>(() => {
 });
 
 const { data, isFetching: isLoading } = useGetNote(noteId);
+
+const { setEditor } = useEditor();
 
 const editor = shallowRef<{ editor: TipTapEditor } | null>(null);
 const noteTitle = ref<string | null>(null);
@@ -60,7 +63,7 @@ const setEditorContent = (text: string) => {
   }
 };
 
-provide(editorInjectionKey, editor);
+setEditor(editor);
 
 watch(noteId, () => {
   lastAppliedMutationId.value = null;

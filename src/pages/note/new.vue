@@ -4,7 +4,8 @@ import { useRouter } from 'vue-router';
 
 import { addToast } from '@/app/providers/toasts';
 import { NoteTitleField, useCreateNote } from '@/entities/note';
-import { FormattingActionsPreview, EditorPreview } from '@/entities/md-editor';
+import { EditorPreview } from '@/entities/md-editor';
+import { FormattingActionsPreview } from '@/features/md-editor/formatting';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 import { debounce } from '@/shared/lib/debounce';
 
