@@ -76,7 +76,7 @@ export default class LocalStorageClient implements DataTransfer {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  async getById<T>(store: string, id: PrimaryKeyType): Promise<T | undefined> {
+  async getById<T>(store: string, id: PrimaryKeyType): Promise<T> {
     const items = this.getStoreData<T>(store);
     const item = items.find(i => i.id === id);
 

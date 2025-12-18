@@ -6,7 +6,7 @@ export enum SchemaFieldType {
 export type PrimaryKeyType = string;
 
 export interface DataTransfer {
-  getById<T>(store: string, id: PrimaryKeyType): Promise<T | undefined>;
+  getById<T>(store: string, id: PrimaryKeyType): Promise<T>;
   getAll<T>(store: string): Promise<T[]>;
   create<T>(store: string, item: T): Promise<PrimaryKeyType>;
   update<T>(store: string, item: Partial<T>): Promise<T>;
