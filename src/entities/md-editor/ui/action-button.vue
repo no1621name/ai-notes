@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Button from '@/shared/ui/button.vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
-import type { EditorAction, EditorInstanceType } from '../../model/types';
+import type { EditorAction, EditorInstanceType } from '../model/types';
 
 defineProps<{
   editor?: EditorInstanceType;

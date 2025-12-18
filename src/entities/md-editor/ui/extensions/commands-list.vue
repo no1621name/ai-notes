@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, watch, type ComponentPublicInstance } from 'vue';
 import type { RendererComponentProps } from '../../lib/extensions/commands';
-import DropdownMenu from '../base/dropdown-menu/menu.vue';
-import DropdownMenuItem from '../base/dropdown-menu/item.vue';
+import DropdownMenu from '@/shared/ui/dropdown-menu/menu.vue';
+import DropdownMenuItem from '@/shared/ui/dropdown-menu/item.vue';
 
 const props = defineProps<RendererComponentProps>();
 

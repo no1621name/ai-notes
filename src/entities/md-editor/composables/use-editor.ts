@@ -1,8 +1,8 @@
-import type { Editor } from '@tiptap/vue-3';
 import { inject, provide, type InjectionKey, type ShallowRef } from 'vue';
+import type { EditorInstanceType } from '../model/types';
 
 type EditorRef = ShallowRef<{
-  readonly editor: Editor;
+  readonly editor: EditorInstanceType;
 } | null>;
 
 const editorInjectionKey = Symbol('editor') as InjectionKey<EditorRef>;
