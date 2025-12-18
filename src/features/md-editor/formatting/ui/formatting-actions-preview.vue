@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Button from '@/shared/ui/button.vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
-import { DEFAULT_ACTIONS } from '../../model/config';
+import { DEFAULT_ACTIONS } from '../model/config';
 
 </script>
 

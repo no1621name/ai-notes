@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { inject } from 'vue';
-import { DEFAULT_ACTIONS } from '../../model/config';
-import { editorInjectionKey } from '../../model/keys';
-import ActionButton from '../base/action-button.vue';
+import { useEditor, EditorActionButton } from '@/entities/md-editor';
+import { DEFAULT_ACTIONS } from '../model/config';
 
-const editor = inject(editorInjectionKey);
+const { getEditor } = useEditor();
+
+const editor = getEditor();
 </script>
 
 <template>
@@ -12,7 +12,7 @@ const editor = inject(editorInjectionKey);
     v-if="editor?.editor"
     class="flex gap-2 flex-wrap items-center"
   >
-    <ActionButton
+    <EditorActionButton
       v-for="action in DEFAULT_ACTIONS"
       :key="action.id"
       :action="action"
