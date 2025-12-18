@@ -1,9 +1,19 @@
 import type { Directive } from 'vue';
 
-export const clickOutsideDirective: Directive = {
+type ClickOutsideDirectiveHandler = (event: MouseEvent) => void;
+
+type ClickOutsideDirective = Directive<HTMLElement & { clickOutsideEvent: ClickOutsideDirectiveHandler }, ClickOutsideDirectiveHandler>;
+
+declare module 'vue' {
+  export interface ComponentCustomProperties {
+    vClickOutside: ClickOutsideDirectiveHandler;
+  }
+}
+
+export const clickOutsideDirective: ClickOutsideDirective = {
   beforeMount(el, binding) {
     el.clickOutsideEvent = function (event: MouseEvent) {
-      if (!(el === event.target || el.contains(event.target))) {
+      if (!(el === event.target || el.contains(event.target as Node))) {
         binding.value(event);
       }
     };
