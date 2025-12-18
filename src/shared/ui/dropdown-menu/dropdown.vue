@@ -28,10 +28,9 @@ const close = () => {
 </script>
 
 <template>
-  <div>
+  <div v-click-outside="close">
     <div
       ref="trigger"
-      v-click-outside="close"
       class="inline-block"
     >
       <slot
