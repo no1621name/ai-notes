@@ -1,4 +1,4 @@
-import { generateText, type JSONContent, type Extension } from '@tiptap/vue-3';
+import { generateText, type JSONContent, type Extension } from '@tiptap/core';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { plugins as commonPlugins } from './plugins';
 
