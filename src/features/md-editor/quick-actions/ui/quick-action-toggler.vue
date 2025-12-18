@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
-import type { EditorAction } from '../../model/types';
-import { useAddQuickAction } from '../../queries/use-add-quick-action';
-import { useRemoveQuickAction } from '../../queries/use-remove-quick-action';
+import type { EditorAction } from '@/entities/md-editor';
+import { useAddQuickAction } from '../queries/use-add-quick-action';
+import { useRemoveQuickAction } from '../queries/use-remove-quick-action';
 
 const props = defineProps<{
   actionId: EditorAction['id'];

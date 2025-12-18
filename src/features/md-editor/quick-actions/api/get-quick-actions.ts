@@ -4,16 +4,18 @@ import type { QuickActionsItem } from './contracts';
 import { QUICK_ACTION_STORE, USER_QUICK_ACTION_ID } from './config';
 
 export const getQuickActions = async (dataTransfer: DataTransfer): Promise<QuickActionsItem> => {
-  const quickActions = await dataTransfer.getById<QuickActionsItem>(QUICK_ACTION_STORE, USER_QUICK_ACTION_ID);
+  let quickActions: QuickActionsItem;
 
-  if (!quickActions) {
+  try {
+    quickActions = await dataTransfer.getById<QuickActionsItem>(QUICK_ACTION_STORE, USER_QUICK_ACTION_ID);
+  } catch {
     const defautItemBody = {
       id: USER_QUICK_ACTION_ID,
       quick_actions: DEFAULT_QUICK_ACTIONS,
     };
 
     await dataTransfer.create<QuickActionsItem>(QUICK_ACTION_STORE, defautItemBody);
-    return defautItemBody;
+    quickActions = defautItemBody;
   }
 
   return quickActions;

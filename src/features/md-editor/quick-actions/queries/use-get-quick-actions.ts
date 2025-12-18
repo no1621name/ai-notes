@@ -1,10 +1,10 @@
-import { useLsDataTransfer } from '@/app/providers/data-transfer';
 import { useQuery } from '@tanstack/vue-query';
-import { getQuickActions } from '../api/get-quick-actions';
-import { DEFAULT_FORMATTING_ACTIONS } from '../model/config';
-import type { EditorAction } from '../model/types';
 
-export function useGetQuickActions() {
+import { useLsDataTransfer } from '@/app/providers/data-transfer';
+import type { EditorAction } from '@/entities/md-editor';
+import { getQuickActions } from '../api/get-quick-actions';
+
+export function useGetQuickActions(formattingActions: EditorAction[]) {
   const lsDataTransfer = useLsDataTransfer();
 
   return useQuery({
@@ -12,7 +12,7 @@ export function useGetQuickActions() {
     queryFn: () => getQuickActions(lsDataTransfer),
     select: data =>
       data.quick_actions.map(quickActionId =>
-        DEFAULT_FORMATTING_ACTIONS.find(action => action.id === quickActionId),
+        formattingActions.find(action => action.id === quickActionId),
       ).filter(Boolean) as EditorAction[],
   });
 }
