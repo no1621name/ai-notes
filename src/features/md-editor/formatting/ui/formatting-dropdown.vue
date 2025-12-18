@@ -2,7 +2,6 @@
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { DEFAULT_FORMATTING_ACTIONS } from '../model/config';
-import Button from '@/shared/ui/button.vue';
 import Dropdown from '@/shared/ui/dropdown-menu/dropdown.vue';
 import DropdownMenuItem from '@/shared/ui/dropdown-menu/item.vue';
 
@@ -15,10 +14,8 @@ const editorRef = getEditor();
 <template>
   <div v-if="editorRef?.editor">
     <Dropdown>
-      <template #trigger>
-        <Button class="btn-sm btn-ghost">
-          Styles
-        </Button>
+      <template #trigger="options">
+        <slot name="trigger" v-bind="options"/>
       </template>
       <template #default>
         <DropdownMenuItem
