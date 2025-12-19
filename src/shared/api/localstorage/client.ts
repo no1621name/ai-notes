@@ -81,7 +81,6 @@ export default class LocalStorageClient implements DataTransfer {
     const item = items.find(i => i.id === id);
 
     if (typeof item?.data === 'undefined') {
-      this.notifier.itemNotFound(id, store);
       throw new Error(`Item with id "${id}" not found in store "${store}"`);
     }
 

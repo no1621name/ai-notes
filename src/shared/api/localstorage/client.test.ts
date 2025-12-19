@@ -91,7 +91,6 @@ describe('LocalStorageClient', () => {
   describe('read - getById', () => {
     it('should notify and throw error when item not found in getById', async () => {
       await expect(client.getById<TestItem>(storeName, '1')).rejects.toThrow();
-      expect(mockErrorNotifier.itemNotFound).toHaveBeenCalled();
     });
 
     it('should return item data when found in getById', async () => {
