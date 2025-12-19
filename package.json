@@ -38,6 +38,7 @@
     "@tiptap/suggestion": "^3.11.0",
     "@tiptap/vue-3": "^3.11.0",
     "@vee-validate/zod": "^4.15.1",
+    "groq-sdk": "^0.37.0",
     "lowlight": "^3.3.0",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.1.17",
