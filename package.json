@@ -24,6 +24,8 @@
     "@floating-ui/vue": "^1.1.9",
     "@kalimahapps/vue-icons": "^1.9.5",
     "@oddbird/css-anchor-positioning": "^0.7.0",
+    "@regle/core": "^1.14.6",
+    "@regle/schemas": "^1.14.6",
     "@supabase/supabase-js": "^2.86.0",
     "@tanstack/vue-query": "^5.91.2",
     "@tanstack/vue-query-devtools": "^5.91.0",
@@ -37,16 +39,14 @@
     "@tiptap/starter-kit": "^3.11.0",
     "@tiptap/suggestion": "^3.11.0",
     "@tiptap/vue-3": "^3.11.0",
-    "@vee-validate/zod": "^4.15.1",
+    "arktype": "^2.1.29",
     "groq-sdk": "^0.37.0",
     "lowlight": "^3.3.0",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.1.17",
     "uuid": "^12.0.0",
-    "vee-validate": "^4.15.1",
     "vue": "^3.5.24",
-    "vue-router": "^4.6.3",
-    "zod": "^4.1.12"
+    "vue-router": "^4.6.3"
   },
   "devDependencies": {
     "@pinia/testing": "^1.0.3",

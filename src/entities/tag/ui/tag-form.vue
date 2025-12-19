@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, toRefs, onMounted, computed } from 'vue';
-import { useForm } from 'vee-validate';
-import { toTypedSchema } from '@vee-validate/zod';
-import * as z from 'zod/mini';
-import type { ZodSchema } from 'zod';
+import { ref, toRefs, onMounted, computed, nextTick } from 'vue';
+import { useRegleSchema } from '@regle/schemas';
+import { type } from 'arktype';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import Button from '@/shared/ui/button.vue';
+import ErrorMessage from '@/shared/ui/error-message.vue';
 import { getRandomItem } from '@/shared/lib/get-random-item';
 import { predefinedColors } from '../model/constants';
 import type { Tag } from '../model/types';
@@ -34,29 +33,27 @@ const selectColor = (selectedColor: string) => {
   color.value = selectedColor;
 };
 
-const { handleSubmit, defineField, errors, resetForm, setValues } = useForm({
-  validationSchema: toTypedSchema(
-    z.object({
-      name: z.nullish(z.string().check(z.minLength(1, 'Name is required'), z.maxLength(25, 'Name is too long'))),
-    }) as unknown as ZodSchema,
-  ),
-});
+const { r$ } = useRegleSchema('', type('0 < string < 26'));
+
+const resetName = async () => {
+  r$.$value = '';
+  await nextTick();
+  r$.$reset();
+};
 
 onMounted(() => {
   if (tag.value) {
-    setValues({ name: tag.value.name });
+    r$.$value = tag.value.name;
     color.value = tag.value.color;
-  } else {
-    resetForm();
-    color.value = getRandomItem(predefinedColors);
   }
 });
 
-const [name, nameAttrs] = defineField('name');
+const onSubmit = async () => {
+  const { data, valid } = await r$.$validate();
+  if (!valid) return;
 
-const onSubmit = handleSubmit((values) => {
   const payload: SubmitPayloadBody = {
-    name: values.name!,
+    name: data,
     color: color.value,
   };
 
@@ -67,10 +64,10 @@ const onSubmit = handleSubmit((values) => {
   emit('submit', payload);
 
   if (!isEditing.value) {
-    resetForm();
+    await resetName();
     selectColor(getRandomItem(predefinedColors));
   }
-});
+};
 </script>
 
 <template>
@@ -81,14 +78,13 @@ const onSubmit = handleSubmit((values) => {
   >
     <div class="flex flex-col gap-y-1">
       <input
-        v-model="name"
-        v-bind="nameAttrs"
+        v-model="r$.$value"
         type="text"
         placeholder="New tag name"
         class="input input-bordered input-xs join-item"
-        :class="{ 'input-error': !!errors.name }"
+        :class="{ 'input-error': r$.$error }"
       >
-      <span v-if="errors.name" class="text-error text-xs">{{ errors.name }}</span>
+      <ErrorMessage :state="r$"/>
     </div>
 
     <Button
@@ -126,7 +122,7 @@ const onSubmit = handleSubmit((values) => {
     </ul>
 
     <Button
-      :disabled="!name"
+      :disabled="!r$.$correct"
       type="submit"
       class="btn-primary btn-xs join-item"
     >

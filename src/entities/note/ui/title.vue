@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import * as z from 'zod/mini';
-import type { ZodString } from 'zod';
-import { useField } from 'vee-validate';
-import { toTypedSchema } from '@vee-validate/zod';
+import { type } from 'arktype';
+import { useRegleSchema } from '@regle/schemas';
 
 import SkeletonRow from '@/shared/ui/skeleton-row.vue';
+import ErrorMessage from '@/shared/ui/error-message.vue';
+import { useBufferModel } from '@/shared/composables/use-buffer-model';
+
+const MAX_LEN = 100;
 
 withDefaults(defineProps<{
   skeleton?: boolean;
@@ -13,23 +15,17 @@ withDefaults(defineProps<{
   skeleton: false,
 });
 
-defineModel<string | null>();
+const model = defineModel<string | null>();
+const localValue = useBufferModel(model);
+
+const { r$ } = useRegleSchema(localValue, type('string > 0 | null'));
+const currentLength = computed(() => r$.$value?.length ?? 0);
 
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
 defineExpose({
   focus: () => textareaRef.value?.focus(),
 });
-
-const MAX_LEN = 100;
-
-const { value, errorMessage } = useField(
-  'title',
-  toTypedSchema(z.string().check(z.trim(), z.minLength(1, 'Required')) as unknown as ZodString),
-  { syncVModel: true },
-);
-
-const currentLength = computed(() => value.value?.length ?? 0);
 
 const preventTyping = (event: KeyboardEvent) => {
   if (event.ctrlKey || event.metaKey || event.altKey) return;
@@ -83,7 +79,7 @@ const preventPasting = (event: ClipboardEvent) => {
 
   const newValue = currentText.slice(0, start) + insertText + currentText.slice(end);
 
-  value.value = newValue;
+  r$.$value = newValue;
 
   const newCursorPos = start + insertText.length;
   requestAnimationFrame(() => {
@@ -107,13 +103,13 @@ const preventPasting = (event: ClipboardEvent) => {
         ref="textareaRef"
         @keydown="preventTyping"
         @paste="preventPasting"
-        v-model.trim="value"
+        v-model="r$.$value"
         placeholder="Note title..."
         type="text"
         class="textarea textarea-xl textarea-ghost field-sizing-content max-h-32 min-h-0 overflow-y-auto w-full max-w-full resize-none focus:outline-0 break-all"
       />
       <div class="flex items-center flex-wrap mt-1">
-        <p v-if="!!errorMessage" class="mr-auto text-error text-sm">{{errorMessage}}</p>
+        <ErrorMessage :state="r$" class="mr-auto"/>
         <span class="select-none text-base-content/50 text-sm ml-auto">{{currentLength}}/{{MAX_LEN}}</span>
       </div>
     </template>

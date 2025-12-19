@@ -1,6 +1,7 @@
 import { createApp, type App as IApp } from 'vue';
 import { createPinia } from 'pinia';
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
+import { RegleVuePlugin } from '@regle/core';
 
 import App from './app.vue';
 import router from './router';
@@ -32,6 +33,7 @@ const configureApp = async (app: IApp) => {
   const queryClient = setupQuery(app);
   app.use(createPinia());
   app.use(router);
+  app.use(RegleVuePlugin);
 
   app.directive('click-outside', clickOutsideDirective);
 
