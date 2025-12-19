@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { computed, ref, watchEffect } from 'vue';
-import { TagBadge, TagsSelectingList, type Tag } from '@/entities/tag';
+import { TagBadge, TagsSelectingList, TagsList, type Tag } from '@/entities/tag';
 import { CreateNoteLink, NoteBaseCard, NoteCard, NoteSearchInput, useGetNotes } from '@/entities/note';
 import { useIntersectionObserver } from '@/shared/composables/use-intersection-observer';
 
 const loader = ref<HTMLElement | null>(null);
 
+const editTags = ref(false);
 const search = ref('');
 const selectedTags = ref<Tag['id'][]>([]);
 const { data, fetchNextPage, isLoading, hasNextPage, isFetchingNextPage } = useGetNotes({
@@ -39,7 +40,18 @@ const updateSelectedTags = (value: Tag['id']) => {
   <div class="flex flex-col gap-3 m-3">
     <NoteSearchInput @update:search="updateSearch"/>
 
-    <TagsSelectingList :selectedTags="selectedTags" @tag-select="updateSelectedTags"/>
+    <div class="flex flex-col gap-3">
+      <button class="btn w-max btn-sm" @click="editTags = !editTags">
+        {{ editTags ? 'Close editing' : 'Edit tags' }}
+      </button>
+
+      <TagsList v-if="editTags"/>
+      <TagsSelectingList
+        v-else
+        :selectedTags="selectedTags"
+        @tag-select="updateSelectedTags"
+      />
+    </div>
 
     <div class="relative grid grid-cols-3 auto-rows-fr gap-3">
       <CreateNoteLink/>
