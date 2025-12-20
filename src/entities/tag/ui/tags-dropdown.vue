@@ -3,7 +3,6 @@ import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { useGetTags } from '../queries/use-get-tags';
 import { useCreateTag } from '../queries/use-create-tag';
-import Button from '@/shared/ui/button.vue';
 import TagBadge from './tag-badge.vue';
 import TagCreationForm from './tag-form.vue';
 
@@ -29,17 +28,17 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
 
 <template>
   <div>
-    <Button
+    <button
       style="anchor-name:--anchor-tags-dropdown"
       popovertarget="tags-dropdown"
-      class="btn-sm"
+      class="btn btn-sm"
       :class="{'btn-circle': smallButton}"
     >
       <VueIcon name="lu:plus" v-if="smallButton"/>
       <template v-else>
         Add tag
       </template>
-    </Button>
+    </button>
 
     <div
       popover

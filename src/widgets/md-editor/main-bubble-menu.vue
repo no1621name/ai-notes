@@ -2,7 +2,6 @@
 import { EditorBubbleMenu } from '@/entities/md-editor';
 import { FormattingDropdown, DEFAULT_FORMATTING_ACTIONS } from '@/features/md-editor/formatting';
 import { QuickActions, QuickActionToggler, useGetQuickActions } from '@/features/md-editor/quick-actions';
-import Button from '@/shared/ui/button.vue';
 
 const { data: quickActions } = useGetQuickActions(DEFAULT_FORMATTING_ACTIONS);
 </script>
@@ -12,9 +11,9 @@ const { data: quickActions } = useGetQuickActions(DEFAULT_FORMATTING_ACTIONS);
     <FormattingDropdown>
       <template #trigger="{toggle}">
         <div class="flex items-center gap-2">
-          <Button @click="toggle" class="btn-sm btn-ghost">
+          <button @click="toggle" class="btn-sm btn-ghost">
             Styles
-          </Button>
+          </button>
           <QuickActions v-if="!!quickActions?.length" :quick-actions="quickActions"/>
         </div>
       </template>

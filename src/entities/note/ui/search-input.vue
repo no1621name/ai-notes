@@ -3,7 +3,6 @@ import { nextTick, ref, useTemplateRef } from 'vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { debounce } from '@/shared/lib/debounce';
-import Button from '@/shared/ui/button.vue';
 
 const search = ref('');
 const serachInput = useTemplateRef<HTMLInputElement>('search-input');
@@ -36,9 +35,9 @@ const toggleVisible = async () => {
 
 <template>
   <div class="flex gap-2">
-    <Button @click="toggleVisible">
+    <button class="btn" @click="toggleVisible">
       <VueIcon :name="isVisible ? 'lu:x' : 'lu:search'"/>
-    </Button>
+    </button>
     <Transition name="fade-up">
       <div
         class="join"

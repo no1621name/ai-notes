@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Button from '@/shared/ui/button.vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { EditorAction, EditorInstanceType } from '../model/types';
 
@@ -10,13 +9,13 @@ defineProps<{
 </script>
 
 <template>
-  <Button
+  <button
     v-if="editor"
-    class="btn-sm"
+    class="btn btn-sm"
     @click="action.action(editor)"
     :class="{ 'btn-primary': action.isActive(editor) }"
     :disabled="action.isDisabled?.(editor) ?? false"
   >
     <VueIcon :name="action.icon" />
-  </Button>
+  </button>
 </template>

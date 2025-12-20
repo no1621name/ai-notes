@@ -4,7 +4,6 @@ import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
-import Button from '@/shared/ui/button.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
 import { getRandomItem } from '@/shared/lib/get-random-item';
 import { predefinedColors } from '../model/constants';
@@ -87,15 +86,15 @@ const onSubmit = async () => {
       <ErrorMessage :state="r$"/>
     </div>
 
-    <Button
+    <button
       type="button"
       popovertarget="tag-colorpicker-popover"
       style="anchor-name:--tag-colorpicker-anchor;"
-      class="btn-xs btn-square join-item border-none text-neutral-content"
+      class="btn btn-xs btn-square join-item border-none text-neutral-content"
       :style="{ backgroundColor: color }"
     >
       <VueIcon name="cg:color-picker" />
-    </Button>
+    </button>
 
     <ul
       popover
@@ -104,11 +103,11 @@ const onSubmit = async () => {
       class="dropdown menu p-2 shadow bg-base-100 rounded-box w-max"
     >
       <div class="grid grid-cols-6 gap-1 mb-2">
-        <Button
+        <button
           v-for="c in predefinedColors"
           :key="c"
           type="button"
-          class="btn-xs btn-square border-none rounded-sm"
+          class="btn btn-xs btn-square border-none rounded-sm"
           :style="{ backgroundColor: c }"
           @click="selectColor(c)"
         />
@@ -121,12 +120,12 @@ const onSubmit = async () => {
       >
     </ul>
 
-    <Button
+    <button
       :disabled="!r$.$correct"
       type="submit"
-      class="btn-primary btn-xs join-item"
+      class="btn btn-primary btn-xs join-item"
     >
       {{ isEditing ? 'Save' : 'Add' }}
-    </Button>
+    </button>
   </form>
 </template>
