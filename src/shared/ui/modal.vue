@@ -35,7 +35,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <slot name="trigger" :toggle="toggle" />
+  <slot name="trigger" :toggle="toggle">
+    <button class="btn">open</button>
+  </slot>
 
   <Teleport to="body">
     <div
