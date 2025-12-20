@@ -39,7 +39,11 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
       <TagBadge v-else :tag="tag">
         <template #action>
           <div class="flex gap-2">
-            <VueIcon name="lu:pencil-line" @click.stop="() => editingId = tag.id" />
+            <VueIcon
+              class="cursor-pointer "
+              name="lu:pencil-line"
+              @click.stop="() => editingId = tag.id"
+            />
             <VueIcon
               class="cursor-pointer"
               name="lu:trash"
