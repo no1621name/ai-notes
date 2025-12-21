@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import { Toaster } from '@/app/providers/toasts';
-import Header from '@/shared/ui/header.vue';
+import Header from '@/widgets/layout/header.vue';
 </script>
 
 <template>
