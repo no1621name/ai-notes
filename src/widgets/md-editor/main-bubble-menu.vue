@@ -11,7 +11,7 @@ const { data: quickActions } = useGetQuickActions(DEFAULT_FORMATTING_ACTIONS);
     <FormattingDropdown>
       <template #trigger="{toggle}">
         <div class="flex items-center gap-2">
-          <button @click="toggle" class="btn-sm btn-ghost">
+          <button @click="toggle" class="btn btn-sm btn-ghost">
             Styles
           </button>
           <QuickActions v-if="!!quickActions?.length" :quick-actions="quickActions"/>
