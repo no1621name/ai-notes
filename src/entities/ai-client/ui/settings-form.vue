@@ -1,0 +1,177 @@
+<script lang="ts" setup>
+import { ref, watch, reactive } from 'vue';
+import { useRegleSchema } from '@regle/schemas';
+import { type } from 'arktype';
+import VueIcon from '@kalimahapps/vue-icons/VueIcon';
+import type { RegleExternalErrorTree } from '@regle/core';
+
+import ErrorMessage from '@/shared/ui/error-message.vue';
+import { useAiClient } from '../composables/use-ai-client';
+import { useUpdateSettings } from '../queries/use-update-settings';
+import type { AiSettings } from '../model/types';
+
+const { settings, client, isLoadingSettings, models, settingsHasValidApiKey } = useAiClient();
+const { mutate: updateSettings, isPending: isUpdating, error: updateError } = useUpdateSettings();
+
+const schema = type({
+  apiKey: type(client.apiKeyRegex).configure({
+    message: 'Invalid API key',
+  }).optional(),
+  model: type('string').optional(),
+  temperature: '0<=number<=2',
+});
+
+const state = reactive<AiSettings>({
+  apiKey: '',
+  model: '',
+  temperature: 1,
+});
+
+const prevSettings = ref<AiSettings | null>(null);
+const externalErrors = ref<RegleExternalErrorTree<typeof state>>({});
+
+const { r$ } = useRegleSchema(state, schema, {
+  externalErrors,
+  clearExternalErrorsOnChange: false,
+});
+
+watch(r$.$value, () => {
+  r$.$clearExternalErrors();
+  if (r$.apiKey?.$edited && r$.apiKey.$correct) {
+    console.log('asdfasdf DSDF');
+    updateSettings({ apiKey: r$.apiKey.$value });
+  }
+});
+
+watch(settings, () => {
+  if (settings.value) {
+    state.apiKey = settings.value.apiKey;
+    state.model = settings.value.model;
+    state.temperature = settings.value.temperature;
+
+    prevSettings.value = settings.value;
+    r$.$reset();
+  }
+});
+
+const onSubmit = async () => {
+  const { valid, data } = await r$.$validate();
+
+  if (valid) {
+    updateSettings(data, {
+      onSuccess: () => {
+        prevSettings.value = data;
+        r$.$reset();
+      },
+    });
+  }
+};
+
+const undoChanges = () => {
+  if (prevSettings.value && prevSettings.value.model) {
+    r$.$reset({
+      toState: prevSettings.value,
+    });
+  }
+};
+
+watch(updateError, (newError) => {
+  console.log(newError?.message, !!newError);
+  if (newError) {
+    externalErrors.value = {
+      temperature: [newError.message],
+    };
+  }
+});
+</script>
+
+<template>
+  <div>
+    <form @submit.prevent="onSubmit">
+      <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box p-4 relative" :disabled="isUpdating">
+        <legend class="fieldset-legend">Ai features settings</legend>
+        <button
+          :disabled="!r$.$anyEdited || !prevSettings"
+          type="button"
+          class="btn btn-sm btn-square text-sm absolute top-2 right-2"
+          title="Reset settings"
+          @click="undoChanges"
+        >
+          <VueIcon name="lu:undo-2"/>
+        </button>
+        <label class="label">Api key</label>
+        <input
+          type="text"
+          v-model="r$.$value.apiKey"
+          :disabled="isLoadingSettings"
+          class="input"
+        >
+        <ErrorMessage :state="r$.apiKey"/>
+
+        <label class="label">Model</label>
+        <select
+          class="select"
+          :disabled="!models?.length"
+          v-model="r$.$value.model"
+        >
+          <option
+            disabled
+            selected
+            :value="undefined"
+          >
+            choose an ai model
+          </option>
+          <option
+            v-for="model of models"
+            :key="model.name"
+          >
+            {{ model.name }}
+          </option>
+        </select>
+        <ErrorMessage
+          :state="r$.model"
+          :message="!settingsHasValidApiKey ? 'Enter api key to get models' : undefined"
+        />
+
+        <label class="label">Temperature</label>
+
+        <div class="flex items-start gap-2">
+          <div class="w-full max-w-xs">
+            <input
+              type="range"
+              min="0"
+              max="2"
+              step="0.05"
+              class="range range-sm"
+              v-model.number="r$.$value.temperature"
+            >
+            <div class="flex justify-between px-2.5 mt-1 text-[8px] font-mono">
+              <span>|</span>
+              <span>|</span>
+              <span>|</span>
+            </div>
+            <div class="flex justify-between px-2.5 text-xs font-mono">
+              <span>0</span>
+              <span>1</span>
+              <span>2</span>
+            </div>
+          </div>
+
+          <span class="text-sm">{{ r$.$value.temperature }}</span>
+        </div>
+        <ErrorMessage :state="r$.temperature"/>
+
+        <button
+          type="submit"
+          class="btn mt-2"
+          :disabled="!r$.$anyEdited || r$.$invalid"
+          :class="{
+            'btn-primary': r$.$anyEdited,
+          }"
+        >
+          Save
+        </button>
+      </fieldset>
+    </form>
+  </div>
+</template>
