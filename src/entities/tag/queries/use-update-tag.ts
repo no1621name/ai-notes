@@ -13,7 +13,6 @@ export const useUpdateTag = () => {
   const dataTransfer = useDbDataTransfer();
 
   return useMutation<TagBody, DefaultError, UpdateBody>({
-    mutationKey: ['tags', 'update'],
     mutationFn: body => updateTag(dataTransfer, body.id, body),
     onSettled,
   });

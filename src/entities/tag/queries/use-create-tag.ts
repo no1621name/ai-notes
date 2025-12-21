@@ -8,7 +8,6 @@ export const useCreateTag = () => {
   const dataTransfer = useDbDataTransfer();
 
   return useMutation<string, DefaultError, Omit<TagBody, 'id' | 'created_at'>>({
-    mutationKey: ['tags', 'create'],
     mutationFn: body => createTag(dataTransfer, body),
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['tags'] }),
   });
