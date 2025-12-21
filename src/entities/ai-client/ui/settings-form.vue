@@ -5,10 +5,11 @@ import { type } from 'arktype';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { RegleExternalErrorTree } from '@regle/core';
 
-import ErrorMessage from '@/shared/ui/error-message.vue';
+import type { AiSettings } from '../model/types';
 import { useAiClient } from '../composables/use-ai-client';
 import { useUpdateSettings } from '../queries/use-update-settings';
-import type { AiSettings } from '../model/types';
+import ErrorMessage from '@/shared/ui/error-message.vue';
+import PasswordInput from '@/shared/ui/password-input.vue';
 
 const { settings, client, isLoadingSettings, models, settingsHasValidApiKey } = useAiClient();
 const { mutate: updateSettings, isPending: isUpdating, error: updateError } = useUpdateSettings();
@@ -100,12 +101,10 @@ watch(updateError, (newError) => {
           <VueIcon name="lu:undo-2"/>
         </button>
         <label class="label">Api key</label>
-        <input
-          type="text"
+        <PasswordInput
           v-model="r$.$value.apiKey"
           :disabled="isLoadingSettings"
-          class="input"
-        >
+        />
         <ErrorMessage :state="r$.apiKey"/>
 
         <label class="label">Model</label>
