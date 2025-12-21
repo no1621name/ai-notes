@@ -8,6 +8,9 @@ import ThemeController from '@/shared/ui/theme-controller.vue';
       <h1 class="text-2xl font-mono">AINotes</h1>
     </RouterLink>
 
-    <ThemeController/>
+    <div class="flex items-center gap-2">
+      <ThemeController/>
+      <slot name="actions"/>
+    </div>
   </header>
 </template>

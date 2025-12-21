@@ -36,7 +36,7 @@ onUnmounted(() => {
 
 <template>
   <slot name="trigger" :toggle="toggle">
-    <button class="btn">open</button>
+    <button class="btn" @click="toggle">open</button>
   </slot>
 
   <Teleport to="body">
@@ -48,7 +48,7 @@ onUnmounted(() => {
       <div class="modal-box relative">
         <button
           v-if="showCloseButton"
-          class="btn btn-square btn-ghost text-lg absolute top-2 right-2"
+          class="btn btn-square btn-xs btn-ghost text-lg absolute top-2 right-2"
           @click="close"
         >
           <VueIcon name="lu:x"/>
