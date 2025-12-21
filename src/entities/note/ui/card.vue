@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { NoteShort } from '../model/types';
-import { formatDate, DateFormat } from '@/shared/lib/date';
+import { useDeleteNote } from '../queries/use-delete-note';
 import BaseCard from './base-card.vue';
+import DeleteNote from './delete-note.vue';
+import { formatDate, DateFormat } from '@/shared/lib/date';
 
 interface DateItem {
   label: string;
   value: string | null;
 }
+
+const { mutate: deleteNote, isUpdating } = useDeleteNote();
 
 const props = defineProps<{
   note: NoteShort;
@@ -29,8 +33,16 @@ const dateItems = computed<DateItem[]>(() => {
 </script>
 
 <template>
-  <BaseCard :to="routeParams">
-    <h2 class="card-title break-all">{{ note.title }}</h2>
+  <BaseCard :to="routeParams" :disabled="isUpdating">
+    <DeleteNote
+      class="absolute bottom-2 right-2"
+      :loading="isUpdating"
+      @click="deleteNote(note.id)"
+    />
+
+    <h2 class="card-title break-all">
+      {{ note.title }}
+    </h2>
 
     <div class="text-ellipsis">
       <p class="text-base-content/70 line-clamp-5">{{ note.description }}</p>
