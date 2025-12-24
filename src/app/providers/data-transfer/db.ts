@@ -2,13 +2,14 @@ import { inject } from 'vue';
 
 import { messagesStoreConfig, notesStoreConfig, noteTagsRelationStoreConfig } from '@/entities/note';
 import { tagsStoreConfig } from '@/entities/tag';
+import { savedPromptsStoreConfig } from '@/entities/ai-client';
 import DBClient, { type DBDataTransfer, type DBErrorNotifier } from '@/shared/api/db/client';
 
 export const createDBDataTransfer = (errorNotifier: DBErrorNotifier): DBDataTransfer => {
   return new DBClient({
     name: 'ai-notes',
-    version: 1,
-    stores: [notesStoreConfig, noteTagsRelationStoreConfig, tagsStoreConfig],
+    version: 2,
+    stores: [notesStoreConfig, noteTagsRelationStoreConfig, tagsStoreConfig, savedPromptsStoreConfig],
   }, errorNotifier);
 };
 

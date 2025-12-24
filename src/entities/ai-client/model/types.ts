@@ -1,3 +1,12 @@
+export interface SavedPrompt {
+  id: string;
+  name: string;
+  prompt: string;
+  created_at: Date;
+}
+
+export type SavedPromptPayload = Pick<SavedPrompt, 'name' | 'prompt'>;
+
 export interface AiSettings {
   apiKey?: string;
   model?: string;
