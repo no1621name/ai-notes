@@ -7,12 +7,15 @@ import { useDeleteTag } from '../queries/use-delete-tag';
 import { useUpdateTag } from '../queries/use-update-tag';
 import TagBadge from './tag-badge.vue';
 import TagCreationForm, { type SubmitPayloadBody } from './tag-form.vue';
+import ConfirmForm from '@/shared/ui/confirm-form.vue';
 
 const { data: tags } = useGetTags();
 const { mutate: deleteTag } = useDeleteTag();
 const { mutateAsync: updateTag, isPending: isUpdating } = useUpdateTag();
 
 const editingId = ref('');
+const deletingId = ref<string | null>(null);
+
 const closeEditing = () => editingId.value = '';
 
 const handleSubmit = async (payload: SubmitPayloadBody) => {
@@ -22,7 +25,7 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
 </script>
 
 <template>
-  <div class="flex flex-wrap gap-x-2 gap-y-1">
+  <div class="flex flex-wrap gap-x-2 gap-y-1 items-center">
     <template
       v-for="tag in tags"
       :key="tag.id"
@@ -36,6 +39,20 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
         @close="closeEditing"
       />
 
+      <ConfirmForm
+        v-else-if="deletingId === tag.id"
+        mode="error"
+        @submit="deleteTag(tag.id)"
+        @close="deletingId = null"
+      >
+        <template #message>
+          Delete this tag?
+        </template>
+        <template #submit-text>
+          Delete
+        </template>
+      </ConfirmForm>
+
       <TagBadge v-else :tag="tag">
         <template #action>
           <div class="flex gap-2">
@@ -47,7 +64,7 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
             <VueIcon
               class="cursor-pointer"
               name="lu:trash"
-              @click="() => deleteTag(tag.id)"
+              @click="deletingId = tag.id"
             />
           </div>
         </template>

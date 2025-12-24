@@ -3,7 +3,7 @@ import type { TagBody } from './contracts';
 import { storeConfig } from './store-config';
 import PaginationService from '@/shared/api/db/services/pagination';
 
-export const getTags = async (dataTransfer: DBDataTransfer) => {
+export const getTags = (dataTransfer: DBDataTransfer) => {
   const paginator = new PaginationService(storeConfig, dataTransfer);
   return paginator.getPage<TagBody>(storeConfig.name, {
     page: 1,
