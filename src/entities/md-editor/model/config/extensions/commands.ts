@@ -46,4 +46,9 @@ export const DEFAULT_COMMAND_ITEMS: CommandItem[] = [
       editor.chain().focus().deleteRange(range).toggleBlockquote().run();
     },
   }),
+  createCommandItem(ACTIONS_DEFINITIONS.code, {
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
+    },
+  }),
 ];

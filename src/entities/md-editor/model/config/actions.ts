@@ -61,4 +61,9 @@ export const ACTIONS_DEFINITIONS: Record<string, BaseAction> = {
     label: 'Redo',
     icon: 'lu:redo',
   },
+  code: {
+    id: 'code',
+    label: 'Code',
+    icon: 'lu:code-xml',
+  },
 };
