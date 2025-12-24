@@ -63,31 +63,33 @@ export default class DBClient implements DBDataTransfer {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        this.createDB(db);
+        this.createDB(db, (event.target as IDBRequest).transaction);
       };
     });
   }
 
-  private createDB(db: IDBDatabase) {
+  private createDB(db: IDBDatabase, transaction: IDBTransaction | null) {
     for (const storeInfo of this.config.stores) {
       let store: IDBObjectStore | null = null;
 
-      if (db.objectStoreNames.contains(storeInfo.name)) {
-        store = db.transaction(storeInfo.name, 'readwrite').objectStore(storeInfo.name);
+      if (db.objectStoreNames.contains(storeInfo.name) && transaction) {
+        store = transaction?.objectStore(storeInfo.name);
+      } else {
+        store = db.createObjectStore(storeInfo.name, { keyPath: storeInfo.primaryKey });
       }
-
-      store = db.createObjectStore(storeInfo.name, { keyPath: storeInfo.primaryKey });
 
       const fields = Object.keys(storeInfo.schema);
 
       if (fields.length) {
         fields
           .filter(field => field !== storeInfo.primaryKey)
-          .forEach(field =>
-            store.createIndex(field, field, {
-              unique: storeInfo.schema[field] === SchemaFieldType.UNIQUE,
-            }),
-          );
+          .forEach((field) => {
+            if (!store.indexNames.contains(field)) {
+              store.createIndex(field, field, {
+                unique: storeInfo.schema[field] === SchemaFieldType.UNIQUE,
+              });
+            }
+          });
       }
 
       const indexes = Object.values(storeInfo.indexes ?? []);
