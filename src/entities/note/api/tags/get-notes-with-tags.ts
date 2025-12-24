@@ -6,7 +6,6 @@ import PaginationService from '@/shared/api/db/services/pagination';
 import type { NoteData } from '../../model/types';
 import { noteToTagRelationConfig, storeConfig } from '../store-config';
 import type { NoteBody, NoteShort } from '../contracts';
-import { delay } from '@/shared/lib/delay';
 
 interface GetNotesWithTagsParams {
   page?: number;
@@ -42,7 +41,7 @@ export const getNotesWithTags = async (
   );
 
   const notesWithTags = await relationManager.populateRelations<NoteBody, TagBody, 'tags'>(notes);
-  await delay(1000);
+
   return notesWithTags
     .map<WithTags<NoteShort>>(({ text, ...note }) => ({
       ...note,
