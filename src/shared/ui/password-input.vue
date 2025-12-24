@@ -11,20 +11,20 @@ const isHidden = ref(true);
 </script>
 
 <template>
-  <div class="join">
+  <span class="input pr-0">
     <input
-      class="join-item input"
+      class="grow"
       :type="isHidden ? 'password': 'text'"
       v-model="model"
       :disabled="disabled"
     >
     <button
-      class="btn btn-square join-item"
+      class="btn btn-square btn-ghost"
       type="button"
       :disabled="disabled"
       @click="isHidden = !isHidden"
     >
       <VueIcon :name="isHidden ? 'lu:eye-off' : 'lu:eye'"/>
     </button>
-  </div>
+  </span>
 </template>

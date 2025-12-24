@@ -2,6 +2,7 @@
 withDefaults(defineProps<{
   count?: number;
   height?: number;
+  width?: number;
 }>(), {
   count: 3,
   height: 8,
@@ -16,7 +17,7 @@ withDefaults(defineProps<{
       class="skeleton"
       :style="{
         height: `${height}px`,
-        width: `${(i%3+1) * 48}px`
+        width: `${width ? width : (i%3+1) * 48}px`
       }"
     />
   </div>

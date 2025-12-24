@@ -45,15 +45,17 @@ onUnmounted(() => {
       :class="{ 'modal-open': isOpen }"
       @click.self="close"
     >
-      <div class="modal-box relative">
+      <div class="modal-box relative p-0 flex flex-col">
         <button
           v-if="showCloseButton"
-          class="btn btn-square btn-xs btn-ghost text-lg absolute top-2 right-2"
+          class="btn btn-square btn-xs text-lg sticky top-1 right-1 z-1 ml-auto"
           @click="close"
         >
           <VueIcon name="lu:x"/>
         </button>
-        <slot name="content" :close="close" />
+        <div class="p-4 pt-0">
+          <slot name="content" :close="close" />
+        </div>
       </div>
     </div>
   </Teleport>
