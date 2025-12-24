@@ -15,12 +15,15 @@
   --font-mono: "JetBrains Mono", monospace;
 }
 
-@utility input {
-  @apply focus:outline-0 focus:border-base-content/20;
-}
 
-@utility break-word {
-  word-break: break-word;
+@layer utilities {
+  input, textarea, select, .input {
+    @apply focus:outline-0 focus-within:outline-0;
+  }
+
+  break-word {
+    word-break: break-word;
+  }
 }
 
 body {
