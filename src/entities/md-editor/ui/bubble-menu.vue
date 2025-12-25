@@ -1,35 +1,43 @@
 <script lang="ts" setup>
 import { BubbleMenu } from '@tiptap/vue-3/menus';
 
-import type { EditorBubbleMenuOptions, EditorBubbleMenuNames } from '../model/types';
+import type { EditorBubbleFloatingOptions, EditorBubbleMenuNames } from '../model/types';
 import { BUBBLE_MENU_PLUGIN_KEYS } from '../model/config';
 import { useEditor } from '../composables/use-editor';
+import { toRef, watch } from 'vue';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     pluginKeyName?: EditorBubbleMenuNames;
-    menuOptions?: Partial<EditorBubbleMenuOptions>;
+    floatingOptions?: Partial<EditorBubbleFloatingOptions>;
+    shouldShow?: boolean;
   }>(),
-  { pluginKeyName: 'main' },
+  {
+    shouldShow: true,
+    pluginKeyName: 'main',
+  },
 );
+const shouldShow = toRef(props, 'shouldShow');
 
-const { getEditor } = useEditor();
-const editorRef = getEditor();
+const { editor } = useEditor();
+watch(shouldShow, () => {
+  editor.value?.commands.setMeta('bubbleMenu', 'updatePosition');
+});
 </script>
 
 <template>
   <BubbleMenu
-    v-if="editorRef?.editor"
-    :editor="editorRef?.editor"
+    v-if="editor"
+    :editor="editor"
     :options="{
       flip: true,
       offset: 8,
       placement: 'bottom-start',
-      ...menuOptions,
+      ...floatingOptions,
     }"
     :plugin-key="BUBBLE_MENU_PLUGIN_KEYS[pluginKeyName]"
   >
-    <div class="bg-base-300 py-1 px-2 rounded-box shadow-sm z-[1] relative">
+    <div v-if="shouldShow" class="bg-base-300 py-1 px-2 rounded-box shadow-sm z-[1] relative">
       <slot/>
     </div>
   </BubbleMenu>
