@@ -1,5 +1,6 @@
+import type { ShallowRef } from 'vue';
 import type { Editor as EditorInstanceType } from '@tiptap/vue-3';
-import type { BubbleMenuOptions as EditorBubbleMenuOptions } from '@tiptap/extension-bubble-menu';
+import { BubbleMenu } from '@tiptap/vue-3/menus';
 
 export interface BaseAction {
   id: string;
@@ -14,5 +15,10 @@ export interface EditorAction extends BaseAction {
 }
 
 export type EditorBubbleMenuNames = 'main' | 'ai';
+export type EditorBubbleFloatingOptions = InstanceType<typeof BubbleMenu>['$props']['options'];
 
-export type { EditorInstanceType, EditorBubbleMenuOptions };
+export type EditorRef = ShallowRef<{
+  readonly editor: EditorInstanceType;
+} | null>;
+
+export type { EditorInstanceType };

@@ -2,21 +2,19 @@
 import { useEditor, EditorActionButton } from '@/entities/md-editor';
 import { DEFAULT_ACTIONS } from '../model/config';
 
-const { getEditor } = useEditor();
-
-const editor = getEditor();
+const { editor } = useEditor();
 </script>
 
 <template>
   <div
-    v-if="editor?.editor"
+    v-if="editor"
     class="flex gap-2 flex-wrap items-center"
   >
     <EditorActionButton
       v-for="action in DEFAULT_ACTIONS"
       :key="action.id"
       :action="action"
-      :editor="editor.editor"
+      :editor="editor"
     />
   </div>
 </template>

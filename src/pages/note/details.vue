@@ -2,11 +2,13 @@
 import { computed, watch, ref, shallowRef, onUnmounted, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
-import type { EditorEvents, Editor as TipTapEditor } from '@tiptap/vue-3';
+import type { EditorEvents } from '@tiptap/vue-3';
 
-import ManageNoteTags from '@/features/note/manage-note-tags.vue';
+import { addToast } from '@/app/providers/toasts';
 import MainBubbleMenu from '@/widgets/md-editor/main-bubble-menu.vue';
-import { Editor, resetEditorContent, useEditor } from '@/entities/md-editor';
+import ManageNoteTags from '@/features/note/manage-note-tags.vue';
+import { FormattingActions } from '@/features/md-editor/formatting';
+import { type EditorRef, Editor, resetEditorContent, useEditor } from '@/entities/md-editor';
 import {
   useGetNote,
   NoteTitleField,
@@ -14,9 +16,7 @@ import {
   useUpdateText,
   useUpdateReminder } from '@/entities/note';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
-import { FormattingActions } from '@/features/md-editor/formatting';
 import { formatForDatetimeLocal } from '@/shared/lib/date';
-import { addToast } from '@/app/providers/toasts';
 
 const route = useRoute();
 
@@ -32,7 +32,7 @@ const { data, isFetching: isLoading } = useGetNote(noteId);
 
 const { setEditor } = useEditor();
 
-const editor = shallowRef<{ editor: TipTapEditor } | null>(null);
+const editor: EditorRef = shallowRef(null);
 const noteTitle = ref<string | null>(null);
 const lastAppliedMutationId = ref<number | null>(null);
 const selectedReminderDate = ref('');

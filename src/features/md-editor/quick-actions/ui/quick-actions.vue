@@ -5,16 +5,15 @@ defineProps<{
   quickActions: EditorAction[];
 }>();
 
-const { getEditor } = useEditor();
-const editorRef = getEditor();
+const { editor } = useEditor();
 </script>
 
 <template>
-  <div class="flex gap-x-1" v-if="!!editorRef">
+  <div class="flex gap-x-1" v-if="editor">
     <EditorActionButton
       v-for="action in quickActions"
       :key="action?.id"
-      :editor="editorRef.editor"
+      :editor="editor"
       :action="action"
     />
   </div>

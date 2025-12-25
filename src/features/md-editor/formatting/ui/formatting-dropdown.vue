@@ -7,12 +7,11 @@ import DropdownMenuItem from '@/shared/ui/dropdown-menu/item.vue';
 
 import { useEditor } from '@/entities/md-editor';
 
-const { getEditor } = useEditor();
-const editorRef = getEditor();
+const { editor } = useEditor();
 </script>
 
 <template>
-  <div v-if="editorRef?.editor">
+  <div v-if="editor">
     <Dropdown>
       <template #trigger="options">
         <slot name="trigger" v-bind="options"/>
@@ -21,9 +20,9 @@ const editorRef = getEditor();
         <DropdownMenuItem
           v-for="action in DEFAULT_FORMATTING_ACTIONS"
           :key="action.id"
-          @click="action.action(editorRef?.editor!)"
+          @click="action.action(editor)"
         >
-          <a :class="{'no-underline flex items-center justify-between': true, 'menu-active cursor-pointer': action.isActive(editorRef?.editor!)}">
+          <a :class="{'no-underline flex items-center justify-between': true, 'menu-active cursor-pointer': action.isActive(editor)}">
             <span class="flex items-center gap-x-1">
               <VueIcon :name="action.icon" />
               {{ action.label }}

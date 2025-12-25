@@ -8,4 +8,4 @@ export { resetEditorContent } from './lib/reset-editor-content';
 export { useEditor } from './composables/use-editor';
 
 export { ACTIONS_DEFINITIONS } from './model/config/actions';
-export type { BaseAction, EditorAction } from './model/types';
+export type { BaseAction, EditorAction, EditorRef } from './model/types';

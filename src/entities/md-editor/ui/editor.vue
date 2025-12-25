@@ -24,7 +24,7 @@ const bubbleMenus = Object.values(BUBBLE_MENU_PLUGIN_KEYS).map(pluginKey =>
 );
 
 const commandsMountElement = useTemplateRef('commands-mount');
-const editor = shallowRef<Editor | undefined>(undefined);
+const editor = shallowRef<Editor | null>(null);
 
 onBeforeMount(async () => {
   const { createLowlight, common } = await import('lowlight');
