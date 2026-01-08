@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-withDefaults(defineProps<{
+import { computed } from 'vue';
+
+const props = withDefaults(defineProps<{
   mode?: 'error' | 'success' | 'primary';
 }>(), {
   mode: 'primary',
@@ -9,6 +11,14 @@ defineEmits<{
   (e: 'submit'): void;
   (e: 'close'): void;
 }>();
+
+const modes = {
+  error: 'btn-error',
+  success: 'btn-success',
+  primary: 'btn-primary',
+};
+
+const mode = computed(() => modes[props.mode]);
 </script>
 
 <template>
@@ -18,7 +28,7 @@ defineEmits<{
   >
     <p class="text-xs"><slot name="message"/></p>
     <div class="flex gap-1">
-      <button type="submit" :class="`btn btn-xs btn-${mode}`">
+      <button type="submit" :class="`btn btn-xs ${mode}`">
         <slot name="submit-text"/>
       </button>
       <button
