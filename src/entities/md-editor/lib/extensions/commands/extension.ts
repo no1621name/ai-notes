@@ -3,6 +3,14 @@ import Suggestion from '@tiptap/suggestion';
 
 import type { CommandsOptions } from './types';
 
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    commands: {
+      customCommand: () => ReturnType;
+    };
+  }
+}
+
 export const commandsExtension = Extension.create<{ suggestion: CommandsOptions }>({
   name: 'commands',
   addOptions() {
