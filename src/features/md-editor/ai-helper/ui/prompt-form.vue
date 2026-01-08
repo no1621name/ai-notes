@@ -5,7 +5,7 @@ import { ref, watch } from 'vue';
 import { type SavedPrompt, SavedPromptsAccordion, useAiClient } from '@/entities/ai-client';
 import ModelSelect from '@/entities/ai-client/ui/model/model-select.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
-import { useHotkey } from '@/shared/composables/use-hotkey';
+import { SYMBOLS, useHotkey } from '@/shared/composables/use-hotkey';
 
 defineProps<{
   isLoading: boolean;
@@ -51,8 +51,8 @@ watch(settings, () => {
   r$.$value.model = settings.value?.model || '';
 });
 
-useHotkey('Meta+Enter', () => handleSubmit());
-useHotkey('Escape', () => emit('close'));
+useHotkey('mod+enter', handleSubmit);
+useHotkey('esc', () => emit('close'));
 </script>
 
 <template>
@@ -86,7 +86,7 @@ useHotkey('Escape', () => emit('close'));
         <template v-if="!isLoading">
           Send
           <span class="font-mono">
-            <kbd class="kbd kbd-xs">ctrl</kbd>+<kbd class="kbd kbd-xs">⏎</kbd>
+            <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">⏎</kbd>
           </span>
         </template>
         <span v-else class="loading loading-spinner loading-xs"/>

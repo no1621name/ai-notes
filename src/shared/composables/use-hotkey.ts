@@ -1,17 +1,28 @@
 import { onMounted, onUnmounted } from 'vue';
 
+type NavigatorWithUserAgentData = Navigator & {
+  userAgentData?: {
+    platform: string;
+  };
+};
+
+const isMac = typeof window !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test((navigator as NavigatorWithUserAgentData).userAgentData?.platform || navigator.platform);
+
 const ALIASES: Record<string, string> = {
-  ctrl: 'ctrl',
-  control: 'ctrl',
   meta: 'meta',
-  cmd: 'meta',
-  command: 'meta',
-  super: 'meta',
   shift: 'shift',
-  alt: 'alt',
-  option: 'alt',
+  alt: isMac ? 'alt' : 'option',
   esc: 'escape',
-  return: 'enter',
+  mod: isMac ? 'meta' : 'ctrl',
+};
+
+export const SYMBOLS: Record<string, string> = {
+  ctrl: isMac ? '⌃' : 'Ctrl',
+  meta: '⌘',
+  shift: '⇧',
+  alt: isMac ? '⌥' : 'Alt',
+  mod: isMac ? '⌘' : 'Ctrl',
+  backspace: '⌫',
 };
 
 export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void) => {

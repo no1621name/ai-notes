@@ -1,10 +1,11 @@
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { EditorBubbleMenu, useEditor, useGetEditorSelection } from '@/entities/md-editor';
 import { AiServiceError, useAiClient } from '@/entities/ai-client';
 import { useAiHelper } from '../composables/use-ai-helper';
+import { SYMBOLS, useHotkey } from '@/shared/composables/use-hotkey';
 import PromptForm from './prompt-form.vue';
 import Response from './response.vue';
-import { ref } from 'vue';
 
 const { editor } = useEditor();
 const { getEditorSelection } = useGetEditorSelection();
@@ -24,7 +25,7 @@ const isLoading = ref<boolean>(false);
 const errorMessage = ref<string>('');
 
 const handlePrompt = async (payload: { model: string; prompt: string }) => {
-  if (!settings.value) return;
+  if (!settings.value || isLoading.value) return;
 
   isLoading.value = true;
   response.value = '';
@@ -53,7 +54,15 @@ const handlePrompt = async (payload: { model: string; prompt: string }) => {
 };
 
 const handleApply = () => {
+  if (isLoading.value) return;
+
   applyAiResponse(response.value);
+  response.value = '';
+};
+
+const handleDeny = () => {
+  if (isLoading.value) return;
+
   response.value = '';
 };
 
@@ -64,6 +73,9 @@ const handleClose = () => {
     return;
   }
 };
+
+useHotkey('mod+enter', handleApply);
+useHotkey('mod+backspace', handleDeny);
 </script>
 
 <template>
@@ -88,8 +100,24 @@ const handleClose = () => {
             {{ response }}
           </Response>
           <footer class="flex justify-end mt-2">
-            <button class="btn btn-xs" @click="handleApply">Apply</button>
-            <button class="btn btn-xs" @click="response = ''">Deny</button>
+            <button
+              class="btn btn-xs"
+              @click="handleApply"
+            >
+              Apply
+              <span class="font-mono">
+                <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">⏎</kbd>
+              </span>
+            </button>
+            <button
+              class="btn btn-xs"
+              @click="handleDeny"
+            >
+              Deny
+              <span class="font-mono">
+                <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.backspace }}</kbd>
+              </span>
+            </button>
           </footer>
         </template>
         <template v-else>
@@ -105,8 +133,3 @@ const handleClose = () => {
     </div>
   </EditorBubbleMenu>
 </template>
-        <!-- кнопка отправки промпта -->
-        <!-- смена на окно вывода ответа (чанками) -->
-        <!-- кнопка принять/отклонить -->
-        <!-- СМ extensions/commands наверное придется делать отдельный плагин, тк нужно сохранять положение курсора для вставки контента -->
-        <!-- пересмотреть раскидку компонентов по слоям -->
