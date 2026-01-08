@@ -8,11 +8,17 @@ import SavedPromptsList from './saved-prompts/list.vue';
 <template>
   <Modal>
     <template #trigger="{ toggle }">
-      <VueIcon
-        name="lu:settings"
-        class="text-2xl cursor-pointer"
-        @click="toggle"
-      />
+      <button
+        title="Open settings"
+        aria-label="Open settings"
+      >
+        <VueIcon
+
+          name="lu:settings"
+          class="text-2xl cursor-pointer"
+          @click="toggle"
+        />
+      </button>
     </template>
     <template #content>
       <SettingsForm/>

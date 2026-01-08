@@ -8,7 +8,7 @@ import Header from '@/widgets/layout/header.vue';
   <div class="w-full flex flex-col items-center min-h-screen">
     <Header />
     <div class="grow min-h-full w-full">
-      <RouterView />
+      <RouterView class="m-3"/>
     </div>
 
     <RouterView name="drawer" v-slot="{ Component }">

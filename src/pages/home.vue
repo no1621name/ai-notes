@@ -3,7 +3,5 @@ import NotesList from '@/features/note/notes-list.vue';
 </script>
 
 <template>
-  <div>
-    <NotesList/>
-  </div>
+  <NotesList/>
 </template>

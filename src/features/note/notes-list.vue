@@ -37,7 +37,7 @@ const updateSelectedTags = (value: Tag['id']) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 m-3">
+  <div class="flex flex-col gap-3">
     <NoteSearchInput @update:search="updateSearch"/>
 
     <div class="flex flex-col gap-3">

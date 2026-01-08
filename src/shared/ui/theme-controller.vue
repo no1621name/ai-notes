@@ -33,7 +33,11 @@ watch(currentTheme, (newTheme) => {
 </script>
 
 <template>
-  <label class="swap swap-rotate">
+  <label
+    class="swap swap-rotate"
+    title="Toggle theme"
+    aria-label="Toggle theme"
+  >
     <input
       v-model="currentTheme"
       type="checkbox"
@@ -42,7 +46,7 @@ watch(currentTheme, (newTheme) => {
       false-value="light"
     >
 
-    <VueIcon name="lu:sun" class="swap-off text-2xl"/>
-    <VueIcon name="lu:moon" class="swap-on text-2xl"/>
+    <VueIcon name="lu:sun" class="swap-off"/>
+    <VueIcon name="lu:moon" class="swap-on"/>
   </label>
 </template>
