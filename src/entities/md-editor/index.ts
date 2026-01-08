@@ -6,6 +6,7 @@ export { default as EditorActionButton } from './ui/action-button.vue';
 export { resetEditorContent } from './lib/reset-editor-content';
 
 export { useEditor } from './composables/use-editor';
+export { useGetEditorSelection } from './composables/use-get-editor-selection';
 
 export { ACTIONS_DEFINITIONS } from './model/config/actions';
 export type { BaseAction, EditorAction, EditorRef } from './model/types';

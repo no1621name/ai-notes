@@ -11,10 +11,12 @@ const props = withDefaults(
     pluginKeyName?: EditorBubbleMenuNames;
     floatingOptions?: Partial<EditorBubbleFloatingOptions>;
     shouldShow?: boolean;
+    containerClass?: string;
   }>(),
   {
     shouldShow: true,
     pluginKeyName: 'main',
+    containerClass: '',
   },
 );
 const shouldShow = toRef(props, 'shouldShow');
@@ -37,7 +39,11 @@ watch(shouldShow, () => {
     }"
     :plugin-key="BUBBLE_MENU_PLUGIN_KEYS[pluginKeyName]"
   >
-    <div v-if="shouldShow" class="bg-base-300 py-1 px-2 rounded-box shadow-sm z-[1] relative">
+    <div
+      v-if="shouldShow"
+      class="bg-base-300 py-1 px-2 rounded-box shadow-sm z-1 relative"
+      :class="containerClass"
+    >
       <slot/>
     </div>
   </BubbleMenu>

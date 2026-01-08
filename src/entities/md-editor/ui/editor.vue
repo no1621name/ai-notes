@@ -11,6 +11,7 @@ import EditorSkeleton from './editor-skeleton.vue';
 import CodeBlock from './blocks/code-block.vue';
 import { commandsExtension, getCommandsOptions } from '../lib/extensions/commands';
 import CommandsList from './extensions/commands-list.vue';
+import { aiHelperExtension } from '../lib/extensions/ai-helper';
 
 const props = withDefaults(defineProps<{ placeholder?: string; skeleton?: boolean; contentSkeleton?: boolean }>(), {
   placeholder: 'Type / to open commands',
@@ -49,6 +50,7 @@ onBeforeMount(async () => {
           return VueNodeViewRenderer(CodeBlock);
         },
       }).configure({ lowlight }),
+      aiHelperExtension,
     ],
   });
 });
