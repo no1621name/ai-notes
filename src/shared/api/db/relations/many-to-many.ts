@@ -1,6 +1,7 @@
-import type { DataStore, PrimaryKeyType } from '@/shared/types/api';
 import type { DBDataTransfer } from '../client';
+import type { DataStore, PrimaryKeyType } from '@/shared/types/api';
 import { promisifyCursor, promisifyRequest } from '@/shared/lib/idb/promisify';
+import type { Tuple } from '@/shared/types/utils';
 
 export interface ManyToManyRelationConfig {
   relationStore: DataStore;
@@ -23,6 +24,9 @@ export class ManyToManyManager {
   private relatedStore: DataStore;
   private relatedField: string;
 
+  private readonly sourceIndexName: string;
+  private readonly relatedIndexName: string;
+
   constructor(
     config: ManyToManyRelationConfig,
     private dataTransfer: DBDataTransfer,
@@ -33,6 +37,20 @@ export class ManyToManyManager {
     this.sourceStore = config.sourceStore;
     this.relatedStore = config.relatedStore;
     this.relatedField = config.relatedField;
+
+    if (!config.relationStore.indexes?.[config.sourceForeignKey]) {
+      throw new Error(
+        `Index for sourceForeignKey "${config.sourceForeignKey}" not found in relationStore "${config.relationStore.name}"`,
+      );
+    }
+    this.sourceIndexName = config.relationStore.indexes[config.sourceForeignKey]!.name;
+
+    if (!config.relationStore.indexes?.[config.relatedForeignKey]) {
+      throw new Error(
+        `Index for relatedForeignKey "${config.relatedForeignKey}" not found in relationStore "${config.relationStore.name}"`,
+      );
+    }
+    this.relatedIndexName = config.relationStore.indexes[config.relatedForeignKey]!.name;
   }
 
   private getStores() {
@@ -40,7 +58,7 @@ export class ManyToManyManager {
       this.sourceStore.name,
       this.relationStore.name,
       this.relatedStore.name,
-    ]);
+    ]) as Promise<Tuple<IDBObjectStore, 3>>;
   }
 
   public async get<
@@ -56,9 +74,9 @@ export class ManyToManyManager {
       throw new Error(`Entity with id ${sourceId} not found in ${this.sourceStore.name}`);
     }
 
-    const relationIndex = relationStore.index(this.relationStore.indexes![this.sourceForeignKey].keyPath);
+    const relationIndex = relationStore.index(this.sourceIndexName);
     const relations = await promisifyRequest<Record<string, PrimaryKeyType>[]>(relationIndex.getAll(IDBKeyRange.only(sourceId)));
-    const relatedIds = relations.map(r => r[this.relatedForeignKey]);
+    const relatedIds = relations.map(r => r[this.relatedForeignKey]).filter((id): id is PrimaryKeyType => id !== undefined);
 
     const relatedEntities = await Promise.all(
       relatedIds.map(id => promisifyRequest<R>(relatedStore.get(id))),
@@ -99,7 +117,6 @@ export class ManyToManyManager {
     return this.attachRelations<S, R, K>(entities, sourceToRelateMap, relatedMap);
   }
 
-  // TESTED
   public addRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType): Promise<PrimaryKeyType> {
     const relationRecord: Record<string, PrimaryKeyType> = {
       [this.sourceForeignKey]: sourceId,
@@ -112,7 +129,7 @@ export class ManyToManyManager {
   public async deleteRelation(sourceId: PrimaryKeyType, relatedId: PrimaryKeyType) {
     const [, relationStore] = await this.getStores();
 
-    const index = relationStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+    const index = relationStore.index(this.sourceIndexName);
 
     return promisifyCursor(
       index.openCursor(IDBKeyRange.only(sourceId)),
@@ -128,7 +145,7 @@ export class ManyToManyManager {
   public async deleteRelationsBySourceId(sourceId: PrimaryKeyType): Promise<void> {
     const [, relationStore] = await this.getStores();
 
-    const index = relationStore.index(this.relationStore.indexes![this.sourceForeignKey].name);
+    const index = relationStore.index(this.sourceIndexName);
 
     return promisifyCursor(
       index.openCursor(IDBKeyRange.only(sourceId)),
@@ -141,7 +158,7 @@ export class ManyToManyManager {
   public async deleteRelationsByRelatedId(relatedId: PrimaryKeyType): Promise<void> {
     const [, relationStore] = await this.getStores();
 
-    const index = relationStore.index(this.relationStore.indexes![this.relatedForeignKey].name);
+    const index = relationStore.index(this.relatedIndexName);
 
     return promisifyCursor(
       index.openCursor(IDBKeyRange.only(relatedId)),
@@ -153,7 +170,7 @@ export class ManyToManyManager {
 
   public async findSourceIdsByRelatedIds(relatedIds: PrimaryKeyType[]): Promise<PrimaryKeyType[]> {
     const [, relationStore] = await this.getStores();
-    const index = relationStore.index(this.relationStore.indexes![this.relatedForeignKey].name);
+    const index = relationStore.index(this.relatedIndexName);
 
     const result = new Set<PrimaryKeyType>();
 
@@ -163,7 +180,10 @@ export class ManyToManyManager {
           index.getAll(IDBKeyRange.only(relatedId)),
         );
         relations.forEach((relation) => {
-          result.add(relation[this.sourceForeignKey]);
+          const sourceId = relation[this.sourceForeignKey];
+          if (sourceId !== undefined) {
+            result.add(sourceId);
+          }
         });
       }),
     );
@@ -177,7 +197,7 @@ export class ManyToManyManager {
   ) {
     return new Promise<Map<PrimaryKeyType, PrimaryKeyType[]>>((resolve, reject) => {
       const relationIndex = relationObjectStore.index(
-        this.relationStore.indexes![this.sourceForeignKey].name,
+        this.sourceIndexName,
       );
 
       const request = relationIndex.openCursor();
@@ -194,13 +214,14 @@ export class ManyToManyManager {
         const relation = cursor.value;
         const sourceId = relation[this.sourceForeignKey];
 
-        if (!sourceIds || sourceIds.has(sourceId)) {
+        if (sourceId && (!sourceIds || sourceIds.has(sourceId))) {
           const relatedId = relation[this.relatedForeignKey];
-          if (!map.has(sourceId)) {
-            map.set(sourceId, []);
+          if (relatedId) {
+            if (!map.has(sourceId)) {
+              map.set(sourceId, []);
+            }
+            map.get(sourceId)!.push(relatedId);
           }
-
-          map.get(sourceId)!.push(relatedId);
         }
 
         cursor.continue();

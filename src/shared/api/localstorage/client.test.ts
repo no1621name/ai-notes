@@ -19,24 +19,27 @@ type MockedErrorNotifier = {
 describe('LocalStorageClient', () => {
   let client: LocalStorageClient;
   let mockErrorNotifier: MockedErrorNotifier;
+  let mockLocalStorage: {
+    getItem: ReturnType<typeof vi.fn<(key: string) => string | null>>;
+    setItem: ReturnType<typeof vi.fn<(key: string, value: string) => void>>;
+    clear: ReturnType<typeof vi.fn<() => void>>;
+    getStore: () => Record<string, string>;
+  };
   const storeName = 'testStore';
 
-  const mockLocalStorage = (() => {
+  beforeEach(() => {
     let store: Record<string, string> = {};
-    return {
+    mockLocalStorage = {
       getItem: vi.fn(key => store[key] ?? null),
       setItem: vi.fn((key, value) => {
         store[key] = String(value);
       }),
-      clear: () => {
+      clear: vi.fn(() => {
         store = {};
-      },
+      }),
       getStore: () => store,
     };
-  })();
 
-  beforeEach(() => {
-    mockLocalStorage.clear();
     mockErrorNotifier = {
       add: vi.fn(),
       duplicateItem: vi.fn(),
@@ -44,25 +47,28 @@ describe('LocalStorageClient', () => {
       missingIdForUpdate: vi.fn(),
     };
 
-    global.localStorage = {
+    const localStorageMock = {
       getItem: mockLocalStorage.getItem,
       setItem: mockLocalStorage.setItem,
       removeItem: vi.fn(),
       clear: vi.fn(),
       key: vi.fn(),
       length: 0,
-    } as unknown as Storage;
+    };
+
+    vi.stubGlobal('localStorage', localStorageMock);
 
     client = new LocalStorageClient(mockErrorNotifier as unknown as ErrorNotifier, 'test', 'id');
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
   });
 
   describe('common errors', () => {
     it('should throw error and notify about localhost read error when getting item(s)', async () => {
-      vi.spyOn(global.localStorage, 'getItem').mockImplementation(() => {
+      vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
         throw new Error('Corrupted data');
       });
 
@@ -75,7 +81,7 @@ describe('LocalStorageClient', () => {
     });
 
     it('should throw error and notify about localhost write error when writing item', async () => {
-      vi.spyOn(global.localStorage, 'setItem').mockImplementation(() => {
+      vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
         throw new Error('Corrupted data');
       });
 

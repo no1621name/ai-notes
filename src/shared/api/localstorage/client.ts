@@ -129,7 +129,7 @@ export default class LocalStorageClient implements DataTransfer {
       throw new Error(`Item with id ${id} not found in store ${store}`);
     }
 
-    const newItem = { ...items[index].data, ...item } as T;
+    const newItem = { ...items[index]!.data, ...item } as T;
     items[index] = { id, data: newItem };
     this.setStoreData(store, items);
 

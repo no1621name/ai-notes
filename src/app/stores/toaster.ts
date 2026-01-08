@@ -13,7 +13,7 @@ export interface Toast {
 export const useToasterStore = defineStore('toaster', () => {
   const toasts = ref<Toast[]>([]);
   let id: Toast['id'] = 0;
-  const timers = new Map<Toast['id'], NodeJS.Timeout>();
+  const timers = new Map<Toast['id'], ReturnType<typeof setTimeout>>();
 
   const remove = (id: Toast['id']) => {
     const index = toasts.value.findIndex(toast => toast.id === id);

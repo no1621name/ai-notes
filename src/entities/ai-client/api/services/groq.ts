@@ -70,6 +70,11 @@ export class GroqService implements AiService {
 
       for await (const chunk of stream) {
         const chunkData = chunk.choices[0];
+
+        if (!chunkData) {
+          continue;
+        }
+
         const completion: Completion = {
           error: false,
           errorMessage: null,

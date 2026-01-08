@@ -4,8 +4,8 @@ import { useEditor } from '@/entities/md-editor';
 export const useAiHelper = () => {
   const { editor } = useEditor();
 
-  const isActive = computed(() => editor.value?.storage.aiHelper.isActive ?? false);
-  const shouldClose = computed(() => editor.value?.storage.aiHelper.shouldClose ?? false);
+  const isActive = computed(() => !!editor.value?.storage.aiHelper.isActive);
+  const shouldClose = computed(() => !!editor.value?.storage.aiHelper.shouldClose);
 
   const toggleAiHelper = () => {
     editor.value?.commands.toggleAiHelper();

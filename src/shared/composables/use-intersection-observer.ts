@@ -9,8 +9,8 @@ export const useIntersectionObserver = (
 
   onMounted(() => {
     observer = new IntersectionObserver(([entry]) => {
-      isIntersecting.value = entry.isIntersecting;
-      if (entry && entry.isIntersecting) {
+      isIntersecting.value = !!entry?.isIntersecting;
+      if (entry?.isIntersecting) {
         callback?.();
       }
     });

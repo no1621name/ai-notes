@@ -12,7 +12,6 @@ const { getEditorSelection } = useGetEditorSelection();
 const {
   isActive,
   shouldClose,
-  toggleAiHelper,
   closeAiHelper,
   applyAiResponse,
   setShouldCloseAiHelper,
@@ -91,7 +90,7 @@ useHotkey('mod+backspace', handleDeny);
     v-click-outside="handleClose"
   >
     <div class="flex flex-col">
-      <span v-if="!settingsHasValidApiKey" class="badge badge-soft badge-warning">
+      <span v-if="!settingsHasValidApiKey" class="badge badge-soft badge-warning py-1 h-max text-center">
         Visit settings and pass valid API key
       </span>
       <div v-else>
@@ -125,7 +124,7 @@ useHotkey('mod+backspace', handleDeny);
             :is-loading="isLoading"
             :external-error-message="errorMessage"
             @submit="handlePrompt"
-            @close="toggleAiHelper"
+            @close="closeAiHelper"
             @clear-error="errorMessage = ''"
           />
         </template>

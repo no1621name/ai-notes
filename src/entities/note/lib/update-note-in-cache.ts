@@ -19,10 +19,10 @@ export const updateNoteInCache = (
   }
 
   const newNotes = [...notes];
-  newNotes[noteIndex] = updateFn(newNotes[noteIndex]);
+  newNotes[noteIndex] = updateFn(newNotes[noteIndex]!);
 
   return {
     pageParams: notesData.pageParams,
-    pages: toChunks(newNotes, notesData.pages[0].length),
+    pages: toChunks(newNotes, (notesData.pages[0] ?? []).length),
   };
 };

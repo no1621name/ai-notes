@@ -35,6 +35,7 @@ export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void) 
   );
 
   const listener = (e: KeyboardEvent) => {
+    console.log(key, e.key);
     if (e.key.toLowerCase() !== key) {
       return;
     }

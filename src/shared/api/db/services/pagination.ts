@@ -56,6 +56,10 @@ export default class PaginationService {
   ): Promise<T[]> {
     const [store] = await this.db.getStores([storeName]);
 
+    if (!store) {
+      throw new Error(`Store ${storeName} not found`);
+    }
+
     let source: IDBObjectStore | IDBIndex = store;
 
     if (orderBy !== this.config.primaryKey) {

@@ -23,10 +23,10 @@ const route = useRoute();
 
 const noteId = computed<string>(() => {
   if (Array.isArray(route.params.id)) {
-    return route.params.id[0];
+    return route.params.id[0] ?? '';
   }
 
-  return route.params.id;
+  return route.params.id ?? '';
 });
 
 const { data, isFetching: isLoading } = useGetNote(noteId);

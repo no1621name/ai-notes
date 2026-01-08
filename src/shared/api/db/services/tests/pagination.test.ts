@@ -50,8 +50,8 @@ describe('PaginationService', () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result[0].id).toBe('0');
-      expect(result[1].id).toBe('1');
+      expect(result[0]?.id).toBe('0');
+      expect(result[1]?.id).toBe('1');
     });
 
     it('should return second page of data', async () => {
@@ -65,8 +65,8 @@ describe('PaginationService', () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result[0].id).toBe('2');
-      expect(result[1].id).toBe('3');
+      expect(result[0]?.id).toBe('2');
+      expect(result[1]?.id).toBe('3');
     });
 
     it('should return partial page when not enough items', async () => {
@@ -80,7 +80,7 @@ describe('PaginationService', () => {
       });
 
       expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('4');
+      expect(result[0]?.id).toBe('4');
     });
 
     it('should return empty array when page exceeds data', async () => {
@@ -135,9 +135,9 @@ describe('PaginationService', () => {
         orderBy: 'created_at',
       });
 
-      expect(result[0].id).toBe('b');
-      expect(result[1].id).toBe('c');
-      expect(result[2].id).toBe('a');
+      expect(result[0]?.id).toBe('b');
+      expect(result[1]?.id).toBe('c');
+      expect(result[2]?.id).toBe('a');
     });
 
     it('should order by descending', async () => {
@@ -150,9 +150,9 @@ describe('PaginationService', () => {
         orderBy: 'created_at',
       });
 
-      expect(result[0].id).toBe('a');
-      expect(result[1].id).toBe('c');
-      expect(result[2].id).toBe('b');
+      expect(result[0]?.id).toBe('a');
+      expect(result[1]?.id).toBe('c');
+      expect(result[2]?.id).toBe('b');
     });
 
     it('should order by name field', async () => {
@@ -165,9 +165,9 @@ describe('PaginationService', () => {
         orderBy: 'name',
       });
 
-      expect(result[0].name).toBe('Apple');
-      expect(result[1].name).toBe('Mango');
-      expect(result[2].name).toBe('Zebra');
+      expect(result[0]?.name).toBe('Apple');
+      expect(result[1]?.name).toBe('Mango');
+      expect(result[2]?.name).toBe('Zebra');
     });
   });
 
@@ -364,8 +364,8 @@ describe('PaginationService', () => {
         pageSize: 10,
       });
 
-      expect(result[0].id).toBe('2');
-      expect(result[1].id).toBe('1');
+      expect(result[0]?.id).toBe('2');
+      expect(result[1]?.id).toBe('1');
     });
   });
 });

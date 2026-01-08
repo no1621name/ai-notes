@@ -22,9 +22,9 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe(customPayload.type);
-      expect(toast.title).toBe(customPayload.title);
-      expect(toast.message).toBe(customPayload.message);
+      expect(toast?.type).toBe(customPayload.type);
+      expect(toast?.title).toBe(customPayload.title);
+      expect(toast?.message).toBe(customPayload.message);
     });
   });
 
@@ -37,9 +37,9 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Store error occurred');
-      expect(toast.message).toBe('Invalid store name');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Store error occurred');
+      expect(toast?.message).toBe('Invalid store name');
     });
 
     it('should add a toast for missingPrimaryKey', () => {
@@ -50,9 +50,9 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Store error occurred');
-      expect(toast.message).toBe('Missing primary key');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Store error occurred');
+      expect(toast?.message).toBe('Missing primary key');
     });
 
     it('should add a toast for requestFailed without an error', () => {
@@ -63,9 +63,9 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Request error occurred');
-      expect(toast.message).toBe('Request failed');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Request error occurred');
+      expect(toast?.message).toBe('Request failed');
     });
 
     it('should add a toast for requestFailed with an error', () => {
@@ -77,8 +77,8 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Request error occurred');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Request error occurred');
     });
 
     it('should add a toast for duplicateItem', () => {
@@ -89,8 +89,8 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Duplicate item');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Duplicate item');
     });
 
     it('should add a toast for itemNotFound', () => {
@@ -101,8 +101,8 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Item not found');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Item not found');
     });
 
     it('should add a toast for missingIdForUpdate', () => {
@@ -113,8 +113,8 @@ describe('ErrorNotifier', () => {
 
       expect(toasterStore.toasts).toHaveLength(1);
       const toast = toasterStore.toasts[0];
-      expect(toast.type).toBe('danger');
-      expect(toast.title).toBe('Invalid item');
+      expect(toast?.type).toBe('danger');
+      expect(toast?.title).toBe('Invalid item');
     });
   });
 });

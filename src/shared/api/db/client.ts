@@ -185,15 +185,17 @@ export default class DBClient implements DBDataTransfer {
         return reject();
       }
 
-      if (!!item && !item?.[storeConfig.primaryKey as keyof Partial<T>]) {
+      const primaryKey = item?.[storeConfig.primaryKey as keyof Partial<T>];
+
+      if (!primaryKey) {
         this.errorNotifier.missingPrimaryKey();
-        reject();
+        return reject();
       }
 
       const transaction = this.db.transaction(store, 'readwrite');
       const objectStore = transaction.objectStore(store);
 
-      const getRequest = objectStore.get((item as { [key: typeof storeConfig.primaryKey]: PrimaryKeyType })[storeConfig.primaryKey]);
+      const getRequest = objectStore.get(primaryKey as IDBValidKey);
 
       getRequest.onsuccess = () => {
         const existing = getRequest.result;

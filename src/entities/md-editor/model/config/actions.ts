@@ -1,6 +1,10 @@
 import type { BaseAction } from '../types';
 
-export const ACTIONS_DEFINITIONS: Record<string, BaseAction> = {
+type ActionName = 'heading1' | 'heading2' | 'heading3' | 'bold' | 'italic'
+  | 'strikethrough' | 'bulletList' | 'orderedList' | 'taskList' | 'blockquote' | 'undo'
+  | 'redo' | 'code' | 'aiHelper';
+
+export const ACTIONS_DEFINITIONS: Record<ActionName, BaseAction> = {
   heading1: {
     id: 'heading1',
     label: ' Heading 1',

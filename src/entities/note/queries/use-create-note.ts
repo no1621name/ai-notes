@@ -45,7 +45,7 @@ export const useCreateNote = () => {
           pages: [
             [
               newNote,
-              ...oldNotes.pages[0],
+              ...(oldNotes.pages[0] || []),
             ],
             ...oldNotes.pages.slice(1),
           ],
