@@ -1,17 +1,18 @@
 <script lang="ts" setup>
-import { ref, watch, reactive } from 'vue';
+import { ref, watch, reactive, computed } from 'vue';
 import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { RegleExternalErrorTree } from '@regle/core';
 
-import type { AiSettings } from '../model/types';
-import { useAiClient } from '../composables/use-ai-client';
-import { useUpdateSettings } from '../queries/use-update-settings';
+import type { AiSettings } from '../../model/types';
+import { useAiClient } from '../../composables/use-ai-client';
+import { useUpdateSettings } from '../../queries/use-update-settings';
 import ErrorMessage from '@/shared/ui/error-message.vue';
 import PasswordInput from '@/shared/ui/password-input.vue';
+import ModelSelect from '../model/model-select.vue';
 
-const { settings, client, isLoadingSettings, models, settingsHasValidApiKey } = useAiClient();
+const { settings, client, isLoadingSettings, settingsHasValidApiKey } = useAiClient();
 const { mutate: updateSettings, isPending: isUpdating, error: updateError } = useUpdateSettings();
 
 const schema = type({
@@ -29,6 +30,7 @@ const state = reactive<AiSettings>({
 });
 
 const prevSettings = ref<AiSettings | null>(null);
+const completePrevSettings = computed(() => !!prevSettings.value?.model);
 const externalErrors = ref<RegleExternalErrorTree<typeof state>>({});
 
 const { r$ } = useRegleSchema(state, schema, {
@@ -69,15 +71,14 @@ const onSubmit = async () => {
 };
 
 const undoChanges = () => {
-  if (prevSettings.value && prevSettings.value.model) {
+  if (completePrevSettings.value) {
     r$.$reset({
-      toState: prevSettings.value,
+      toState: prevSettings.value!,
     });
   }
 };
 
 watch(updateError, (newError) => {
-  console.log(newError?.message, !!newError);
   if (newError) {
     externalErrors.value = {
       temperature: [newError.message],
@@ -92,7 +93,7 @@ watch(updateError, (newError) => {
       <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box p-4 relative" :disabled="isUpdating">
         <legend class="fieldset-legend">Ai features settings</legend>
         <button
-          :disabled="!r$.$anyEdited || !prevSettings"
+          :disabled="!r$.$anyEdited || !completePrevSettings"
           type="button"
           class="btn btn-sm btn-square text-sm absolute top-2 right-2"
           title="Reset settings"
@@ -108,25 +109,7 @@ watch(updateError, (newError) => {
         <ErrorMessage :state="r$.apiKey"/>
 
         <label class="label">Model</label>
-        <select
-          class="select"
-          :disabled="!models?.length"
-          v-model="r$.$value.model"
-        >
-          <option
-            disabled
-            selected
-            :value="undefined"
-          >
-            choose an ai model
-          </option>
-          <option
-            v-for="model of models"
-            :key="model.name"
-          >
-            {{ model.name }}
-          </option>
-        </select>
+        <ModelSelect v-model="r$.$value.model"/>
         <ErrorMessage
           :state="r$.model"
           :message="!settingsHasValidApiKey ? 'Enter api key to get models' : undefined"

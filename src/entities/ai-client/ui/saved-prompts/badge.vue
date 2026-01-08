@@ -22,7 +22,7 @@ defineEmits<{
 
 <template>
   <p
-    class="badge"
+    class="badge not-prose transition-colors"
     :class="{
       'badge-primary': selected,
       'pointer-events-none badge-dash opacity-70': disabled,

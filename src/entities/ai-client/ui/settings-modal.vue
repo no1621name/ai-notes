@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import Modal from '@/shared/ui/modal.vue';
-import SettingsForm from './settings-form.vue';
+import SettingsForm from './settings/settings-form.vue';
 import SavedPromptsList from './saved-prompts/list.vue';
 </script>
 
