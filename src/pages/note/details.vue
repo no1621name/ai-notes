@@ -7,6 +7,7 @@ import type { EditorEvents } from '@tiptap/vue-3';
 import { addToast } from '@/app/providers/toasts';
 import MainBubbleMenu from '@/widgets/md-editor/main-bubble-menu.vue';
 import ManageNoteTags from '@/features/note/manage-note-tags.vue';
+import { AIHelperMenu } from '@/features/md-editor/ai-helper';
 import { FormattingActions } from '@/features/md-editor/formatting';
 import { type EditorRef, Editor, resetEditorContent, useEditor } from '@/entities/md-editor';
 import {
@@ -163,6 +164,7 @@ onUnmounted(() => {
     <template #default>
       <div class="flex-1 flex flex-col min-h-0">
         <MainBubbleMenu/>
+        <AIHelperMenu/>
         <Editor
           ref="editor"
           :skeleton="isLoading && !data?.text"
