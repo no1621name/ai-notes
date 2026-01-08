@@ -1,6 +1,14 @@
-import Groq from 'groq-sdk';
+import Groq, { BadRequestError } from 'groq-sdk';
 
 import type { AiModel, AiService, AiSettings, Completion } from '../../model/types';
+import { AiServiceError } from '../../model/errors';
+import { CONTEXT_PREFIX_PROMPT, DEFAULT_SYSTEM_PROMPT } from '../../config';
+
+interface ApiErrorBody {
+  error?: {
+    message?: string;
+  };
+}
 
 export class GroqService implements AiService {
   private readonly client: Groq;
@@ -23,33 +31,60 @@ export class GroqService implements AiService {
     }));
   }
 
-  public async* getCompletions(userMessage: string, settings: AiSettings): AsyncIterable<Completion> {
-    const stream = await this.client.chat.completions.create({
-      model: settings.model || '',
-      temperature: settings.temperature,
-      stream: true,
-      messages: [
-        {
-          role: 'user',
-          content: userMessage,
-        },
-      ],
-    });
+  private createSystemPrompt(context?: string) {
+    if (context) {
+      return `${CONTEXT_PREFIX_PROMPT} ${context}`;
+    }
 
-    for await (const chunk of stream) {
-      const chunkData = chunk.choices[0];
-      const completion: Completion = {
-        error: false,
-        errorMessage: null,
-        message: chunkData.delta.content,
-      };
+    return DEFAULT_SYSTEM_PROMPT;
+  }
 
-      if (chunkData.finish_reason === 'length') {
-        completion.error = true;
-        completion.errorMessage = 'Response too long';
+  private handleError(error: unknown): never {
+    if (error instanceof BadRequestError) {
+      const body = error.error as Partial<ApiErrorBody> | undefined;
+      const message = body?.error?.message;
+
+      throw new AiServiceError(message ?? 'Request went wrong');
+    }
+
+    throw new AiServiceError(error instanceof Error ? error.message : 'Unknown error');
+  }
+
+  public async* getCompletions(userMessage: string, settings: AiSettings, context?: string): AsyncIterable<Completion> {
+    try {
+      const stream = await this.client.chat.completions.create({
+        model: settings.model || '',
+        temperature: settings.temperature,
+        stream: true,
+        messages: [
+          {
+            role: 'system',
+            content: this.createSystemPrompt(context),
+          },
+          {
+            role: 'user',
+            content: userMessage,
+          },
+        ],
+      });
+
+      for await (const chunk of stream) {
+        const chunkData = chunk.choices[0];
+        const completion: Completion = {
+          error: false,
+          errorMessage: null,
+          message: chunkData.delta.content,
+        };
+
+        if (chunkData.finish_reason === 'length') {
+          completion.error = true;
+          completion.errorMessage = 'Response too long';
+        }
+
+        yield completion;
       }
-
-      yield completion;
+    } catch (error: unknown) {
+      this.handleError(error);
     }
   }
 }
