@@ -66,4 +66,9 @@ export const ACTIONS_DEFINITIONS: Record<string, BaseAction> = {
     label: 'Code',
     icon: 'lu:code-xml',
   },
+  aiHelper: {
+    id: 'aiHelper',
+    label: 'AI Helper',
+    icon: 'lu:robot',
+  },
 };

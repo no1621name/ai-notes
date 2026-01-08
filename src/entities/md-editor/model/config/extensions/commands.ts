@@ -11,6 +11,11 @@ const createCommandItem = (
 });
 
 export const DEFAULT_COMMAND_ITEMS: CommandItem[] = [
+  createCommandItem(ACTIONS_DEFINITIONS.aiHelper, {
+    command: ({ editor, range }) => {
+      editor.chain().focus().selectParentNode().deleteRange(range).openAiHelper().setShouldCloseAiHelper(true).run();
+    },
+  }),
   createCommandItem(ACTIONS_DEFINITIONS.heading1, {
     command: ({ editor, range }) => {
       editor.chain().focus().deleteRange(range).setNode('heading', { level: 1 }).run();
