@@ -5,7 +5,7 @@ type ClickOutsideDirectiveHandler = (event: MouseEvent) => void;
 type ClickOutsideDirective = Directive<HTMLElement & { clickOutsideEvent: ClickOutsideDirectiveHandler }, ClickOutsideDirectiveHandler>;
 
 declare module 'vue' {
-  export interface ComponentCustomProperties {
+  export interface GlobalDirectives {
     vClickOutside: ClickOutsideDirectiveHandler;
   }
 }
