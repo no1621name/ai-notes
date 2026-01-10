@@ -3,6 +3,7 @@ import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescri
 import pluginVue from 'eslint-plugin-vue';
 import pluginVitest from '@vitest/eslint-plugin';
 import pluginStylistic from '@stylistic/eslint-plugin';
+import pluginVueI18n from '@intlify/eslint-plugin-vue-i18n';
 
 export default defineConfigWithVueTs(
   {
@@ -10,7 +11,7 @@ export default defineConfigWithVueTs(
     files: ['**/*.{ts,mts,tsx,vue}'],
   },
 
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/*.json', '**/*.yml']),
 
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
@@ -26,6 +27,17 @@ export default defineConfigWithVueTs(
     semi: true,
     braceStyle: '1tbs',
   }),
+
+  ...pluginVueI18n.configs.recommended,
+
+  {
+    settings: {
+      'vue-i18n': {
+        localeDir: 'src/**/locales/*.{json,json5,yaml,yml}',
+        messageSyntaxVersion: '^11.0.0',
+      },
+    },
+  },
 
   {
     rules: {
@@ -66,6 +78,9 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/no-unused-vars': ['error', {
         varsIgnorePattern: '_',
         argsIgnorePattern: '_',
+      }],
+      'object-property-newline': ['error', {
+        allowAllPropertiesOnSameLine: true,
       }],
     },
   },
