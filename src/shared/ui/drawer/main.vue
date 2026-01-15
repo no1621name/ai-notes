@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useDrawerHide } from '@/shared/composables/use-drawer-hide';
 
 const { setHide } = useDrawerHide();
 
+const { locale } = useI18n();
 const router = useRouter();
 const show = ref(false);
 let closing = false;
@@ -16,7 +18,7 @@ function hide() {
 async function afterLeave() {
   if (closing) return;
   closing = true;
-  router.push('/');
+  router.push({ name: 'home', params: { locale: locale.value } });
   document.body.style.overflow = 'auto';
 }
 
