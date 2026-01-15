@@ -4,7 +4,7 @@ import type { NoteShort } from '../model/types';
 import { useDeleteNote } from '../queries/use-delete-note';
 import BaseCard from './base-card.vue';
 import DeleteNote from './delete-note.vue';
-import { formatDate, DateFormat } from '@/shared/lib/date';
+import { useI18n } from 'vue-i18n';
 
 interface DateItem {
   label: string;
@@ -17,6 +17,8 @@ const props = defineProps<{
   note: NoteShort;
 }>();
 
+const { d } = useI18n();
+
 const routeParams = computed(() => ({
   name: 'note-details',
   params: { id: props.note.id },
@@ -25,9 +27,9 @@ const routeParams = computed(() => ({
 const dateItems = computed<DateItem[]>(() => {
   const { created_at, updated_at, reminder_date } = props.note;
   return [
-    { label: 'Created', value: formatDate(created_at) },
-    { label: 'Updated', value: formatDate(updated_at, DateFormat.WITH_TIME) },
-    { label: 'Reminder', value: formatDate(reminder_date, DateFormat.WITH_TIME) },
+    { label: 'Created', value: d(created_at, 'short') },
+    { label: 'Updated', value: d(updated_at, 'long') },
+    { label: 'Reminder', value: reminder_date ? d(reminder_date, 'long') : null },
   ];
 });
 </script>
