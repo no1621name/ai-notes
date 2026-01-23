@@ -4,6 +4,7 @@ export {
   loadLocaleMessages,
   setI18nLanguage,
   setupI18n,
+  i18n,
 } from './setup';
 
 export type { AvailableLocale, I18nInstance } from './types';

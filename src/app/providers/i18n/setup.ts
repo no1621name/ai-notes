@@ -24,18 +24,20 @@ export const loadLocaleMessages = async (i18n: I18nInstance, locale: AvailableLo
   return nextTick();
 };
 
-export const setupI18n = (app: App) => {
-  const i18n = createI18n({
-    legacy: false,
-    locale: getStoredLocale(),
-    availableLocales: AVAILABLE_LOCALES,
-    fallbackLocale: 'en',
-    datetimeFormats: {
-      en: defaultDateTimeFormat,
-      ru: defaultDateTimeFormat,
-    },
-  });
+export const i18n = createI18n({
+  legacy: false,
+  locale: getStoredLocale(),
+  availableLocales: AVAILABLE_LOCALES,
+  fallbackLocale: 'en',
+  datetimeFormats: {
+    en: defaultDateTimeFormat,
+    ru: defaultDateTimeFormat,
+  },
+  missingWarn: false,
+  fallbackWarn: false,
+});
 
+export const setupI18n = (app: App) => {
   app.use(i18n);
   return i18n;
 };
