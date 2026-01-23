@@ -31,6 +31,6 @@ export const registerPush = async () => {
     });
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to setup notifications');
+    throw error;
   }
 };

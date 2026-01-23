@@ -36,5 +36,45 @@
   },
   "placeholders": {
     "editor": "Нажмите / чтобы открыть команды"
+  },
+  "toasts": {
+    "error": {
+      "title": "Ошибка",
+      "common": {
+        "requestFailed": "Запрос не удался",
+        "requestFailedWithMessage": "Запрос не удался: {message}",
+        "storeError": "Ошибка хранилища"
+      },
+      "note": {
+        "loadFailed": "Не удалось загрузить содержимое заметки",
+        "createFailed": "Не удалось создать заметку"
+      },
+      "store": {
+        "invalidName": "Недопустимое имя хранилища",
+        "missingPrimaryKey": "Отсутствует первичный ключ"
+      },
+      "item": {
+        "duplicateTitle": "Дубликат элемента",
+        "duplicateMessage": "Элемент с id \"{id}\" уже существует в хранилище \"{store}\"",
+        "notFoundTitle": "Элемент не найден",
+        "notFoundMessage": "Элемент с id \"{id}\" не найден в хранилище \"{store}\"",
+        "invalid": "Недопустимый элемент",
+        "missingIdForUpdate": "Элемент должен иметь поле id для обновления"
+      },
+      "parsing": {
+        "updateFailed": "Не удалось разобрать содержимое"
+      },
+      "notifications": {
+        "setupFailed": "Ошибка в настройке push-уведомлений"
+      },
+      "actions": {
+        "visitInfoPage": "Посетите страницу информации"
+      },
+      "db": {
+        "title": "Ошибка базы данных",
+        "isNotSupported": "IndexedDB не поддерживается в вашем браузере",
+        "failedToOpen": "Не удалось открыть IndexedDB"
+      }
+    }
   }
 }

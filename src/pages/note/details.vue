@@ -59,8 +59,8 @@ const setEditorContent = (text: string) => {
     resetEditorContent(editor.value.editor, content);
   } catch {
     addToast({
-      title: 'Error',
-      message: 'Failed to load note content',
+      title: 'toasts.error.title',
+      message: 'toasts.error.note.loadFailed',
       type: 'danger',
     });
   }
@@ -158,8 +158,8 @@ onUnmounted(() => {
       <div class="flex items-end gap-2 flex-wrap">
         <FormattingActions/>
         <span v-if="!!editor?.editor" class="flex flex-col text-xs">
-          <span>{{ t('chars') }}: {{editor?.editor.storage.characterCount.characters()}}</span>
-          <span>{{ t('words') }}: {{editor?.editor.storage.characterCount.words()}}</span>
+          <span>{{ t('chars') }}: {{ editor?.editor.storage.characterCount.characters() }}</span>
+          <span>{{ t('words') }}: {{ editor?.editor.storage.characterCount.words() }}</span>
         </span>
       </div>
     </template>

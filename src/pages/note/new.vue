@@ -31,7 +31,7 @@ const triggerCreate = debounce(async () => {
   } catch (error) {
     console.error(error);
     addToast({
-      title: 'Failed to create note',
+      title: 'toasts.error.note.createFailed',
       type: 'danger',
     });
   }

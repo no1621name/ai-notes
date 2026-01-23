@@ -62,11 +62,11 @@ export const setupReminders = async (
 
   listenForReminders(dataTransfer, messagesDataTransfer, queryClient);
 
-  await registerPush().catch((error: Error) => {
+  await registerPush().catch(() => {
     notifier.add({
-      title: error.message,
+      title: 'toasts.error.notifications.setupFailed',
       type: 'danger',
-      message: 'Visit Info page',
+      message: 'toasts.error.actions.visitInfoPage',
     });
   });
 };
