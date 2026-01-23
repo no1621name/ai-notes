@@ -3,6 +3,8 @@ import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import { SavedPromptsList, SettingsForm as SettingsFormAiClient } from '@/entities/ai-client';
 import Modal from '@/shared/ui/modal.vue';
+import ErrorsToggler from '@/shared/ui/toaster/errors-toggler.vue';
+import Fieldset from '@/shared/ui/fieldset.vue';
 
 const { t } = useI18n();
 </script>
@@ -25,6 +27,9 @@ const { t } = useI18n();
     <template #content>
       <SettingsFormAiClient/>
       <SavedPromptsList/>
+      <Fieldset :legend="t('uiSettings')">
+        <ErrorsToggler/>
+      </Fieldset>
     </template>
   </Modal>
 </template>
@@ -32,10 +37,12 @@ const { t } = useI18n();
 <i18n>
 {
   "en": {
-    "openSettings": "Open settings"
+    "openSettings": "Open settings",
+    "uiSettings": "UI settings"
   },
   "ru": {
-    "openSettings": "Открыть настройки"
+    "openSettings": "Открыть настройки",
+    "uiSettings": "Настройки интерфейса"
   }
 }
 </i18n>
