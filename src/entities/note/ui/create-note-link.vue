@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import BaseCard from './base-card.vue';
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -12,7 +15,18 @@ import BaseCard from './base-card.vue';
   >
     <h2 class="card-title break-all m-auto">
       <VueIcon name="lu:circle-plus"/>
-      Create new note
+      {{ t('createNote') }}
     </h2>
   </BaseCard>
 </template>
+
+<i18n>
+{
+  "en": {
+    "createNote": "Create new note"
+  },
+  "ru": {
+    "createNote": "Создать новую заметку"
+  }
+}
+</i18n>

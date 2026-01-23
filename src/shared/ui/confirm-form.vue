@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = withDefaults(defineProps<{
   mode?: 'error' | 'success' | 'primary';
@@ -36,7 +39,7 @@ const mode = computed(() => modes[props.mode]);
         class="btn btn-xs"
         @click="$emit('close')"
       >
-        Cancel
+        {{ t('actions.cancel') }}
       </button>
     </div>
   </form>

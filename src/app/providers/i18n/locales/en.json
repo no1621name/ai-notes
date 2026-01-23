@@ -1,0 +1,80 @@
+{
+  "actions": {
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "close": "Close",
+    "edit": "Edit",
+    "open": "Open",
+    "apply": "Apply",
+    "deny": "Deny",
+    "send": "Send",
+    "search": "Search"
+  },
+  "savedPrompts": "Saved prompts",
+  "noResultsFor": "No results for \"{query}\"",
+  "pages": {
+    "home": "Home",
+    "info": "Info"
+  },
+  "editorActions": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "strikethrough": "Strikethrough",
+    "bulletList": "Bullet List",
+    "orderedList": "Ordered List",
+    "taskList": "Task List",
+    "blockquote": "Blockquote",
+    "undo": "Undo",
+    "redo": "Redo",
+    "code": "Code",
+    "aiHelper": "AI Helper",
+    "heading1": "Heading 1",
+    "heading2": "Heading 2",
+    "heading3": "Heading 3"
+  },
+  "placeholders": {
+    "editor": "Type / to open commands"
+  },
+  "toasts": {
+    "error": {
+      "title": "Error",
+      "common": {
+        "requestFailed": "Request failed",
+        "requestFailedWithMessage": "Request failed: {message}",
+        "storeError": "Store error occurred"
+      },
+      "note": {
+        "loadFailed": "Failed to load note content",
+        "createFailed": "Failed to create note"
+      },
+      "store": {
+        "invalidName": "Invalid store name",
+        "missingPrimaryKey": "Missing primary key"
+      },
+      "item": {
+        "duplicateTitle": "Duplicate item",
+        "duplicateMessage": "Item with id \"{id}\" already exists in store \"{store}\"",
+        "notFoundTitle": "Item not found",
+        "notFoundMessage": "Item with id \"{id}\" not found in store \"{store}\"",
+        "invalid": "Invalid item",
+        "missingIdForUpdate": "Item must have an id field to be updated"
+      },
+      "parsing": {
+        "updateFailed": "Failed to parse content"
+      },
+      "notifications": {
+        "setupFailed": "Failed to setup notifications"
+      },
+      "actions": {
+        "visitInfoPage": "Visit Info page"
+      },
+      "db": {
+        "title": "DB error occurred",
+        "isNotSupported": "IndexedDB is not supported in your browser",
+        "failedToOpen": "Failed to open IndexedDB"
+      }
+    }
+  }
+}

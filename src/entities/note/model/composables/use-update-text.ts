@@ -29,8 +29,8 @@ export const useUpdateText = (noteId: Ref<string>, onDebounced?: () => void) => 
       });
     } catch {
       addToast({
-        title: 'Update failed!',
-        message: 'Failed to parse content',
+        title: 'toasts.error.title',
+        message: 'toasts.error.parsing.updateFailed',
         type: 'danger',
       });
     }

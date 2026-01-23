@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { type } from 'arktype';
 import { useRegleSchema } from '@regle/schemas';
+import { useI18n } from 'vue-i18n';
 
 import SkeletonRow from '@/shared/ui/skeleton-row.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
@@ -14,6 +15,8 @@ withDefaults(defineProps<{
 }>(), {
   skeleton: false,
 });
+
+const { t } = useI18n();
 
 const model = defineModel<string | null>();
 const localValue = useBufferModel(model);
@@ -104,7 +107,7 @@ const preventPasting = (event: ClipboardEvent) => {
         @keydown="preventTyping"
         @paste="preventPasting"
         v-model="r$.$value"
-        placeholder="Note title..."
+        :placeholder="t('placeholder')"
         type="text"
         class="textarea textarea-xl textarea-ghost field-sizing-content max-h-32 min-h-0 overflow-y-auto w-full max-w-full resize-none focus:outline-0 break-all"
       />
@@ -115,3 +118,14 @@ const preventPasting = (event: ClipboardEvent) => {
     </template>
   </fieldset>
 </template>
+
+<i18n>
+{
+  "en": {
+    "placeholder": "Note title...",
+  },
+  "ru": {
+    "placeholder": "Название заметки...",
+  }
+}
+</i18n>

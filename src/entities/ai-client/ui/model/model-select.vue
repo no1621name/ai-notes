@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import { useAiClient } from '../../composables/use-ai-client';
 
 withDefaults(defineProps<{
@@ -7,6 +8,7 @@ withDefaults(defineProps<{
   disabled: false,
 });
 
+const { t } = useI18n();
 const model = defineModel<string | undefined>();
 
 const { models } = useAiClient();
@@ -23,7 +25,7 @@ const { models } = useAiClient();
       selected
       :value="undefined"
     >
-      choose an ai model
+      {{ t('chooseAi') }}
     </option>
     <option
       v-for="item of models"
@@ -34,3 +36,14 @@ const { models } = useAiClient();
     </option>
   </select>
 </template>
+
+<i18n>
+{
+  "en": {
+    "chooseAi": "choose an ai model"
+  },
+  "ru": {
+    "chooseAi": "выберите ии модель"
+  }
+}
+</i18n>

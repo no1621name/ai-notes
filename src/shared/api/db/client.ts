@@ -40,8 +40,8 @@ export default class DBClient implements DBDataTransfer {
       if (!('indexedDB' in window)) {
         this.errorNotifier.add({
           type: 'danger',
-          title: 'DB error occured',
-          message: 'IndexedDB is not supported in your browser',
+          title: 'toasts.error.db.isNotSupported',
+          message: 'toasts.error.db.isNotSupported',
         });
         reject();
       }
@@ -50,8 +50,8 @@ export default class DBClient implements DBDataTransfer {
       request.onerror = () => {
         this.errorNotifier.add({
           type: 'danger',
-          title: 'DB error occured',
-          message: 'IndexedDB failed to open',
+          title: 'toasts.error.db.title',
+          message: 'toasts.error.db.failedToOpen',
         });
         reject();
       };

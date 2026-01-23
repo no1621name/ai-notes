@@ -2,6 +2,7 @@
 import { watch, toRefs } from 'vue';
 import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
+import { useI18n } from 'vue-i18n';
 
 import type { SavedPrompt, SavedPromptPayload } from '../../model/types';
 import ErrorMessage from '@/shared/ui/error-message.vue';
@@ -19,6 +20,8 @@ const emit = defineEmits<{
   (e: 'submit', payload: SavedPromptPayload): void;
   (e: 'close'): void;
 }>();
+
+const { t } = useI18n();
 
 const schema = type({
   name: '0 < string < 200',
@@ -53,7 +56,7 @@ const onSubmit = async () => {
       <input
         v-model.trim="r$.$value.name"
         type="text"
-        placeholder="Name"
+        :placeholder="t('namePlaceholder')"
         class="input input-bordered input-xs w-full"
         :class="{ 'input-error': r$.name.$error }"
       >
@@ -61,7 +64,7 @@ const onSubmit = async () => {
 
       <textarea
         v-model="r$.$value.prompt"
-        placeholder="Prompt"
+        :placeholder="t('promptPlaceholder')"
         class="textarea h-24 resize-none textarea-xs w-full"
         :class="{ 'textarea-error': r$.prompt.$error }"
       />
@@ -74,16 +77,29 @@ const onSubmit = async () => {
           class="btn btn-sm w-max flex-1"
           :disabled="!r$.$anyDirty || r$.$invalid"
         >
-          Save
+          {{ t('actions.save') }}
         </button>
         <button
           type="button"
           @click="emit('close')"
           class="btn btn-sm w-max flex-1 btn-ghost"
         >
-          Cancel
+          {{ t('actions.cancel') }}
         </button>
       </div>
     </fieldset>
   </form>
 </template>
+
+<i18n>
+{
+  "en": {
+    "namePlaceholder": "Name",
+    "promptPlaceholder": "Prompt"
+  },
+  "ru": {
+    "namePlaceholder": "Название",
+    "promptPlaceholder": "Промпт"
+  }
+}
+</i18n>

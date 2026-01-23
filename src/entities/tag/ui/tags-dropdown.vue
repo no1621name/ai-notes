@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { useGetTags } from '../queries/use-get-tags';
@@ -13,6 +14,8 @@ withDefaults(defineProps<{
   smallButton: false,
   selectedTags: () => [],
 });
+
+const { t } = useI18n();
 
 const { data: tags, isPending } = useGetTags();
 const { mutateAsync: createTag } = useCreateTag();
@@ -36,7 +39,7 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
     >
       <VueIcon name="lu:plus" v-if="smallButton"/>
       <template v-else>
-        Add tag
+        {{ t('actions.add') }}
       </template>
     </button>
 
@@ -52,7 +55,9 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
           v-if="tags?.length"
           class="flex flex-wrap gap-1 max-h-32 overflow-y-auto overflow-x-hidden"
         >
-          <p v-if="tags.length === selectedTags.length" class="text-base-content/75 text-xs">You've added all possible tags!</p>
+          <p v-if="tags.length === selectedTags.length" class="text-base-content/75 text-xs">
+            {{ t('allTagsAdded') }}
+          </p>
           <TransitionGroup v-else name="list">
             <template
               v-for="tag in tags"
@@ -72,3 +77,14 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "en": {
+    "allTagsAdded": "You've added all possible tags!"
+  },
+  "ru": {
+    "allTagsAdded": "Вы добавили все возможные теги!"
+  }
+}
+</i18n>

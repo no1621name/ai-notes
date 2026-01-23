@@ -46,9 +46,12 @@
     "tailwindcss": "4.1.18",
     "uuid": "13.0.0",
     "vue": "3.5.26",
+    "vue-i18n": "11.2.8",
     "vue-router": "4.6.4"
   },
   "devDependencies": {
+    "@intlify/eslint-plugin-vue-i18n": "4.1.0",
+    "@intlify/unplugin-vue-i18n": "11.0.3",
     "@pinia/testing": "1.0.3",
     "@stylistic/eslint-plugin": "5.6.1",
     "@tailwindcss/typography": "0.5.19",

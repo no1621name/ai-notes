@@ -23,6 +23,7 @@ export const SYMBOLS: Record<string, string> = {
   alt: isMac ? '⌥' : 'Alt',
   mod: isMac ? '⌘' : 'Ctrl',
   backspace: '⌫',
+  enter: '⏎',
 };
 
 export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void) => {
@@ -35,7 +36,6 @@ export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void) 
   );
 
   const listener = (e: KeyboardEvent) => {
-    console.log(key, e.key);
     if (e.key.toLowerCase() !== key) {
       return;
     }

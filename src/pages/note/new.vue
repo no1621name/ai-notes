@@ -8,8 +8,11 @@ import { EditorPreview } from '@/entities/md-editor';
 import { FormattingActionsPreview } from '@/features/md-editor/formatting';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 import { debounce } from '@/shared/lib/debounce';
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
+const { t } = useI18n();
+
 const { mutateAsync: createNote, isPending: isCreating } = useCreateNote();
 
 const noteTitle = ref('');
@@ -28,7 +31,7 @@ const triggerCreate = debounce(async () => {
   } catch (error) {
     console.error(error);
     addToast({
-      title: 'Failed to create note',
+      title: 'toasts.error.note.createFailed',
       type: 'danger',
     });
   }
@@ -36,7 +39,7 @@ const triggerCreate = debounce(async () => {
 </script>
 
 <template>
-  <DrawerLayout tootlip="Enter a title before using">
+  <DrawerLayout :tootlip="t('tooltip')">
     <template #header>
       <NoteTitleField
         ref="titleFieldRef"
@@ -57,3 +60,14 @@ const triggerCreate = debounce(async () => {
     </template>
   </DrawerLayout>
 </template>
+
+<i18n>
+{
+  "en": {
+    "tooltip": "Enter a title before using"
+  },
+  "ru": {
+    "tooltip": "Введите название перед использованием"
+  }
+}
+</i18n>

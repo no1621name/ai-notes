@@ -3,6 +3,7 @@ import type { Editor } from '@tiptap/core';
 import { VueRenderer, posToDOMRect } from '@tiptap/vue-3';
 import { computePosition, flip, shift, type FloatingElement, type VirtualElement } from '@floating-ui/dom';
 
+import { i18n } from '@/app/providers/i18n';
 import type { CommandItem, CommandsOptions, RendererComponentProps } from './types';
 
 interface RenderComponentMethods extends MethodOptions {
@@ -40,7 +41,7 @@ export const getCommandsOptions = ({ RenderComponent, items, mountElement }: Get
   let component: VueRenderer;
 
   return {
-    items: ({ query }) => items.filter(item => item.label.toLowerCase().includes(query.toLowerCase())),
+    items: ({ query }) => items.filter(item => i18n.global.t(item.label).toLowerCase().includes(query.toLowerCase())),
     render: () => ({
       onStart: (props) => {
         component = new VueRenderer(RenderComponent, {

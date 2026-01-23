@@ -5,54 +5,59 @@ type ToastPayload = {
   type: ToastType;
   title: string;
   message: string;
+  titleParams?: Record<string, unknown>;
+  messageParams?: Record<string, unknown>;
 };
 
 export class ErrorNotifier {
   public invalidStoreName() {
     this.add({
       type: 'danger',
-      title: 'Store error occurred',
-      message: 'Invalid store name',
+      title: 'toasts.error.common.storeError',
+      message: 'toasts.error.store.invalidName',
     });
   }
 
   public missingPrimaryKey() {
     this.add({
       type: 'danger',
-      title: 'Store error occurred',
-      message: 'Missing primary key',
+      title: 'toasts.error.common.storeError',
+      message: 'toasts.error.store.missingPrimaryKey',
     });
   }
 
   public requestFailed(error?: DOMException | null) {
     this.add({
       type: 'danger',
-      title: 'Request error occurred',
-      message: `Request failed${error ? `: ${error.message}` : ''}`,
+      title: 'toasts.error.title',
+      message: error ? 'toasts.error.common.requestFailedWithMessage' : 'toasts.error.common.requestFailed',
+      messageParams: error ? { message: error.message } : undefined,
     });
   }
 
   public duplicateItem(id: string | number, store: string) {
     this.add({
       type: 'danger',
-      title: 'Duplicate item',
-      message: `Item with id "${id}" already exists in store "${store}"`,
+      title: 'toasts.error.item.duplicateTitle',
+      message: 'toasts.error.item.duplicateMessage',
+      messageParams: { id, store },
     });
   }
 
   public itemNotFound(id: string | number, store: string) {
     this.add({
       type: 'danger',
-      title: 'Item not found',
-      message: `Item with id "${id}" not found in store "${store}"`,
+      title: 'toasts.error.item.notFoundTitle',
+      message: 'toasts.error.item.notFoundMessage',
+      messageParams: { id, store },
     });
   }
 
   public missingIdForUpdate() {
     this.add({
       type: 'danger',
-      title: 'Invalid item',
-      message: 'Item must have an id field to be updated',
+      title: 'toasts.error.item.invalid',
+      message: 'toasts.error.item.missingIdForUpdate',
     });
   }
 
