@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SettingsModal } from '@/entities/ai-client';
+import SettingsModal from '@/features/settings/modal.vue';
 import Header from '@/shared/ui/header.vue';
 </script>
 

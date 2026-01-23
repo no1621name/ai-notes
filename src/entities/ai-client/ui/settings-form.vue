@@ -6,10 +6,10 @@ import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { RegleExternalErrorTree } from '@regle/core';
 import { useI18n } from 'vue-i18n';
 
-import type { AiSettings } from '../../model/types';
-import { useAiClient } from '../../composables/use-ai-client';
-import { useUpdateSettings } from '../../queries/use-update-settings';
-import ModelSelect from '../model/model-select.vue';
+import type { AiSettings } from '../model/types';
+import { useAiClient } from '../composables/use-ai-client';
+import { useUpdateSettings } from '../queries/use-update-settings';
+import ModelSelect from './model/model-select.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
 import PasswordInput from '@/shared/ui/password-input.vue';
 
