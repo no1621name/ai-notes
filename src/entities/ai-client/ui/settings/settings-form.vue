@@ -123,7 +123,7 @@ watch(updateError, (newError) => {
         <ModelSelect v-model="r$.$value.model"/>
         <ErrorMessage
           :state="r$.model"
-          :message="!settingsHasValidApiKey ? 'Enter api key to get models' : undefined"
+          :message="!settingsHasValidApiKey ? t('apiKeyError') : undefined"
         />
 
         <label class="label">
@@ -178,14 +178,16 @@ watch(updateError, (newError) => {
     "apiKey": "API key",
     "model": "Default model",
     "temperature": "Temperature",
-    "resetSettings": "Reset settings"
+    "resetSettings": "Reset settings",
+    "apiKeyError": "Enter api key to get models",
   },
   "ru": {
     "settingsName": "Настройки AI функций",
     "apiKey": "API ключ",
     "model": "Модель по умолчанию",
     "temperature": "Температура",
-    "resetSettings": "Reset settings"
+    "resetSettings": "Reset settings",
+    "apiKeyError": "Введите API ключ, чтобы получить модели",
   }
 }
 </i18n>
