@@ -57,12 +57,17 @@ export const setupReminders = async (
   messagesDataTransfer: DataTransfer,
   notifier: ErrorNotifier,
   queryClient: QueryClient,
+  awaitI18n?: Promise<void>,
 ) => {
   await clearFiredReminders(dataTransfer, messagesDataTransfer, queryClient);
 
   listenForReminders(dataTransfer, messagesDataTransfer, queryClient);
 
-  await registerPush().catch(() => {
+  await registerPush().catch(async () => {
+    if (awaitI18n) {
+      await awaitI18n;
+    }
+
     notifier.add({
       title: 'toasts.error.notifications.setupFailed',
       type: 'danger',
