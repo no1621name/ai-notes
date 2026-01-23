@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import { EditorBubbleMenu, useEditor, useGetEditorSelection } from '@/entities/md-editor';
 import { AiServiceError, useAiClient } from '@/entities/ai-client';
 import { useAiHelper } from '../composables/use-ai-helper';
 import { SYMBOLS, useHotkey } from '@/shared/composables/use-hotkey';
 import PromptForm from './prompt-form.vue';
 import Response from './response.vue';
+
+const { t } = useI18n();
 
 const { editor } = useEditor();
 const { getEditorSelection } = useGetEditorSelection();
@@ -91,28 +95,28 @@ useHotkey('mod+backspace', handleDeny);
   >
     <div class="flex flex-col">
       <span v-if="!settingsHasValidApiKey" class="badge badge-soft badge-warning py-1 h-max text-center">
-        Visit settings and pass valid API key
+        {{ t('apiKeyNeeded') }}
       </span>
       <div v-else>
         <template v-if="response">
           <Response>
             {{ response }}
           </Response>
-          <footer class="flex justify-end mt-2">
+          <footer class="flex justify-end mt-2 flex-wrap gap-0.5">
             <button
               class="btn btn-xs"
               @click="handleApply"
             >
-              Apply
+              {{ t('actions.apply') }}
               <span class="font-mono">
-                <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">⏎</kbd>
+                <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.enter }}</kbd>
               </span>
             </button>
             <button
               class="btn btn-xs"
               @click="handleDeny"
             >
-              Deny
+              {{ t('actions.deny') }}
               <span class="font-mono">
                 <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.backspace }}</kbd>
               </span>
@@ -132,3 +136,14 @@ useHotkey('mod+backspace', handleDeny);
     </div>
   </EditorBubbleMenu>
 </template>
+
+<i18n>
+{
+  "en": {
+    "apiKeyNeeded": "Visit settings and pass valid API key"
+  },
+  "ru": {
+    "apiKeyNeeded": "Посетите настройки и введите корректный API ключ"
+  }
+}
+</i18n>

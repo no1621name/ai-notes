@@ -1,16 +1,19 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import Modal from '@/shared/ui/modal.vue';
 import SettingsForm from './settings/settings-form.vue';
 import SavedPromptsList from './saved-prompts/list.vue';
+
+const { t } = useI18n();
 </script>
 
 <template>
   <Modal>
     <template #trigger="{ toggle }">
       <button
-        title="Open settings"
-        aria-label="Open settings"
+        :title="t('openSettings')"
+        :aria-label="t('openSettings')"
       >
         <VueIcon
 
@@ -26,3 +29,14 @@ import SavedPromptsList from './saved-prompts/list.vue';
     </template>
   </Modal>
 </template>
+
+<i18n>
+{
+  "en": {
+    "openSettings": "Open settings"
+  },
+  "ru": {
+    "openSettings": "Открыть настройки"
+  }
+}
+</i18n>

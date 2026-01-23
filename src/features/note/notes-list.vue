@@ -1,18 +1,24 @@
 <script lang="ts" setup>
-import { computed, ref, watchEffect } from 'vue';
+import { computed, ref, useTemplateRef, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import { TagBadge, TagsSelectingList, TagsList, type Tag } from '@/entities/tag';
 import { CreateNoteLink, NoteBaseCard, NoteCard, NoteSearchInput, useGetNotes } from '@/entities/note';
 import { useIntersectionObserver } from '@/shared/composables/use-intersection-observer';
 
-const loader = ref<HTMLElement | null>(null);
+const { t } = useI18n();
+
+const loader = useTemplateRef<HTMLElement | null>('loader');
 
 const editTags = ref(false);
 const search = ref('');
 const selectedTags = ref<Tag['id'][]>([]);
+
 const { data, fetchNextPage, isLoading, hasNextPage, isFetchingNextPage } = useGetNotes({
   search,
   tags: selectedTags,
 });
+
 const notes = computed(() => data.value?.pages.flat() ?? []);
 
 const { isIntersecting } = useIntersectionObserver(loader);
@@ -42,7 +48,7 @@ const updateSelectedTags = (value: Tag['id']) => {
 
     <div class="flex flex-col gap-3">
       <button class="btn w-max btn-sm" @click="editTags = !editTags">
-        {{ editTags ? 'Close editing' : 'Edit tags' }}
+        {{ editTags ? t('actions.close') : t('editTags') }}
       </button>
 
       <TagsList v-if="editTags"/>
@@ -60,7 +66,7 @@ const updateSelectedTags = (value: Tag['id']) => {
         <NoteBaseCard>
           <div class="m-auto">
             <p class="text-lg my-10 text-center break-word">
-              there is no results for "{{ search }}"
+              {{ t('noResultsFor', { query: search }) }}
             </p>
           </div>
         </NoteBaseCard>
@@ -93,3 +99,14 @@ const updateSelectedTags = (value: Tag['id']) => {
     </div>
   </div>
 </template>
+
+<i18n>
+{
+  "en": {
+    "editTags": "Edit tags"
+  },
+  "ru": {
+    "editTags": "Редактировать теги"
+  }
+}
+</i18n>

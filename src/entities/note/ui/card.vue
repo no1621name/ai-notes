@@ -17,7 +17,7 @@ const props = defineProps<{
   note: NoteShort;
 }>();
 
-const { d } = useI18n();
+const { d, t } = useI18n();
 
 const routeParams = computed(() => ({
   name: 'note-details',
@@ -27,9 +27,9 @@ const routeParams = computed(() => ({
 const dateItems = computed<DateItem[]>(() => {
   const { created_at, updated_at, reminder_date } = props.note;
   return [
-    { label: 'Created', value: d(created_at, 'short') },
-    { label: 'Updated', value: d(updated_at, 'long') },
-    { label: 'Reminder', value: reminder_date ? d(reminder_date, 'long') : null },
+    { label: t('created'), value: d(created_at, 'short') },
+    { label: t('updated'), value: d(updated_at, 'long') },
+    { label: t('reminder'), value: reminder_date ? d(reminder_date, 'long') : null },
   ];
 });
 </script>
@@ -67,3 +67,18 @@ const dateItems = computed<DateItem[]>(() => {
     </div>
   </BaseCard>
 </template>
+
+<i18n>
+{
+  "en": {
+    "created": "Created",
+    "updated": "Updated",
+    "reminder": "Reminder"
+  },
+  "ru": {
+    "created": "Создано",
+    "updated": "Обновлено",
+    "reminder": "Напоминание"
+  }
+}
+</i18n>

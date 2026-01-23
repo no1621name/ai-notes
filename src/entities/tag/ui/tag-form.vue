@@ -2,6 +2,7 @@
 import { ref, toRefs, onMounted, computed, nextTick } from 'vue';
 import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import ErrorMessage from '@/shared/ui/error-message.vue';
@@ -26,6 +27,8 @@ const emit = defineEmits<{
 
 const { tag } = toRefs(props);
 const isEditing = computed(() => !!tag.value);
+
+const { t } = useI18n();
 
 const color = ref(getRandomItem(predefinedColors));
 const selectColor = (selectedColor: string) => {
@@ -79,7 +82,7 @@ const onSubmit = async () => {
       <input
         v-model="r$.$value"
         type="text"
-        placeholder="New tag name"
+        :placeholder="t('placeholder')"
         class="input input-bordered input-xs join-item"
         :class="{ 'input-error': r$.$error }"
       >
@@ -125,7 +128,18 @@ const onSubmit = async () => {
       type="submit"
       class="btn btn-primary btn-xs join-item"
     >
-      {{ isEditing ? 'Save' : 'Add' }}
+      {{ isEditing ? t('actions.save') : t('actions.add') }}
     </button>
   </form>
 </template>
+
+<i18n>
+{
+  "en": {
+    "placeholder": "New tag name"
+  },
+  "ru": {
+    "placeholder": "Новая метка"
+  }
+}
+</i18n>

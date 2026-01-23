@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { DEFAULT_THEME, THEME_KEY } from '../constants/theme';
@@ -7,6 +8,8 @@ import { onBroadcastMessage, sendBroadcastMessage } from '../lib/broadcast';
 
 const currentTheme = ref(DEFAULT_THEME);
 let themeSynced = false;
+
+const { t } = useI18n();
 
 onMounted(() => {
   const savedTheme = localStorage.getItem(THEME_KEY) || DEFAULT_THEME;
@@ -35,8 +38,8 @@ watch(currentTheme, (newTheme) => {
 <template>
   <label
     class="swap swap-rotate"
-    title="Toggle theme"
-    aria-label="Toggle theme"
+    :title="t('toggleTheme')"
+    :aria-label="t('toggleTheme')"
   >
     <input
       v-model="currentTheme"
@@ -50,3 +53,14 @@ watch(currentTheme, (newTheme) => {
     <VueIcon name="lu:moon" class="swap-on"/>
   </label>
 </template>
+
+<i18n>
+{
+  "en": {
+    "toggleTheme": "Toggle theme"
+  },
+  "ru": {
+    "toggleTheme": "Сменить тему"
+  }
+}
+</i18n>

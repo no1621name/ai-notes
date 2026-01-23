@@ -7,72 +7,72 @@ type ActionName = 'heading1' | 'heading2' | 'heading3' | 'bold' | 'italic'
 export const ACTIONS_DEFINITIONS: Record<ActionName, BaseAction> = {
   heading1: {
     id: 'heading1',
-    label: ' Heading 1',
+    label: 'editorActions.heading1',
     icon: 'lu:heading-1',
   },
   heading2: {
     id: 'heading2',
-    label: 'Heading 2',
+    label: 'editorActions.heading2',
     icon: 'lu:heading-2',
   },
   heading3: {
     id: 'heading3',
-    label: 'Heading 3',
+    label: 'editorActions.heading3',
     icon: 'lu:heading-3',
   },
   bold: {
     id: 'bold',
-    label: 'Bold',
+    label: 'editorActions.bold',
     icon: 'lu:bold',
   },
   italic: {
     id: 'italic',
-    label: 'Italic',
+    label: 'editorActions.italic',
     icon: 'lu:italic',
   },
   strikethrough: {
     id: 'strikethrough',
-    label: 'Strikethrough',
+    label: 'editorActions.strikethrough',
     icon: 'lu:strikethrough',
   },
   bulletList: {
     id: 'bulletList',
-    label: 'Bullet List',
+    label: 'editorActions.bulletList',
     icon: 'lu:list',
   },
   orderedList: {
     id: 'orderedList',
-    label: 'Ordered List',
+    label: 'editorActions.orderedList',
     icon: 'lu:list-ordered',
   },
   taskList: {
     id: 'taskList',
-    label: 'Task List',
+    label: 'editorActions.taskList',
     icon: 'lu:list-checks',
   },
   blockquote: {
     id: 'blockquote',
-    label: 'Blockquote',
+    label: 'editorActions.blockquote',
     icon: 'lu:quote',
   },
   undo: {
     id: 'undo',
-    label: 'Undo',
+    label: 'editorActions.undo',
     icon: 'lu:undo',
   },
   redo: {
     id: 'redo',
-    label: 'Redo',
+    label: 'editorActions.redo',
     icon: 'lu:redo',
   },
   code: {
     id: 'code',
-    label: 'Code',
+    label: 'editorActions.code',
     icon: 'lu:code-xml',
   },
   aiHelper: {
     id: 'aiHelper',
-    label: 'AI Helper',
+    label: 'editorActions.aiHelper',
     icon: 'lu:robot',
   },
 };

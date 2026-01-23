@@ -1,3 +1,40 @@
 {
-  "hello": "Hello"
+  "actions": {
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add",
+    "close": "Close",
+    "edit": "Edit",
+    "open": "Open",
+    "apply": "Apply",
+    "deny": "Deny",
+    "send": "Send",
+    "search": "Search"
+  },
+  "savedPrompts": "Saved prompts",
+  "noResultsFor": "No results for \"{query}\"",
+  "pages": {
+    "home": "Home",
+    "info": "Info"
+  },
+  "editorActions": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "strikethrough": "Strikethrough",
+    "bulletList": "Bullet List",
+    "orderedList": "Ordered List",
+    "taskList": "Task List",
+    "blockquote": "Blockquote",
+    "undo": "Undo",
+    "redo": "Redo",
+    "code": "Code",
+    "aiHelper": "AI Helper",
+    "heading1": "Heading 1",
+    "heading2": "Heading 2",
+    "heading3": "Heading 3"
+  },
+  "placeholders": {
+    "editor": "Type / to open commands"
+  }
 }

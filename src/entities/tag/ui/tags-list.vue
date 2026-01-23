@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { useGetTags } from '../queries/use-get-tags';
@@ -22,6 +23,8 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
   await updateTag(payload as Required<SubmitPayloadBody>);
   closeEditing();
 };
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -46,10 +49,10 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
         @close="deletingId = null"
       >
         <template #message>
-          Delete this tag?
+          {{ t('deleteConfirm') }}
         </template>
         <template #submit-text>
-          Delete
+          {{ t('actions.delete') }}
         </template>
       </ConfirmForm>
 
@@ -72,3 +75,14 @@ const handleSubmit = async (payload: SubmitPayloadBody) => {
     </template>
   </div>
 </template>
+
+<i18n>
+{
+  "en": {
+    "deleteConfirm": "Delete this tag?"
+  },
+  "ru": {
+    "deleteConfirm": "Удалить этот тег?"
+  }
+}
+</i18n>

@@ -2,6 +2,7 @@
 import { computed, watch, ref, shallowRef, onUnmounted, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
+import { useI18n } from 'vue-i18n';
 import type { EditorEvents } from '@tiptap/vue-3';
 
 import { addToast } from '@/app/providers/toasts';
@@ -19,6 +20,7 @@ import {
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 import { formatForDatetimeLocal } from '@/shared/lib/date';
 
+const { t } = useI18n();
 const route = useRoute();
 
 const noteId = computed<string>(() => {
@@ -137,10 +139,10 @@ onUnmounted(() => {
 
       <fieldset class="fieldset" :disabled="isReminderUpdating">
         <p class="label">
-          Reminder date
+          {{ t('reminderDate') }}
           <span class="tooltip tooltip-right">
             <VueIcon name="lu:info"/>
-            <span class="tooltip-content text-xs">We will send you a notification</span>
+            <span class="tooltip-content text-xs">{{ t('reminderTooltip') }}</span>
           </span>
         </p>
         <input
@@ -156,8 +158,8 @@ onUnmounted(() => {
       <div class="flex items-end gap-2 flex-wrap">
         <FormattingActions/>
         <span v-if="!!editor?.editor" class="flex flex-col text-xs">
-          <span>chars: {{editor?.editor.storage.characterCount.characters()}}</span>
-          <span>words: {{editor?.editor.storage.characterCount.words()}}</span>
+          <span>{{ t('chars') }}: {{editor?.editor.storage.characterCount.characters()}}</span>
+          <span>{{ t('words') }}: {{editor?.editor.storage.characterCount.words()}}</span>
         </span>
       </div>
     </template>
@@ -174,3 +176,20 @@ onUnmounted(() => {
     </template>
   </DrawerLayout>
 </template>
+
+<i18n>
+{
+  "en": {
+    "reminderDate": "Reminder date",
+    "reminderTooltip": "We will send you a notification",
+    "chars": "chars",
+    "words": "words"
+  },
+  "ru": {
+    "reminderDate": "Дата напоминания",
+    "reminderTooltip": "Мы отправим вам уведомление",
+    "chars": "символов",
+    "words": "слов"
+  }
+}
+</i18n>

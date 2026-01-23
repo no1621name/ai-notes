@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
+
+const { t } = useI18n();
 
 withDefaults(defineProps<{
   showCloseButton?: boolean;
@@ -36,7 +39,9 @@ onUnmounted(() => {
 
 <template>
   <slot name="trigger" :toggle="toggle">
-    <button class="btn" @click="toggle">open</button>
+    <button class="btn" @click="toggle">
+      {{ t('actions.open') }}
+    </button>
   </slot>
 
   <Teleport to="body">
@@ -50,6 +55,8 @@ onUnmounted(() => {
           v-if="showCloseButton"
           class="btn btn-square btn-xs text-lg sticky top-1 right-1 z-1 ml-auto"
           @click="close"
+          :title="t('actions.close')"
+          :aria-label="t('actions.close')"
         >
           <VueIcon name="lu:x"/>
         </button>

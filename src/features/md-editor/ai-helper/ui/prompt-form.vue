@@ -2,6 +2,7 @@
 import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { type SavedPrompt, SavedPromptsAccordion, useAiClient } from '@/entities/ai-client';
 import ModelSelect from '@/entities/ai-client/ui/model/model-select.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
@@ -12,6 +13,7 @@ defineProps<{
   externalErrorMessage?: string;
 }>();
 
+const { t } = useI18n();
 const selectedPrompt = ref<SavedPrompt | null>(null);
 const { settings } = useAiClient();
 
@@ -84,9 +86,9 @@ useHotkey('esc', () => emit('close'));
         :disabled="isLoading"
       >
         <template v-if="!isLoading">
-          Send
+          {{ t('actions.send') }}
           <span class="font-mono">
-            <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">⏎</kbd>
+            <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.enter }}</kbd>
           </span>
         </template>
         <span v-else class="loading loading-spinner loading-xs"/>
@@ -96,7 +98,7 @@ useHotkey('esc', () => emit('close'));
         type="button"
         @click="$emit('close')"
       >
-        Close
+        {{  t('actions.close') }}
       </button>
     </footer>
   </form>

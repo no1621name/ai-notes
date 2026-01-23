@@ -4,13 +4,16 @@ import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 import type { RegleExternalErrorTree } from '@regle/core';
+import { useI18n } from 'vue-i18n';
 
 import type { AiSettings } from '../../model/types';
 import { useAiClient } from '../../composables/use-ai-client';
 import { useUpdateSettings } from '../../queries/use-update-settings';
+import ModelSelect from '../model/model-select.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
 import PasswordInput from '@/shared/ui/password-input.vue';
-import ModelSelect from '../model/model-select.vue';
+
+const { t } = useI18n();
 
 const { settings, client, isLoadingSettings, settingsHasValidApiKey } = useAiClient();
 const { mutate: updateSettings, isPending: isUpdating, error: updateError } = useUpdateSettings();
@@ -41,7 +44,6 @@ const { r$ } = useRegleSchema(state, schema, {
 watch(r$.$value, () => {
   r$.$clearExternalErrors();
   if (r$.apiKey?.$edited && r$.apiKey.$correct) {
-    console.log('asdfasdf DSDF');
     updateSettings({ apiKey: r$.apiKey.$value });
   }
 });
@@ -91,31 +93,42 @@ watch(updateError, (newError) => {
   <div>
     <form @submit.prevent="onSubmit">
       <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box p-4 relative" :disabled="isUpdating">
-        <legend class="fieldset-legend">Ai features settings</legend>
+        <legend class="fieldset-legend">
+          {{ t('settingsName') }}
+        </legend>
+
         <button
           :disabled="!r$.$anyEdited || !completePrevSettings"
           type="button"
           class="btn btn-sm btn-square text-sm absolute top-2 right-2"
-          title="Reset settings"
+          :title="t('resetSettings')"
+          :aria-label="t('resetSettings')"
           @click="undoChanges"
         >
           <VueIcon name="lu:undo-2"/>
         </button>
-        <label class="label">Api key</label>
+
+        <label class="label">
+          {{ t('apiKey') }}
+        </label>
         <PasswordInput
           v-model="r$.$value.apiKey"
           :disabled="isLoadingSettings"
         />
         <ErrorMessage :state="r$.apiKey"/>
 
-        <label class="label">Model</label>
+        <label class="label">
+          {{ t('model') }}
+        </label>
         <ModelSelect v-model="r$.$value.model"/>
         <ErrorMessage
           :state="r$.model"
           :message="!settingsHasValidApiKey ? 'Enter api key to get models' : undefined"
         />
 
-        <label class="label">Temperature</label>
+        <label class="label">
+          {{ t('temperature') }}
+        </label>
 
         <div class="flex items-start gap-2">
           <div class="w-full max-w-xs">
@@ -151,9 +164,28 @@ watch(updateError, (newError) => {
             'btn-primary': r$.$anyEdited,
           }"
         >
-          Save
+          {{ t('actions.save') }}
         </button>
       </fieldset>
     </form>
   </div>
 </template>
+
+<i18n>
+{
+  "en": {
+    "settingsName": "AI features settings",
+    "apiKey": "API key",
+    "model": "Default model",
+    "temperature": "Temperature",
+    "resetSettings": "Reset settings"
+  },
+  "ru": {
+    "settingsName": "Настройки AI функций",
+    "apiKey": "API ключ",
+    "model": "Модель по умолчанию",
+    "temperature": "Температура",
+    "resetSettings": "Reset settings"
+  }
+}
+</i18n>

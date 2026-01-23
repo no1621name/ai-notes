@@ -4,6 +4,7 @@ import { Editor, EditorContent, VueNodeViewRenderer } from '@tiptap/vue-3';
 import { BubbleMenu as BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
 import { Placeholder } from '@tiptap/extensions';
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
+import { useI18n } from 'vue-i18n';
 
 import { BUBBLE_MENU_PLUGIN_KEYS, DEFAULT_COMMAND_ITEMS } from '../model/config';
 import { plugins } from '@/shared/lib/tiptap/plugins';
@@ -13,8 +14,13 @@ import { commandsExtension, getCommandsOptions } from '../lib/extensions/command
 import CommandsList from './extensions/commands-list.vue';
 import { aiHelperExtension } from '../lib/extensions/ai-helper';
 
-const props = withDefaults(defineProps<{ placeholder?: string; skeleton?: boolean; contentSkeleton?: boolean }>(), {
-  placeholder: 'Type / to open commands',
+const { t } = useI18n();
+
+const props = withDefaults(defineProps<{
+  placeholder?: string;
+  skeleton?: boolean;
+  contentSkeleton?: boolean;
+}>(), {
   skeleton: false,
 });
 
@@ -43,7 +49,7 @@ onBeforeMount(async () => {
         }),
       }),
       Placeholder.configure({
-        placeholder: props.placeholder,
+        placeholder: props.placeholder ?? t('placeholders.editor'),
       }),
       CodeBlockLowlight.extend({
         addNodeView() {

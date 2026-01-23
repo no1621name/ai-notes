@@ -1,15 +1,19 @@
 <script lang="ts" setup>
-import SkeletonRow from '@/shared/ui/skeleton-row.vue';
-import { useGetSavedPrompts } from '../../queries/saved-prompts/use-get-saved-prompts';
-import Badge from './badge.vue';
-import type { SavedPrompt, SavedPromptPayload } from '../../model/types';
 import { computed, ref, watch } from 'vue';
-import { useUpdateSavedPrompt } from '../../queries/saved-prompts/use-update-saved-prompt';
-import Form from './form.vue';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
+import { useI18n } from 'vue-i18n';
+
+import type { SavedPrompt, SavedPromptPayload } from '../../model/types';
+import { useUpdateSavedPrompt } from '../../queries/saved-prompts/use-update-saved-prompt';
+import { useGetSavedPrompts } from '../../queries/saved-prompts/use-get-saved-prompts';
 import { useCreateSavedPrompt } from '../../queries/saved-prompts/use-create-saved-prompt';
 import { useDeleteSavedPrompt } from '../../queries/saved-prompts/use-delete-saved-prompt';
+import Badge from './badge.vue';
+import Form from './form.vue';
 import ConfirmForm from '@/shared/ui/confirm-form.vue';
+import SkeletonRow from '@/shared/ui/skeleton-row.vue';
+
+const { t } = useI18n();
 
 const { data: prompts, isLoading } = useGetSavedPrompts();
 
@@ -53,7 +57,9 @@ const toggleCreatingForm = () => {
   />
   <template v-else>
     <fieldset class="fieldset flex flex-col gap-2 bg-base-200 p-2 rounded-box">
-      <legend class="fieldset-legend">Saved prompts</legend>
+      <legend class="fieldset-legend">
+        {{ t('savedPrompts') }}
+      </legend>
 
       <div class="flex flex-wrap gap-2 items-center">
         <button class="btn btn-sm btn-circle" @click="toggleCreatingForm">
@@ -69,10 +75,10 @@ const toggleCreatingForm = () => {
             @close="deletingId = null"
           >
             <template #message>
-              Delete this prompt?
+              {{ t('deleteConfirm') }}
             </template>
             <template #submit-text>
-              Delete
+              {{ t('actions.delete')}}
             </template>
           </ConfirmForm>
           <Badge
@@ -86,7 +92,7 @@ const toggleCreatingForm = () => {
         </template>
 
         <span v-if="!prompts?.length" class="text-base-content/50 italic">
-          No saved prompts...
+          {{ t('emptyList') }}
         </span>
       </div>
       <div v-if="editingId">
@@ -99,3 +105,16 @@ const toggleCreatingForm = () => {
     </fieldset>
   </template>
 </template>
+
+<i18n>
+{
+  "en": {
+    "deleteConfirm": "Delete this prompt?",
+    "emptyList": "No saved prompts..."
+  },
+  "ru": {
+    "deleteConfirm": "Удалить этот промпт?",
+    "emptyList": "Нет сохранённых промптов..."
+  }
+}
+</i18n>
