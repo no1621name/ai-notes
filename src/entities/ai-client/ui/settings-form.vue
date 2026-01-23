@@ -12,6 +12,7 @@ import { useUpdateSettings } from '../queries/use-update-settings';
 import ModelSelect from './model/model-select.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
 import PasswordInput from '@/shared/ui/password-input.vue';
+import Fieldset from '@/shared/ui/fieldset.vue';
 
 const { t } = useI18n();
 
@@ -92,11 +93,7 @@ watch(updateError, (newError) => {
 <template>
   <div>
     <form @submit.prevent="onSubmit">
-      <fieldset class="fieldset bg-base-200 border border-base-300 rounded-box p-4 relative" :disabled="isUpdating">
-        <legend class="fieldset-legend">
-          {{ t('settingsName') }}
-        </legend>
-
+      <Fieldset :legend="t('settingsName')" :disabled="isUpdating">
         <button
           :disabled="!r$.$anyEdited || !completePrevSettings"
           type="button"
@@ -166,7 +163,7 @@ watch(updateError, (newError) => {
         >
           {{ t('actions.save') }}
         </button>
-      </fieldset>
+      </Fieldset>
     </form>
   </div>
 </template>

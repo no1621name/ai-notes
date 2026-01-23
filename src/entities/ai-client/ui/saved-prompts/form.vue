@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 
 import type { SavedPrompt, SavedPromptPayload } from '../../model/types';
 import ErrorMessage from '@/shared/ui/error-message.vue';
+import Fieldset from '@/shared/ui/fieldset.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -52,7 +53,7 @@ const onSubmit = async () => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <fieldset class="fieldset bg-base-300 p-2 w-full rounded-box" :disabled="disabled">
+    <Fieldset :disabled="disabled" class="bg-base-300">
       <input
         v-model.trim="r$.$value.name"
         type="text"
@@ -87,7 +88,7 @@ const onSubmit = async () => {
           {{ t('actions.cancel') }}
         </button>
       </div>
-    </fieldset>
+    </Fieldset>
   </form>
 </template>
 

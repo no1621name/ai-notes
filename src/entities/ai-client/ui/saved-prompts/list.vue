@@ -12,6 +12,7 @@ import Badge from './badge.vue';
 import Form from './form.vue';
 import ConfirmForm from '@/shared/ui/confirm-form.vue';
 import SkeletonRow from '@/shared/ui/skeleton-row.vue';
+import Fieldset from '@/shared/ui/fieldset.vue';
 
 const { t } = useI18n();
 
@@ -56,11 +57,7 @@ const toggleCreatingForm = () => {
     :height="24"
   />
   <template v-else>
-    <fieldset class="fieldset flex flex-col gap-2 bg-base-200 p-2 rounded-box">
-      <legend class="fieldset-legend">
-        {{ t('savedPrompts') }}
-      </legend>
-
+    <Fieldset :legend="t('savedPrompts')">
       <div class="flex flex-wrap gap-2 items-center">
         <button class="btn btn-sm btn-circle" @click="toggleCreatingForm">
           <VueIcon name="lu:x" v-if="isCreatingForm"/>
@@ -102,7 +99,7 @@ const toggleCreatingForm = () => {
           @close="editingId = null"
         />
       </div>
-    </fieldset>
+    </Fieldset>
   </template>
 </template>
 
