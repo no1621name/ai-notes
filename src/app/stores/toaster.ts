@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 
 export type ToastType = 'default' | 'success' | 'danger';
 
@@ -10,7 +10,23 @@ export interface Toast {
   message?: string;
 }
 
+export const PERSISTED_ERRORS_SHOWN_KEY = 'errorsShown';
+
 export const useToasterStore = defineStore('toaster', () => {
+  const errorsShown = ref<boolean>(false);
+
+  onBeforeMount(() => {
+    const value = localStorage.getItem(PERSISTED_ERRORS_SHOWN_KEY);
+    if (value !== null) {
+      errorsShown.value = value === 'true';
+    }
+  });
+
+  watch(errorsShown, (value, prev) => {
+    if (value === prev) return;
+    localStorage.setItem(PERSISTED_ERRORS_SHOWN_KEY, value.toString());
+  });
+
   const toasts = ref<Toast[]>([]);
   let id: Toast['id'] = 0;
   const timers = new Map<Toast['id'], ReturnType<typeof setTimeout>>();
@@ -31,6 +47,11 @@ export const useToasterStore = defineStore('toaster', () => {
 
   const add = (payload: Omit<Toast, 'id'>, removeSeconds = 5): Toast['id'] => {
     const toast: Toast = { id: ++id, ...payload };
+
+    if (!errorsShown.value && toast.type === 'danger') {
+      return toast.id;
+    }
+
     toasts.value.push(toast);
 
     if (removeSeconds > 0) {
@@ -41,9 +62,20 @@ export const useToasterStore = defineStore('toaster', () => {
     return toast.id;
   };
 
+  const hideErrors = () => {
+    errorsShown.value = false;
+  };
+
+  const showErrors = () => {
+    errorsShown.value = true;
+  };
+
   return {
     toasts,
     add,
     remove,
+    errorsShown,
+    hideErrors,
+    showErrors,
   };
 });
