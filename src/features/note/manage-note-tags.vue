@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { type Tag, TagBadge, TagsDropdown } from '@/entities/tag';
@@ -11,6 +12,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   isLoading: false,
 });
+
+const { t } = useI18n();
 
 const { mutate: addTag } = useAddTagToNote();
 const { mutate: removeTag } = useRemoveTagFromNote();
@@ -32,14 +35,19 @@ const hanldeTagSelection = ({ id }: { id: string }) => {
         :tag="tag"
       >
         <template #action>
-          <VueIcon
+          <button
+            :title="t('actions.delete')"
+            :aria-label="t('actions.delete')"
             @click="() => removeTag({
               noteId,
               tagId: tag.id
             })"
-            class="cursor-pointer"
-            name="lu:x"
-          />
+          >
+            <VueIcon
+              class="cursor-pointer"
+              name="lu:x"
+            />
+          </button>
         </template>
       </TagBadge>
     </template>

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 const { push, currentRoute } = useRouter();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const handleChange = (event: Event) => {
   const target = event.target as HTMLSelectElement;
@@ -23,6 +23,7 @@ const handleChange = (event: Event) => {
   <select
     class="select select-sm"
     v-model="locale"
+    :aria-label="t('languageSelect')"
     @change="handleChange"
   >
     <option
@@ -34,3 +35,14 @@ const handleChange = (event: Event) => {
     </option>
   </select>
 </template>
+
+<i18n>
+{
+  "en": {
+    "languageSelect": "Language"
+  },
+  "ru": {
+    "languageSelect": "Язык"
+  }
+}
+</i18n>

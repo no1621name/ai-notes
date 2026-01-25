@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, ref, useTemplateRef } from 'vue';
+import { nextTick, ref, useTemplateRef, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
@@ -10,6 +10,8 @@ const { t } = useI18n();
 const search = ref('');
 const serachInput = useTemplateRef<HTMLInputElement>('search-input');
 const isVisible = ref(false);
+
+const buttonTitle = computed(() => isVisible.value ? t('actions.close') : t('actions.search'));
 
 const emit = defineEmits<{
   (e: 'update:search', value: string): void;
@@ -41,8 +43,8 @@ const toggleVisible = async () => {
     <button
       class="btn"
       @click="toggleVisible"
-      :aria-label="isVisible ? t('actions.close') : t('actions.search')"
-      :title="isVisible ? t('actions.close') : t('actions.search')"
+      :aria-label="buttonTitle"
+      :title="buttonTitle"
     >
       <VueIcon :name="isVisible ? 'lu:x' : 'lu:search'"/>
     </button>
