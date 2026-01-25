@@ -32,10 +32,10 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
 <template>
   <div>
     <button
-      style="anchor-name:--anchor-tags-dropdown"
-      popovertarget="tags-dropdown"
       class="btn btn-sm"
       :class="{'btn-circle': smallButton}"
+      :title="t('actions.add')"
+      :aria-label="t('actions.add')"
     >
       <VueIcon name="lu:plus" v-if="smallButton"/>
       <template v-else>

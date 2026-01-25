@@ -6,7 +6,7 @@ import { useDrawerHide } from '@/shared/composables/use-drawer-hide';
 
 const { setHide } = useDrawerHide();
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const router = useRouter();
 const show = ref(false);
 let closing = false;
@@ -43,7 +43,7 @@ onActivated(() => {
         v-if="show"
         class="absolute inset-0 bg-black/40 pointer-events-auto"
         @click="hide"
-        aria-label="Закрыть модльное окно"
+        :aria-label="t('actions.close')"
       />
     </Transition>
 
@@ -53,9 +53,21 @@ onActivated(() => {
         class="absolute right-0 top-0 h-full w-5/6 sm:w-3/4 lg:w-1/2 max-w-[90vw] bg-base-200 shadow-2xl pointer-events-auto flex flex-col"
         role="dialog"
         aria-modal="true"
+        :aria-label="t('drawer')"
       >
         <router-view name="drawer-content" />
       </aside>
     </Transition>
   </div>
 </template>
+
+<i18n>
+{
+  "en": {
+    "drawer": "Drawer"
+  },
+  "ru": {
+    "drawer": "Модальное окно"
+  }
+}
+</i18n>
