@@ -6,6 +6,7 @@ import { ErrorNotifier } from './error-notifier';
 describe('ErrorNotifier', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    useToasterStore().showErrors();
   });
 
   describe('basic functional', () => {
