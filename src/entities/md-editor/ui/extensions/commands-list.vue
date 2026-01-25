@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { ref, watch, type ComponentPublicInstance } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { i18n } from '@/app/providers/i18n';
 import type { RendererComponentProps } from '../../lib/extensions/commands';
 import DropdownMenu from '@/shared/ui/dropdown-menu/menu.vue';
 import DropdownMenuItem from '@/shared/ui/dropdown-menu/item.vue';
-
-const { t } = useI18n();
 
 const props = defineProps<RendererComponentProps>();
 
@@ -54,7 +52,7 @@ defineExpose({
 </script>
 
 <template>
-  <DropdownMenu class="p-1 gap-y-0.5 max-h-40 overflow-auto flex-nowrap">
+  <DropdownMenu class="p-1 gap-y-0.5 max-h-40 overflow-auto flex-nowrap" v-if="i18n.global">
     <template v-if="items.length">
       <DropdownMenuItem
         v-for="(item, index) in items"
@@ -64,9 +62,15 @@ defineExpose({
         class="btn btn-xs px-1"
         :class="{ 'btn-primary': index === selectedIndex }"
       >
-        {{ t(item.label) }}
+        {{ i18n.global.t(item.label) }}
       </DropdownMenuItem>
     </template>
-    <DropdownMenuItem v-else>No result</DropdownMenuItem>
+    <DropdownMenuItem v-else>
+      <p class="text-ellipsis max-w-80">
+        <span class="line-clamp-1">
+          {{ i18n.global.t('noResultsFor', { query: props.query }) }}
+        </span>
+      </p>
+    </DropdownMenuItem>
   </DropdownMenu>
 </template>
