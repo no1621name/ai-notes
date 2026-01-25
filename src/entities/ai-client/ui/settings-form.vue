@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import type { RegleExternalErrorTree } from '@regle/core';
 import { ref, watch, reactive, computed } from 'vue';
 import { useRegleSchema } from '@regle/schemas';
 import { type } from 'arktype';
-import VueIcon from '@kalimahapps/vue-icons/VueIcon';
-import type { RegleExternalErrorTree } from '@regle/core';
 import { useI18n } from 'vue-i18n';
+import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import type { AiSettings } from '../model/types';
 import { useAiClient } from '../composables/use-ai-client';
@@ -93,6 +93,22 @@ watch(updateError, (newError) => {
 <template>
   <div>
     <form @submit.prevent="onSubmit">
+      <div v-if="client.serviceInfo" class="alert">
+        <VueIcon name="lu:info" class="text-lg text-primary"/>
+        <i18n-t
+          class="text-xs"
+          keypath="usingService"
+          tag="p"
+        >
+          <a
+            class="link"
+            :href="client.serviceInfo.link"
+            target="_blank"
+          >
+            {{ client.serviceInfo.name }}
+          </a>
+        </i18n-t>
+      </div>
       <Fieldset :legend="t('settingsName')" :disabled="isUpdating">
         <button
           :disabled="!r$.$anyEdited || !completePrevSettings"
@@ -177,6 +193,7 @@ watch(updateError, (newError) => {
     "temperature": "Temperature",
     "resetSettings": "Reset settings",
     "apiKeyError": "Enter api key to get models",
+    "usingService": "Currently we are using only {0} service for AI features. Soon we will add more services.",
   },
   "ru": {
     "settingsName": "Настройки AI функций",
@@ -185,6 +202,7 @@ watch(updateError, (newError) => {
     "temperature": "Температура",
     "resetSettings": "Reset settings",
     "apiKeyError": "Введите API ключ, чтобы получить модели",
+    "usingService": "Сейчас мы используем только {0} для предоставления ИИ функционала. Скоро будет добавлено больше сервисов.",
   }
 }
 </i18n>
