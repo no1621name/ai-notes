@@ -6,6 +6,7 @@ import { useGetTags } from '../queries/use-get-tags';
 import { useCreateTag } from '../queries/use-create-tag';
 import TagBadge from './tag-badge.vue';
 import TagCreationForm from './tag-form.vue';
+import Dropdown from '@/shared/ui/dropdown-menu/dropdown.vue';
 
 withDefaults(defineProps<{
   smallButton?: boolean;
@@ -18,36 +19,35 @@ withDefaults(defineProps<{
 const { t } = useI18n();
 
 const { data: tags, isPending } = useGetTags();
-const { mutateAsync: createTag } = useCreateTag();
+const { mutate: handleTagCreation } = useCreateTag();
 
 const emit = defineEmits<{
   (e: 'tag-select', payload: { id: string }): void;
 }>();
-
-const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
-  await createTag(payload);
-};
 </script>
 
 <template>
-  <div>
-    <button
-      style="anchor-name:--anchor-tags-dropdown"
-      popovertarget="tags-dropdown"
-      class="btn btn-sm"
-      :class="{'btn-circle': smallButton}"
-    >
-      <VueIcon name="lu:plus" v-if="smallButton"/>
-      <template v-else>
-        {{ t('actions.add') }}
-      </template>
-    </button>
+  <Dropdown
+    :allowedPlacements="['bottom-end']"
+    menuClass="overflow-visible"
+  >
+    <template #trigger="{ toggle }">
+      <button
+        class="btn btn-sm"
+        :class="{'btn-circle': smallButton}"
+        :aria-label="t('addTag')"
+        :title="t('addTag')"
+        @click="toggle"
+      >
+        <VueIcon name="lu:plus" v-if="smallButton"/>
+        <template v-else>
+          {{ t('addTag') }}
+        </template>
+      </button>
+    </template>
 
     <div
-      popover
-      id="tags-dropdown"
-      style="position-anchor:--anchor-tags-dropdown"
-      class="dropdown dropdown-end overflow-hidden mt-1 p-2 rounded-box bg-base-200 shadow-sm w-52"
+      class="p-2 w-52"
       v-if="!isPending"
     >
       <div class="flex flex-col gap-y-2 items-stretch">
@@ -75,15 +75,17 @@ const handleTagCreation = async (payload: Record<'name' | 'color', string>) => {
         <TagCreationForm @submit="handleTagCreation"/>
       </div>
     </div>
-  </div>
+  </Dropdown>
 </template>
 
 <i18n>
 {
   "en": {
+    "addTag": "Add tag",
     "allTagsAdded": "You've added all possible tags!"
   },
   "ru": {
+    "addTag": "Добавить тег",
     "allTagsAdded": "Вы добавили все возможные теги!"
   }
 }
