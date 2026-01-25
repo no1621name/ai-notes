@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
-import { autoPlacement, autoUpdate, offset, useFloating } from '@floating-ui/vue';
+import { autoPlacement, autoUpdate, offset, useFloating, type Placement } from '@floating-ui/vue';
 import Menu from './menu.vue';
+
+const props = withDefaults(defineProps<{
+  allowedPlacements?: Placement[];
+  menuClass?: string;
+}>(), {
+  allowedPlacements: () => ['bottom-start', 'left-start'],
+});
 
 const dropdown = useTemplateRef('dropdown');
 const trigger = useTemplateRef('trigger');
@@ -12,7 +19,7 @@ const { floatingStyles } = useFloating(trigger, dropdown, {
   middleware: [
     offset(8),
     autoPlacement({
-      allowedPlacements: ['bottom-start', 'left-start'],
+      allowedPlacements: props.allowedPlacements,
     }),
   ],
   whileElementsMounted: autoUpdate,
@@ -45,6 +52,7 @@ const close = () => {
       ref="dropdown"
       :style="floatingStyles"
       class="z-50 dropdown"
+      :class="menuClass"
     >
       <slot :close="close" />
     </Menu>

@@ -5,10 +5,11 @@ import { type } from 'arktype';
 import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
-import ErrorMessage from '@/shared/ui/error-message.vue';
-import { getRandomItem } from '@/shared/lib/get-random-item';
-import { predefinedColors } from '../model/constants';
 import type { Tag } from '../model/types';
+import { predefinedColors } from '../model/constants';
+import { getRandomItem } from '@/shared/lib/get-random-item';
+import Dropdown from '@/shared/ui/dropdown-menu/dropdown.vue';
+import ErrorMessage from '@/shared/ui/error-message.vue';
 
 export interface SubmitPayloadBody {
   id?: Tag['id'];
@@ -16,9 +17,12 @@ export interface SubmitPayloadBody {
   color: string;
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   tag?: Tag;
-}>();
+  autoclose?: boolean;
+}>(), {
+  autoclose: true,
+});
 
 const emit = defineEmits<{
   (e: 'submit', payload: { id?: Tag['id']; name: string; color: string }): void;
@@ -70,13 +74,19 @@ const onSubmit = async () => {
     selectColor(getRandomItem(predefinedColors));
   }
 };
+
+const clickOutside = () => {
+  if (props.autoclose) {
+    emit('close');
+  }
+};
 </script>
 
 <template>
   <form
-    class="join items-start"
+    class="join items-end"
     @submit.prevent="onSubmit"
-    v-click-outside="() => emit('close')"
+    v-click-outside="clickOutside"
   >
     <div class="flex flex-col gap-y-1">
       <input
@@ -89,39 +99,37 @@ const onSubmit = async () => {
       <ErrorMessage :state="r$"/>
     </div>
 
-    <button
-      type="button"
-      popovertarget="tag-colorpicker-popover"
-      style="anchor-name:--tag-colorpicker-anchor;"
-      class="btn btn-xs btn-square join-item border-none text-neutral-content"
-      :style="{ backgroundColor: color }"
-    >
-      <VueIcon name="cg:color-picker" />
-    </button>
-
-    <ul
-      popover
-      id="tag-colorpicker-popover"
-      style="position-anchor:--tag-colorpicker-anchor"
-      class="dropdown menu p-2 shadow bg-base-100 rounded-box w-max"
-    >
-      <div class="grid grid-cols-6 gap-1 mb-2">
+    <Dropdown :allowed-placements="['bottom-end']">
+      <template #trigger="{ toggle }">
         <button
-          v-for="c in predefinedColors"
-          :key="c"
           type="button"
-          class="btn btn-xs btn-square border-none rounded-sm"
-          :style="{ backgroundColor: c }"
-          @click="selectColor(c)"
-        />
-      </div>
+          class="btn btn-xs btn-square border-none text-neutral-content"
+          :style="{ backgroundColor: color }"
+          @click="toggle"
+        >
+          <VueIcon name="cg:color-picker" />
+        </button>
+      </template>
 
-      <input
-        v-model="color"
-        type="color"
-        class="input input-bordered input-sm w-full h-8 p-1 rounded-sm"
-      >
-    </ul>
+      <ul class="menu p-2 w-max">
+        <div class="grid grid-cols-6 gap-1 mb-2">
+          <button
+            v-for="c in predefinedColors"
+            :key="c"
+            type="button"
+            class="btn btn-xs btn-square border-none rounded-sm"
+            :style="{ backgroundColor: c }"
+            @click="selectColor(c)"
+          />
+        </div>
+
+        <input
+          v-model="color"
+          type="color"
+          class="input input-bordered input-sm w-full h-8 p-1 rounded-sm"
+        >
+      </ul>
+    </Dropdown>
 
     <button
       :disabled="!r$.$correct"
@@ -129,6 +137,17 @@ const onSubmit = async () => {
       class="btn btn-primary btn-xs join-item"
     >
       {{ isEditing ? t('actions.save') : t('actions.add') }}
+    </button>
+
+    <button
+      v-if="!autoclose"
+      type="button"
+      class="btn btn-xs join-item"
+      :aria-label="t('actions.close')"
+      :title="t('actions.close')"
+      @click="emit('close')"
+    >
+      <VueIcon name="lu:x"/>
     </button>
   </form>
 </template>
