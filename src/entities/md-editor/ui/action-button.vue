@@ -18,6 +18,7 @@ const { t } = useI18n();
     class="btn btn-sm"
     @click="action.action(editor)"
     :class="{ 'btn-primary': action.isActive(editor) }"
+    :aria-label="t(action.label)"
     :title="t(action.label)"
     :disabled="action.isDisabled?.(editor) ?? false"
   >
