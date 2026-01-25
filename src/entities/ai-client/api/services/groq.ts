@@ -13,6 +13,10 @@ interface ApiErrorBody {
 export class GroqService implements AiService {
   private readonly client: Groq;
   public readonly apiKeyRegex: RegExp = /\bgsk_[A-Za-z0-9]{52}\b/;
+  public readonly serviceInfo = {
+    name: 'Groq',
+    link: 'https://console.groq.com',
+  };
 
   constructor(apiKey?: string) {
     this.client = new Groq({ apiKey: apiKey || '', dangerouslyAllowBrowser: true });

@@ -1,4 +1,4 @@
-export { default as SettingsModal } from './ui/settings-modal.vue';
+export { default as SettingsForm } from './ui/settings-form.vue';
 export { default as SavedPromptsList } from './ui/saved-prompts/list.vue';
 export { default as SavedPromptsAccordion } from './ui/saved-prompts/accordion.vue';
 

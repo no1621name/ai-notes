@@ -24,8 +24,14 @@ export interface Completion {
   errorMessage?: string | null;
 }
 
+interface ServiceInfo {
+  name: string;
+  link: string;
+}
+
 export interface AiService {
   readonly apiKeyRegex: RegExp;
+  readonly serviceInfo?: ServiceInfo;
   getModels: () => Promise<AiModel[]>;
   getCompletions: (userMessage: string, settings: Omit<AiSettings, 'apiKey'>, context?: string) => AsyncIterable<Completion>;
   updateApiKey: (apiKey: string) => void;

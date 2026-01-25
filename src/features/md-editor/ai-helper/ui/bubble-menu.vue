@@ -94,9 +94,14 @@ useHotkey('mod+backspace', handleDeny);
     v-click-outside="handleClose"
   >
     <div class="flex flex-col">
-      <span v-if="!settingsHasValidApiKey" class="badge badge-soft badge-warning py-1 h-max text-center">
-        {{ t('apiKeyNeeded') }}
-      </span>
+      <div v-if="!settingsHasValidApiKey" class="flex items-end gap-1 flex-col">
+        <span class="badge badge-soft badge-warning py-1 h-max text-center">
+          {{ t('apiKeyNeeded') }}
+        </span>
+        <button class="btn btn-soft btn-xs" @click="closeAiHelper">
+          {{  t('actions.close') }}
+        </button>
+      </div>
       <div v-else>
         <template v-if="response">
           <Response>

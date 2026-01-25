@@ -1,12 +1,14 @@
+import type { InfiniteData, QueryClient } from '@tanstack/vue-query';
+
+import type { Note, NoteShort } from '../model/types';
 import type { ErrorNotifier } from '@/shared/api/errors/error-notifier';
 import type { DataTransfer } from '@/shared/types/api';
+
 import { registerPush } from './register-reminder-service';
 import { updateNote } from '../api/update-note';
 import { getFiredReminders, clearAllFiredReminders } from './fired-reminders';
-import { onBroadcastMessage } from '@/shared/lib/broadcast';
-import type { InfiniteData, QueryClient } from '@tanstack/vue-query';
-import type { Note, NoteShort } from '../model/types';
 import { updateNoteInCache } from './update-note-in-cache';
+import { onBroadcastMessage } from '@/shared/lib/broadcast';
 
 const clearFiredReminders = async (
   dataTransfer: DataTransfer,
