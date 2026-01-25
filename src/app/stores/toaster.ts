@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { onBeforeMount, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 export type ToastType = 'default' | 'success' | 'danger';
 
@@ -14,13 +14,10 @@ export const PERSISTED_ERRORS_SHOWN_KEY = 'errorsShown';
 
 export const useToasterStore = defineStore('toaster', () => {
   const errorsShown = ref<boolean>(false);
-
-  onBeforeMount(() => {
-    const value = localStorage.getItem(PERSISTED_ERRORS_SHOWN_KEY);
-    if (value !== null) {
-      errorsShown.value = value === 'true';
-    }
-  });
+  const value = localStorage.getItem(PERSISTED_ERRORS_SHOWN_KEY);
+  if (value !== null) {
+    errorsShown.value = value === 'true';
+  }
 
   watch(errorsShown, (value, prev) => {
     if (value === prev) return;
