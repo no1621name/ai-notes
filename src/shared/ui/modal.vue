@@ -60,7 +60,7 @@ onUnmounted(() => {
         >
           <VueIcon name="lu:x"/>
         </button>
-        <div class="p-4 pt-0">
+        <div class="p-4 pt-2">
           <slot name="content" :close="close" />
         </div>
       </div>
