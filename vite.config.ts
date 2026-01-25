@@ -35,4 +35,34 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('pinia') || id.includes('@intlify') || id.includes('vue-i18n')) {
+              return 'vue-vendor';
+            }
+            if (id.includes('@tiptap') || id.includes('prosemirror')) {
+              return 'tiptap-vendor';
+            }
+            if (id.includes('@floating-ui') || id.includes('daisyui') || id.includes('@kalimahapps')) {
+              return 'ui-vendor';
+            }
+            if (
+              id.includes('@tanstack')
+              || id.includes('@regle')
+              || id.includes('arktype')
+              || id.includes('uuid')
+              || id.includes('dayjs')
+              || id.includes('supabase')
+              || id.includes('groq-sdk')
+            ) {
+              return 'utils-vendor';
+            }
+          }
+        },
+      },
+    },
+  },
 });
