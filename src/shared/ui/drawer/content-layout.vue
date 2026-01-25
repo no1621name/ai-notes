@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
+
 import { useDrawerHide } from '@/shared/composables/use-drawer-hide';
 
 const { getHide } = useDrawerHide();
 const hide = getHide();
+const { t } = useI18n();
 
 defineProps<{
   tootlip?: string;
@@ -16,7 +19,12 @@ defineProps<{
       <div class="max-w-[90%]">
         <slot name="header" />
       </div>
-      <button class="absolute top-4 right-4 cursor-pointer" @click="hide">
+      <button
+        class="absolute top-4 right-4 cursor-pointer"
+        @click="hide"
+        :aria-label="t('actions.close')"
+        :title="t('actions.close')"
+      >
         <VueIcon name="lu:x" />
       </button>
     </header>

@@ -138,20 +138,22 @@ onUnmounted(() => {
       />
 
       <fieldset class="fieldset" :disabled="isReminderUpdating">
-        <p class="label">
-          {{ t('reminderDate') }}
-          <span class="tooltip tooltip-right">
-            <VueIcon name="lu:info"/>
-            <span class="tooltip-content text-xs">{{ t('reminderTooltip') }}</span>
-          </span>
-        </p>
-        <input
-          type="datetime-local"
-          id="event-datetime"
-          v-model="selectedReminderDate"
-          class="input input-xs w-max"
-          :min="minReminderDate"
-        >
+        <label class="label flex flex-col w-max items-start">
+          <p>
+            {{ t('reminderDate') }}
+            <span class="tooltip tooltip-right">
+              <VueIcon name="lu:info"/>
+              <span class="tooltip-content text-xs">{{ t('reminderTooltip') }}</span>
+            </span>
+          </p>
+          <input
+            type="datetime-local"
+            id="event-datetime"
+            v-model="selectedReminderDate"
+            class="input input-xs w-max"
+            :min="minReminderDate"
+          >
+        </label>
       </fieldset>
     </template>
     <template #toolbar>
