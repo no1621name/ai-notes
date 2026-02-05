@@ -25,6 +25,7 @@
     "@kalimahapps/vue-icons": "1.9.5",
     "@regle/core": "1.16.2",
     "@regle/schemas": "1.16.2",
+    "@sereneinserenade/tiptap-search-and-replace": "0.1.1",
     "@supabase/supabase-js": "2.90.1",
     "@tanstack/vue-query": "5.92.5",
     "@tanstack/vue-query-devtools": "6.1.3",

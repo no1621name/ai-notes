@@ -3,7 +3,9 @@ import { onBeforeMount, shallowRef, useTemplateRef } from 'vue';
 import { Editor, EditorContent, VueNodeViewRenderer } from '@tiptap/vue-3';
 import { BubbleMenu as BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
 import { Placeholder } from '@tiptap/extensions';
+
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
+import { SearchAndReplace } from '@sereneinserenade/tiptap-search-and-replace';
 import { useI18n } from 'vue-i18n';
 
 import { BUBBLE_MENU_PLUGIN_KEYS, DEFAULT_COMMAND_ITEMS } from '../model/config';
@@ -48,6 +50,7 @@ onBeforeMount(async () => {
           mountElement: commandsMountElement.value ?? document.body,
         }),
       }),
+      SearchAndReplace,
       Placeholder.configure({
         placeholder: props.placeholder ?? t('placeholders.editor'),
       }),
@@ -65,7 +68,8 @@ defineExpose({ editor });
 </script>
 
 <template>
-  <div class="relative w-full h-full flex flex-col" ref='commands-mount'>
+  <div class="relative overflow-y-auto w-full h-full flex flex-col" ref='commands-mount'>
+    <slot />
     <EditorSkeleton v-if="skeleton || !editor"/>
     <EditorContent
       v-else

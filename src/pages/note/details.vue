@@ -19,6 +19,7 @@ import {
   useUpdateReminder } from '@/entities/note';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 import { formatForDatetimeLocal } from '@/shared/lib/date';
+import { SearchPopup, SearchToggler } from '@/features/md-editor/search';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -163,6 +164,7 @@ onUnmounted(() => {
           <span>{{ t('chars') }}: {{ editor?.editor.storage.characterCount.characters() }}</span>
           <span>{{ t('words') }}: {{ editor?.editor.storage.characterCount.words() }}</span>
         </span>
+        <SearchToggler/>
       </div>
     </template>
     <template #default>
@@ -173,7 +175,9 @@ onUnmounted(() => {
           ref="editor"
           :skeleton="isLoading && !data?.text"
           class="flex-1"
-        />
+        >
+          <SearchPopup class="sticky z-1 top-0 ml-auto"/>
+        </Editor>
       </div>
     </template>
   </DrawerLayout>

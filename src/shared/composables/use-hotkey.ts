@@ -26,17 +26,28 @@ export const SYMBOLS: Record<string, string> = {
   enter: '⏎',
 };
 
-export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void) => {
+export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void, prevent = false) => {
   const parts = binding.toLowerCase().replace(/\s/g, '').split('+');
   const rawKey = parts.pop();
   const key = rawKey ? (ALIASES[rawKey] || rawKey) : '';
+  const code = (() => {
+    if (!key || key.length !== 1) return undefined;
+
+    if (key >= 'a' && key <= 'z') return `Key${key.toUpperCase()}`;
+    if (key >= '0' && key <= '9') return `Digit${key}`;
+
+    return undefined;
+  })();
 
   const requiredModifiers = new Set(
     parts.map(part => ALIASES[part] || part),
   );
 
   const listener = (e: KeyboardEvent) => {
-    if (e.key.toLowerCase() !== key) {
+    const isCodeMatch = code && e.code === code;
+    const isKeyMatch = e.key.toLowerCase() === key;
+
+    if (!isCodeMatch && !isKeyMatch) {
       return;
     }
 
@@ -54,6 +65,10 @@ export const useHotkey = (binding: string, handler: (e: KeyboardEvent) => void) 
       if (!pressedModifiers.has(mod)) {
         return;
       }
+    }
+
+    if (prevent) {
+      e.preventDefault();
     }
 
     handler(e);
