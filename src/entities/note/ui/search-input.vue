@@ -4,11 +4,13 @@ import { useI18n } from 'vue-i18n';
 import VueIcon from '@kalimahapps/vue-icons/VueIcon';
 
 import { debounce } from '@/shared/lib/debounce';
+import { useIsMobile } from '@/shared/composables/use-media-query';
 
 const { t } = useI18n();
 
 const search = ref('');
 const serachInput = useTemplateRef<HTMLInputElement>('search-input');
+const isMobile = useIsMobile();
 const isVisible = ref(false);
 
 const buttonTitle = computed(() => isVisible.value ? t('actions.close') : t('actions.search'));
@@ -39,9 +41,10 @@ const toggleVisible = async () => {
 </script>
 
 <template>
-  <div class="flex gap-2">
+  <div class="flex items-center" :class="{ 'gap-2': isMobile }">
     <button
       class="btn"
+      :class="{ 'btn-ghost btn-square pointer-events-none btn-sm': isMobile }"
       @click="toggleVisible"
       :aria-label="buttonTitle"
       :title="buttonTitle"
@@ -51,12 +54,13 @@ const toggleVisible = async () => {
     <Transition name="fade-up">
       <div
         class="join"
-        v-if="isVisible"
+        :class="{ 'w-full': isMobile }"
+        v-if="isVisible || isMobile"
       >
         <input
           ref="search-input"
           type="text"
-          class="input join-item"
+          class="input join-item flex-1"
           :placeholder="t('placeholder')"
           :value="search"
           @input="event => handleUpdate((event.target as HTMLInputElement).value)"

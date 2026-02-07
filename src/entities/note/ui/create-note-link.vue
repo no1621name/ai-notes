@@ -8,10 +8,8 @@ const { t } = useI18n();
 
 <template>
   <BaseCard
-    :to="{
-      name: 'note-create'
-    }"
     class="transition-shadow shadow-xl hover:shadow-accent-content"
+    :to="{ name: 'note-create' }"
   >
     <h2 class="card-title break-all m-auto">
       <VueIcon name="lu:circle-plus"/>
@@ -19,14 +17,3 @@ const { t } = useI18n();
     </h2>
   </BaseCard>
 </template>
-
-<i18n>
-{
-  "en": {
-    "createNote": "Create new note"
-  },
-  "ru": {
-    "createNote": "Создать новую заметку"
-  }
-}
-</i18n>
