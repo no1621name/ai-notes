@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onActivated, ref } from 'vue';
+import { onActivated, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useDrawerHide } from '@/shared/composables/use-drawer-hide';
+import { useIsMobile } from '@/shared/composables/use-media-query';
 
 const { setHide } = useDrawerHide();
 
@@ -10,6 +11,10 @@ const { locale, t } = useI18n();
 const router = useRouter();
 const show = ref(false);
 let closing = false;
+
+const isMobile = useIsMobile();
+
+const transitionName = computed(() => isMobile.value ? 'slide-up' : 'slide-right');
 
 function hide() {
   show.value = false;
@@ -23,11 +28,6 @@ async function afterLeave() {
 }
 
 setHide(hide);
-
-onMounted(() => {
-  show.value = true;
-  document.body.style.overflow = 'hidden';
-});
 
 onActivated(() => {
   show.value = true;
@@ -47,10 +47,10 @@ onActivated(() => {
       />
     </Transition>
 
-    <Transition name="slide-right" @after-leave="afterLeave">
+    <Transition :name="transitionName" @after-leave="afterLeave">
       <aside
         v-if="show"
-        class="absolute right-0 top-0 h-full w-5/6 sm:w-3/4 lg:w-1/2 max-w-[90vw] bg-base-200 shadow-2xl pointer-events-auto flex flex-col"
+        class="bg-base-200 shadow-2xl pointer-events-auto flex flex-col fixed sm:absolute bottom-0 sm:top-0 sm:right-0 w-full sm:w-3/4 lg:w-1/2 sm:h-full h-[85vh] sm:rounded-none rounded-t-2xl z-20 sm:z-auto sm:max-w-[90vw]"
         role="dialog"
         aria-modal="true"
         :aria-label="t('drawer')"
