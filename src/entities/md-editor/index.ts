@@ -2,6 +2,7 @@ export { default as Editor } from './ui/editor.vue';
 export { default as EditorPreview } from './ui/editor-preview.vue';
 export { default as EditorBubbleMenu } from './ui/bubble-menu.vue';
 export { default as EditorActionButton } from './ui/action-button.vue';
+export { default as EditorStats } from './ui/editor-stats.vue';
 
 export { resetEditorContent } from './lib/reset-editor-content';
 
