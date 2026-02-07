@@ -9,7 +9,7 @@ import { DEFAULT_ACTIONS } from '../model/config';
     <button
       v-for="action in DEFAULT_ACTIONS"
       :key="action.id"
-      class="btn btn-sm"
+      class="btn btn-xs sm:btn-sm"
       disabled
     >
       <VueIcon :name="action.icon"/>
