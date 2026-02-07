@@ -49,7 +49,7 @@ const { t } = useI18n();
         @close="deletingId = null"
       >
         <template #message>
-          {{ t('deleteConfirm') }}
+          {{ t('deleteConfirm', { name: tag.name }) }}
         </template>
         <template #submit-text>
           {{ t('actions.delete') }}
@@ -79,10 +79,10 @@ const { t } = useI18n();
 <i18n>
 {
   "en": {
-    "deleteConfirm": "Delete this tag?"
+    "deleteConfirm": "Delete the \"{name}\" tag?"
   },
   "ru": {
-    "deleteConfirm": "Удалить этот тег?"
+    "deleteConfirm": "Удалить тег \"{name}\"?"
   }
 }
 </i18n>

@@ -28,12 +28,12 @@ const emit = defineEmits<{
 
 <template>
   <Dropdown
-    :allowedPlacements="['bottom-end']"
+    :allowedPlacements="['right-start', 'bottom']"
     menuClass="overflow-visible"
   >
     <template #trigger="{ toggle }">
       <button
-        class="btn btn-sm"
+        class="btn btn-xs sm:btn-sm"
         :class="{'btn-circle': smallButton}"
         :aria-label="t('addTag')"
         :title="t('addTag')"
