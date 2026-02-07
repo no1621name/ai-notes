@@ -40,6 +40,7 @@
     "@tiptap/starter-kit": "3.15.3",
     "@tiptap/suggestion": "3.15.3",
     "@tiptap/vue-3": "3.15.3",
+    "@vuepic/vue-datepicker": "^12.1.0",
     "arktype": "2.1.29",
     "groq-sdk": "0.37.0",
     "lowlight": "3.3.0",
@@ -78,5 +79,6 @@
     "vite-plugin-vue-devtools": "8.0.5",
     "vitest": "4.0.16",
     "vue-tsc": "3.2.2"
-  }
+  },
+  "packageManager": "pnpm@10.29.1+sha512.48dae233635a645768a3028d19545cacc1688639eeb1f3734e42d6d6b971afbf22aa1ac9af52a173d9c3a20c15857cfa400f19994d79a2f626fcc73fccda9bbc"
 }
