@@ -10,13 +10,14 @@ import MainBubbleMenu from '@/widgets/md-editor/main-bubble-menu.vue';
 import ManageNoteTags from '@/features/note/manage-note-tags.vue';
 import { AIHelperMenu } from '@/features/md-editor/ai-helper';
 import { FormattingActions } from '@/features/md-editor/formatting';
-import { type EditorRef, Editor, resetEditorContent, useEditor } from '@/entities/md-editor';
+import { type EditorRef, Editor, EditorStats, resetEditorContent, useEditor } from '@/entities/md-editor';
 import {
   useGetNote,
   NoteTitleField,
   useUpdateTitle,
   useUpdateText,
-  useUpdateReminder } from '@/entities/note';
+  useUpdateReminder,
+} from '@/entities/note';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
 import { formatForDatetimeLocal } from '@/shared/lib/date';
 import { SearchPopup, SearchToggler } from '@/features/md-editor/search';
@@ -139,7 +140,7 @@ onUnmounted(() => {
       />
 
       <fieldset class="fieldset" :disabled="isReminderUpdating">
-        <label class="label flex flex-col w-max items-start">
+        <label class="label flex sm:flex-col w-max sm:items-start">
           <p>
             {{ t('reminderDate') }}
             <span class="tooltip tooltip-right">
@@ -158,13 +159,12 @@ onUnmounted(() => {
       </fieldset>
     </template>
     <template #toolbar>
-      <div class="flex items-end gap-2 flex-wrap">
-        <FormattingActions/>
-        <span v-if="!!editor?.editor" class="flex flex-col text-xs">
-          <span>{{ t('chars') }}: {{ editor?.editor.storage.characterCount.characters() }}</span>
-          <span>{{ t('words') }}: {{ editor?.editor.storage.characterCount.words() }}</span>
-        </span>
-        <SearchToggler/>
+      <div class="w-full overflow-auto">
+        <div class="flex items-start sm:items-end gap-2 w-full flex-wrap">
+          <FormattingActions />
+          <EditorStats/>
+          <SearchToggler/>
+        </div>
       </div>
     </template>
     <template #default>
