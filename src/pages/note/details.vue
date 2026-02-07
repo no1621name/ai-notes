@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed, watch, ref, shallowRef, onUnmounted, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import VueIcon from '@kalimahapps/vue-icons/VueIcon';
-import { useI18n } from 'vue-i18n';
+
 import type { EditorEvents } from '@tiptap/vue-3';
 
 import { addToast } from '@/app/providers/toasts';
 import MainBubbleMenu from '@/widgets/md-editor/main-bubble-menu.vue';
 import ManageNoteTags from '@/features/note/manage-note-tags.vue';
+import SetReminder from '@/features/note/set-reminder.vue';
 import { AIHelperMenu } from '@/features/md-editor/ai-helper';
 import { FormattingActions } from '@/features/md-editor/formatting';
 import { type EditorRef, Editor, EditorStats, resetEditorContent, useEditor } from '@/entities/md-editor';
@@ -16,13 +16,10 @@ import {
   NoteTitleField,
   useUpdateTitle,
   useUpdateText,
-  useUpdateReminder,
 } from '@/entities/note';
 import DrawerLayout from '@/shared/ui/drawer/content-layout.vue';
-import { formatForDatetimeLocal } from '@/shared/lib/date';
 import { SearchPopup, SearchToggler } from '@/features/md-editor/search';
 
-const { t } = useI18n();
 const route = useRoute();
 
 const noteId = computed<string>(() => {
@@ -40,11 +37,8 @@ const { setEditor } = useEditor();
 const editor: EditorRef = shallowRef(null);
 const noteTitle = ref<string | null>(null);
 const lastAppliedMutationId = ref<number | null>(null);
-const selectedReminderDate = ref('');
-const minReminderDate = formatForDatetimeLocal(Date.now());
 
 const { updateTitle } = useUpdateTitle(noteId);
-const { updateReminder, isLoading: isReminderUpdating } = useUpdateReminder(noteId);
 const { updateText } = useUpdateText(noteId, () => {
   lastAppliedMutationId.value = (lastAppliedMutationId.value ?? 0) + 1;
 });
@@ -83,12 +77,6 @@ watch(data, (newData) => {
 
   noteTitle.value = newData.title;
 
-  if (newData.reminder_date) {
-    selectedReminderDate.value = formatForDatetimeLocal(newData.reminder_date);
-  } else {
-    selectedReminderDate.value = '';
-  }
-
   setEditorContent(newData.text);
 });
 
@@ -112,14 +100,6 @@ watch(() => editor.value?.editor, (instance) => {
   }
 });
 
-watch(selectedReminderDate, (value) => {
-  if (formatForDatetimeLocal(data.value?.reminder_date) === value) {
-    return;
-  }
-
-  updateReminder(value, data.value?.title || 'Напоминание');
-});
-
 onUnmounted(() => {
   editor.value?.editor.off('update', editorUpdateCallback);
 });
@@ -139,24 +119,11 @@ onUnmounted(() => {
         :is-loading="isLoading"
       />
 
-      <fieldset class="fieldset" :disabled="isReminderUpdating">
-        <label class="label flex sm:flex-col w-max sm:items-start">
-          <p>
-            {{ t('reminderDate') }}
-            <span class="tooltip tooltip-right">
-              <VueIcon name="lu:info"/>
-              <span class="tooltip-content text-xs">{{ t('reminderTooltip') }}</span>
-            </span>
-          </p>
-          <input
-            type="datetime-local"
-            id="event-datetime"
-            v-model="selectedReminderDate"
-            class="input input-xs w-max"
-            :min="minReminderDate"
-          >
-        </label>
-      </fieldset>
+      <SetReminder
+        :note-id="noteId"
+        :date="data?.reminder_date"
+        :note-title="data?.title"
+      />
     </template>
     <template #toolbar>
       <div class="w-full overflow-auto">
@@ -182,20 +149,3 @@ onUnmounted(() => {
     </template>
   </DrawerLayout>
 </template>
-
-<i18n>
-{
-  "en": {
-    "reminderDate": "Reminder date",
-    "reminderTooltip": "We will send you a notification",
-    "chars": "chars",
-    "words": "words"
-  },
-  "ru": {
-    "reminderDate": "Дата напоминания",
-    "reminderTooltip": "Мы отправим вам уведомление",
-    "chars": "символов",
-    "words": "слов"
-  }
-}
-</i18n>
