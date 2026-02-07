@@ -1,9 +1,11 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
   themes:
     light --default,
     dark --prefersdark;
 }
+
 @plugin "@tailwindcss/typography";
 
 @import "./transitions.css";
@@ -17,7 +19,11 @@
 
 
 @layer utilities {
-  input, textarea, select, .input {
+
+  input,
+  textarea,
+  select,
+  .input {
     @apply focus:outline-0 focus-within:outline-0;
   }
 
