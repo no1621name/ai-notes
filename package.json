@@ -40,6 +40,7 @@
     "@tiptap/starter-kit": "3.15.3",
     "@tiptap/suggestion": "3.15.3",
     "@tiptap/vue-3": "3.15.3",
+    "@vuepic/vue-datepicker": "^12.1.0",
     "arktype": "2.1.29",
     "groq-sdk": "0.37.0",
     "lowlight": "3.3.0",

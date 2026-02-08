@@ -25,13 +25,14 @@ const mode = computed(() => modes[props.mode]);
 </script>
 
 <template>
-  <form
-    class="flex gap-2 bg-base-300 items-center py-1 px-2 rounded-box"
-    @submit.prevent="$emit('submit')"
-  >
+  <form class="flex gap-2 bg-base-300 items-center py-1 px-2 rounded-box" @submit.prevent>
     <p class="text-xs"><slot name="message"/></p>
     <div class="flex gap-1">
-      <button type="submit" :class="`btn btn-xs ${mode}`">
+      <button
+        type="button"
+        :class="`btn btn-xs ${mode}`"
+        @click="$emit('submit')"
+      >
         <slot name="submit-text"/>
       </button>
       <button

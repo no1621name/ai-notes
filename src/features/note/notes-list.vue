@@ -5,9 +5,11 @@ import { useI18n } from 'vue-i18n';
 import { TagBadge, TagsSelectingList, TagsList, type Tag } from '@/entities/tag';
 import { CreateNoteLink, NoteBaseCard, NoteCard, NoteSearchInput, useGetNotes } from '@/entities/note';
 import { useIntersectionObserver } from '@/shared/composables/use-intersection-observer';
+import { useIsMobile } from '@/shared/composables/use-media-query';
 
 const { t } = useI18n();
 
+const isMobile = useIsMobile();
 const loader = useTemplateRef<HTMLElement | null>('loader');
 
 const editTags = ref(false);
@@ -59,8 +61,8 @@ const updateSelectedTags = (value: Tag['id']) => {
       />
     </div>
 
-    <div class="relative grid grid-cols-3 auto-rows-fr gap-3">
-      <CreateNoteLink/>
+    <div class="relative grid mb-20 sm:mb-0 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:auto-rows-fr gap-3">
+      <CreateNoteLink v-if="!isMobile"/>
 
       <template v-if="notes.length === 0 && search && !isLoading">
         <NoteBaseCard>
@@ -103,10 +105,10 @@ const updateSelectedTags = (value: Tag['id']) => {
 <i18n>
 {
   "en": {
-    "editTags": "Edit tags"
+    "editTags": "Edit tags",
   },
   "ru": {
-    "editTags": "Редактировать теги"
+    "editTags": "Редактировать теги",
   }
 }
 </i18n>

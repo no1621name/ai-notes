@@ -13,6 +13,7 @@
     "search": "Search"
   },
   "savedPrompts": "Saved prompts",
+  "createNote": "Create new note",
   "noResultsFor": "No results for \"{query}\"",
   "pages": {
     "home": "Home",

@@ -14,7 +14,7 @@ withDefaults(
 
 <template>
   <div
-    class="badge leading-0 tag-badge"
+    class="badge badge-sm sm:badge-md leading-0 tag-badge"
     :class="{ outline }"
     :style="{ '--tag-color': tag.color }"
   >

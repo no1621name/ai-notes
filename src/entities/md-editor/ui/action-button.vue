@@ -15,7 +15,7 @@ const { t } = useI18n();
 <template>
   <button
     v-if="editor"
-    class="btn btn-sm"
+    class="btn btn-xs sm:btn-sm"
     @click="action.action(editor)"
     :class="{ 'btn-primary': action.isActive(editor) }"
     :aria-label="t(action.label)"
