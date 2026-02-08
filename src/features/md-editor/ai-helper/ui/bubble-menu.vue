@@ -8,8 +8,10 @@ import { useAiHelper } from '../composables/use-ai-helper';
 import { SYMBOLS, useHotkey } from '@/shared/composables/use-hotkey';
 import PromptForm from './prompt-form.vue';
 import Response from './response.vue';
+import { useIsMobile } from '@/shared/composables/use-media-query';
 
 const { t } = useI18n();
+const isMobile = useIsMobile();
 
 const { editor } = useEditor();
 const { getEditorSelection } = useGetEditorSelection();
@@ -113,7 +115,7 @@ useHotkey('mod+backspace', handleDeny);
               @click="handleApply"
             >
               {{ t('actions.apply') }}
-              <span class="font-mono">
+              <span v-if="!isMobile" class="font-mono" >
                 <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.enter }}</kbd>
               </span>
             </button>
@@ -122,7 +124,7 @@ useHotkey('mod+backspace', handleDeny);
               @click="handleDeny"
             >
               {{ t('actions.deny') }}
-              <span class="font-mono">
+              <span v-if="!isMobile" class="font-mono">
                 <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.backspace }}</kbd>
               </span>
             </button>

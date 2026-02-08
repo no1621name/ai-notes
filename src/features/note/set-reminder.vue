@@ -16,13 +16,15 @@ const { t } = useI18n();
 const noteId = toRef(props.noteId);
 const { updateReminder, isLoading: isReminderUpdating } = useUpdateReminder(noteId);
 
+const getCurrentDate = () => new Date(Date.now() - 60 * 1000);
+
 const selectedDate = ref<Date | null>(props.date ? new Date(props.date) : null);
-const minDate = ref(new Date());
+const minDate = ref(getCurrentDate());
 let intervalId: ReturnType<typeof setInterval>;
 let timeoutId: ReturnType<typeof setTimeout>;
 
 const updateMinDate = () => {
-  minDate.value = new Date();
+  minDate.value = getCurrentDate();
 };
 
 onMounted(() => {

@@ -109,7 +109,7 @@ const preventPasting = (event: ClipboardEvent) => {
         v-model="r$.$value"
         :placeholder="t('placeholder')"
         type="text"
-        class="textarea textarea-md sm:textarea-xl textarea-ghost field-sizing-content max-h-16 sm:max-h-32 min-h-0 overflow-y-auto w-full max-w-full resize-none focus:outline-0 break-all"
+        class="textarea textarea-md sm:textarea-xl textarea-ghost field-sizing-content max-h-16 sm:max-h-32 min-h-0 overflow-y-auto w-full max-w-full resize-none focus:outline-0 break-all border border-base-content/10"
       />
       <div class="flex items-center flex-wrap mt-1">
         <ErrorMessage :state="r$" class="mr-auto"/>

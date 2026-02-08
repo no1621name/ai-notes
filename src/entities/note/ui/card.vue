@@ -47,7 +47,7 @@ const dateItems = computed<DateItem[]>(() => {
     </h2>
 
     <div class="text-ellipsis">
-      <p class="text-base-content/70 line-clamp-3">{{ note.description }}...</p>
+      <p class="text-base-content/70 line-clamp-3" v-if="note.description">{{ note.description }}...</p>
     </div>
 
     <div class="card-actions mt-auto">

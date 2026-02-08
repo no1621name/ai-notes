@@ -7,6 +7,7 @@ import { type SavedPrompt, SavedPromptsAccordion, useAiClient } from '@/entities
 import ModelSelect from '@/entities/ai-client/ui/model/model-select.vue';
 import ErrorMessage from '@/shared/ui/error-message.vue';
 import { SYMBOLS, useHotkey } from '@/shared/composables/use-hotkey';
+import { useIsMobile } from '@/shared/composables/use-media-query';
 
 defineProps<{
   isLoading: boolean;
@@ -14,6 +15,8 @@ defineProps<{
 }>();
 
 const { t } = useI18n();
+
+const isMobile = useIsMobile();
 const selectedPrompt = ref<SavedPrompt | null>(null);
 const { settings } = useAiClient();
 
@@ -87,7 +90,7 @@ useHotkey('esc', () => emit('close'));
       >
         <template v-if="!isLoading">
           {{ t('actions.send') }}
-          <span class="font-mono">
+          <span v-if="!isMobile" class="font-mono">
             <kbd class="kbd kbd-xs">{{ SYMBOLS.mod }}</kbd>+<kbd class="kbd kbd-xs">{{ SYMBOLS.enter }}</kbd>
           </span>
         </template>
