@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { VueDatePicker } from '@vuepic/vue-datepicker';
+import { useTemplateRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 import '@vuepic/vue-datepicker/dist/main.css';
+
 import { useTheme } from '../composables/use-theme';
+
+const dpRef = useTemplateRef<InstanceType<typeof VueDatePicker>>('datepicker');
+
+const { t } = useI18n();
 
 const props = defineProps<{
   modelValue: Date | null;
@@ -17,12 +24,23 @@ const currentTheme = useTheme();
 
 <template>
   <VueDatePicker
+    ref="dpRef"
     vertical
     :min-date="minDate"
     :dark="currentTheme === 'dark'"
     :modelValue="props.modelValue"
     @update:modelValue="emit('update:modelValue', $event)"
-  />
+  >
+    <template #action-buttons="{ selectDate, selectionDisabled }">
+      <button
+        class="btn btn-primary btn-soft btn-sm px-6"
+        @click="selectDate"
+        :disabled="selectionDisabled"
+      >
+        {{ t('actions.save') }}
+      </button>
+    </template>
+  </VueDatePicker>
 </template>
 
 <style>
@@ -46,7 +64,7 @@ const currentTheme = useTheme();
   }
 }
 
-.dp__theme_dark {
+.dp__theme_dark, .dp__theme_light {
   --dp-background-color: var(--color-base-300);
   --dp-text-color: var(--color-base-content);
   --dp-primary-color: var(--color-primary);
