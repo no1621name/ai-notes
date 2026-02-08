@@ -56,11 +56,11 @@ defineExpose({
     <template v-if="items.length">
       <DropdownMenuItem
         v-for="(item, index) in items"
+        class="btn btn-sm sm:btn-xs px-2 min-w-max"
         :key="item.id"
         :ref="el => itemRefs[index] = el as ComponentPublicInstance"
-        @click="selectItem(index)"
-        class="btn btn-xs px-1"
         :class="{ 'btn-primary': index === selectedIndex }"
+        @click="selectItem(index)"
       >
         {{ i18n.global.t(item.label) }}
       </DropdownMenuItem>
