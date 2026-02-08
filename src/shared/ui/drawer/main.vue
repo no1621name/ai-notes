@@ -50,7 +50,7 @@ onActivated(() => {
     <Transition :name="transitionName" @after-leave="afterLeave">
       <aside
         v-if="show"
-        class="bg-base-200 shadow-2xl pointer-events-auto flex flex-col fixed sm:absolute bottom-0 sm:top-0 sm:right-0 w-full sm:w-3/4 lg:w-1/2 sm:h-full h-[85vh] sm:rounded-none rounded-t-2xl z-20 sm:z-auto sm:max-w-[90vw]"
+        class="bg-base-200 shadow-2xl pointer-events-auto flex flex-col fixed sm:absolute bottom-0 sm:top-0 sm:right-0 w-full sm:w-3/4 lg:w-1/2 sm:h-full h-[87.5vh] sm:rounded-none rounded-t-2xl z-20 sm:z-auto sm:max-w-[90vw]"
         role="dialog"
         aria-modal="true"
         :aria-label="t('drawer')"
