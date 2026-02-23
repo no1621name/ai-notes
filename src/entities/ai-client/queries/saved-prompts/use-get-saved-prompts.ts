@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/vue-query';
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
-import { getSavedPrompts } from '../../api/data-transfer/saved-prompts/get-propmts';
+import { getSavedPrompts } from '../../api/data-transfer/saved-prompts/get-prompts';
 import type { SavedPrompt } from '../../model/types';
 
 export const savedPromptsOptions = queryOptions<SavedPrompt[]>({
