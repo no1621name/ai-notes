@@ -68,12 +68,6 @@ export const getCommandsOptions = ({ RenderComponent, items, mountElement }: Get
       },
       onKeyDown(props) {
         if (props.event.key === 'Escape') {
-          component.destroy();
-
-          if (isHtmlElement(component)) {
-            component.element.remove();
-          }
-
           return true;
         }
 
