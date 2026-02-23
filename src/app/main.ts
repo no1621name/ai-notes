@@ -38,6 +38,6 @@ const configureApp = async (app: IApp) => {
 };
 
 const app = createApp(App);
-configureApp(app);
-
-app.mount('#app');
+configureApp(app).then(() => {
+  app.mount('#app');
+});
