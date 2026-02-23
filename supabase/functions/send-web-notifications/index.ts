@@ -92,9 +92,11 @@ serve(async (req) => {
           return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
         }
       }
-    } catch {
-      // ignore error
+    } catch (error) {
+      return new Response(JSON.stringify({ error: 'Bad request' }), { status: 400, headers: corsHeaders });
     }
+
+    return new Response(JSON.stringify({ error: 'Unknown action or missing fields' }), { status: 400, headers: corsHeaders });
   }
 
   const { data: notifications } = await supabase
