@@ -1,8 +1,7 @@
-import { addToast } from '@/app/providers/toasts';
-import { type ToastType } from '@/app/stores/toaster';
+type NotifyFn = (payload: ToastPayload) => void;
 
 type ToastPayload = {
-  type: ToastType;
+  type: string;
   title: string;
   message: string;
   titleParams?: Record<string, unknown>;
@@ -10,6 +9,12 @@ type ToastPayload = {
 };
 
 export class ErrorNotifier {
+  private notifyFn: NotifyFn | null = null;
+
+  public setNotifyFn(fn: NotifyFn) {
+    this.notifyFn = fn;
+  }
+
   public invalidStoreName() {
     this.add({
       type: 'danger',
@@ -62,6 +67,6 @@ export class ErrorNotifier {
   }
 
   public add(payload: ToastPayload) {
-    addToast(payload);
+    this.notifyFn?.(payload);
   }
 }
