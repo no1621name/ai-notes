@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, watch, ref, shallowRef, onUnmounted, onMounted } from 'vue';
+import { computed, watch, ref, shallowRef, onUnmounted, onMounted, onDeactivated } from 'vue';
 import { useRoute } from 'vue-router';
 
 import type { EditorEvents } from '@tiptap/vue-3';
@@ -100,9 +100,12 @@ watch(() => editor.value?.editor, (instance) => {
   }
 });
 
-onUnmounted(() => {
+const cleanupEditor = () => {
   editor.value?.editor.off('update', editorUpdateCallback);
-});
+};
+
+onDeactivated(cleanupEditor);
+onUnmounted(cleanupEditor);
 </script>
 
 <template>

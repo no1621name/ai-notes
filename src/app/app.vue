@@ -12,7 +12,7 @@ import Header from '@/widgets/layout/header.vue';
     </main>
 
     <RouterView name="drawer" v-slot="{ Component }">
-      <KeepAlive>
+      <KeepAlive :max="5">
         <component :is="Component" />
       </KeepAlive>
     </RouterView>
