@@ -15,12 +15,12 @@ const { t } = useI18n();
       <button
         :title="t('openSettings')"
         :aria-label="t('openSettings')"
+        class="cursor-pointer"
+        @click="toggle"
       >
         <VueIcon
-
           name="lu:settings"
-          class="text-2xl cursor-pointer"
-          @click="toggle"
+          class="text-2xl"
         />
       </button>
     </template>
