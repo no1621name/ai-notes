@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { EditorBubbleMenu, useEditor, useGetEditorSelection } from '@/entities/md-editor';
@@ -28,9 +28,20 @@ const { settingsHasValidApiKey, client, settings } = useAiClient();
 const response = ref<string>('');
 const isLoading = ref<boolean>(false);
 const errorMessage = ref<string>('');
+let abortController: AbortController | null = null;
+
+const abortStreaming = () => {
+  if (abortController) {
+    abortController.abort();
+    abortController = null;
+  }
+};
 
 const handlePrompt = async (payload: { model: string; prompt: string }) => {
   if (!settings.value || isLoading.value) return;
+
+  abortStreaming();
+  abortController = new AbortController();
 
   isLoading.value = true;
   response.value = '';
@@ -39,9 +50,11 @@ const handlePrompt = async (payload: { model: string; prompt: string }) => {
     const completions = client.getCompletions(payload.prompt, {
       ...settings.value,
       model: payload.model,
-    }, getEditorSelection());
+    }, getEditorSelection(), abortController.signal);
 
     for await (const chunk of completions) {
+      if (abortController?.signal.aborted) break;
+
       if (chunk.error) {
         response.value = chunk.errorMessage || 'Unknown error';
         break;
@@ -55,8 +68,11 @@ const handlePrompt = async (payload: { model: string; prompt: string }) => {
     }
   } finally {
     isLoading.value = false;
+    abortController = null;
   }
 };
+
+onUnmounted(abortStreaming);
 
 const handleApply = () => {
   if (isLoading.value) return;
@@ -66,8 +82,8 @@ const handleApply = () => {
 };
 
 const handleDeny = () => {
-  if (isLoading.value) return;
-
+  abortStreaming();
+  isLoading.value = false;
   response.value = '';
 };
 
