@@ -1,12 +1,14 @@
-type NotifyFn = (payload: ToastPayload) => void;
+type ToastType = 'default' | 'success' | 'danger';
 
 type ToastPayload = {
-  type: string;
+  type: ToastType;
   title: string;
   message: string;
   titleParams?: Record<string, unknown>;
   messageParams?: Record<string, unknown>;
 };
+
+type NotifyFn = (payload: ToastPayload) => void;
 
 export class ErrorNotifier {
   private notifyFn: NotifyFn | null = null;
