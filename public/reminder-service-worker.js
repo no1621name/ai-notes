@@ -22,7 +22,7 @@ const addFiredReminder = async (noteId) => {
       const store = transaction.objectStore(STORE_NAME);
 
       const data = {
-        id: Math.random().toString(36).substring(8),
+        id: crypto.randomUUID(),
         note_id: noteId,
         timestamp: Date.now(),
       };
@@ -82,6 +82,7 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   const eventAction = event.action;
+  event.notification.close();
 
   if (eventAction !== 'explore') {
     return;
@@ -89,7 +90,6 @@ self.addEventListener('notificationclick', (event) => {
 
   const noteId = event.notification.data.noteId;
   const url = `${self.location.origin}/note/${noteId}`;
-  event.notification.close();
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then((windowClients) => {
       for (const client of windowClients) {
