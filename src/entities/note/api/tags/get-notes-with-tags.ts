@@ -45,6 +45,13 @@ export const getNotesWithTags = async (
   return notesWithTags
     .map<WithTags<NoteShort>>(({ text, ...note }) => ({
       ...note,
-      description: text ? toDescription(JSON.parse(text)) : '',
+      description: (() => {
+        if (!text) return '';
+        try {
+          return toDescription(JSON.parse(text));
+        } catch {
+          return '';
+        }
+      })(),
     }));
 };
