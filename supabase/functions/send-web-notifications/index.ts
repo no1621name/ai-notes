@@ -92,7 +92,7 @@ serve(async (req) => {
           return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
         }
       }
-    } catch (error) {
+    } catch {
       return new Response(JSON.stringify({ error: 'Bad request' }), { status: 400, headers: corsHeaders });
     }
 
