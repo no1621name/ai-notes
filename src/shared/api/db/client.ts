@@ -125,7 +125,7 @@ export default class DBClient implements DBDataTransfer {
 
       if (!!item && !item?.[storeConfig.primaryKey as keyof I]) {
         this.errorNotifier.missingPrimaryKey();
-        reject();
+        return reject();
       }
 
       const request = await requestFn();
