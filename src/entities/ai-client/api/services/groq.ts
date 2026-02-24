@@ -54,7 +54,7 @@ export class GroqService implements AiService {
     throw new AiServiceError(error instanceof Error ? error.message : 'Unknown error');
   }
 
-  public async* getCompletions(userMessage: string, settings: AiSettings, context?: string): AsyncIterable<Completion> {
+  public async* getCompletions(userMessage: string, settings: AiSettings, context?: string, signal?: AbortSignal): AsyncIterable<Completion> {
     try {
       const stream = await this.client.chat.completions.create({
         model: settings.model || '',
@@ -70,7 +70,7 @@ export class GroqService implements AiService {
             content: userMessage,
           },
         ],
-      });
+      }, signal ? { signal } : undefined);
 
       for await (const chunk of stream) {
         const chunkData = chunk.choices[0];
