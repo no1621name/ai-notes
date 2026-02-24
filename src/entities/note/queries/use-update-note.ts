@@ -46,7 +46,11 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
             };
 
             if (data.text) {
-              updatedNote.description = toDescription(JSON.parse(data.text));
+              try {
+                updatedNote.description = toDescription(JSON.parse(data.text));
+              } catch {
+                updatedNote.description = '';
+              }
             }
 
             return updatedNote;
