@@ -3,6 +3,19 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useToasterStore } from '@/app/stores/toaster';
 import { ErrorNotifier } from './error-notifier';
 
+const createNotifier = () => {
+  const notifier = new ErrorNotifier();
+  const toasterStore = useToasterStore();
+  notifier.setNotifyFn((payload) => {
+    toasterStore.add({
+      type: payload.type,
+      title: payload.title,
+      message: payload.message,
+    });
+  });
+  return { notifier, toasterStore };
+};
+
 describe('ErrorNotifier', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -11,8 +24,7 @@ describe('ErrorNotifier', () => {
 
   describe('basic functional', () => {
     it('should add a custom toast payload', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
       const customPayload = {
         type: 'success',
         title: 'Custom Title',
@@ -31,8 +43,7 @@ describe('ErrorNotifier', () => {
 
   describe('prepared errors', () => {
     it('should add a toast for invalidStoreName', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
 
       notifier.invalidStoreName();
 
@@ -44,8 +55,7 @@ describe('ErrorNotifier', () => {
     });
 
     it('should add a toast for missingPrimaryKey', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
 
       notifier.missingPrimaryKey();
 
@@ -57,8 +67,7 @@ describe('ErrorNotifier', () => {
     });
 
     it('should add a toast for requestFailed without an error', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
 
       notifier.requestFailed();
 
@@ -70,8 +79,7 @@ describe('ErrorNotifier', () => {
     });
 
     it('should add a toast for requestFailed with an error', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
       const error = new DOMException('Permission denied');
 
       notifier.requestFailed(error);
@@ -83,8 +91,7 @@ describe('ErrorNotifier', () => {
     });
 
     it('should add a toast for duplicateItem', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
 
       notifier.duplicateItem('123', 'notes');
 
@@ -95,8 +102,7 @@ describe('ErrorNotifier', () => {
     });
 
     it('should add a toast for itemNotFound', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
 
       notifier.itemNotFound('456', 'tags');
 
@@ -107,8 +113,7 @@ describe('ErrorNotifier', () => {
     });
 
     it('should add a toast for missingIdForUpdate', () => {
-      const notifier = new ErrorNotifier();
-      const toasterStore = useToasterStore();
+      const { notifier, toasterStore } = createNotifier();
 
       notifier.missingIdForUpdate();
 

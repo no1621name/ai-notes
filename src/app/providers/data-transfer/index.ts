@@ -2,9 +2,11 @@ import type { App } from 'vue';
 import { createDBDataTransfer, createMessagesDataTransfer, dbDataTransferKey, messagesDataTransferKey } from './db';
 import { createLsDataTransfer, lsDataTransferKey } from './localstorage';
 import { ErrorNotifier } from '@/shared/api/errors/error-notifier';
+import { addToast } from '@/app/providers/toasts';
 
 export const setupDataTransfers = (app: App) => {
   const errorNotifier = new ErrorNotifier();
+  errorNotifier.setNotifyFn(addToast);
 
   const dbDataTransfer = createDBDataTransfer(errorNotifier);
   const lsDataTransfer = createLsDataTransfer(errorNotifier);
