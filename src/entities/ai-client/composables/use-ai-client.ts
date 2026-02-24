@@ -6,7 +6,7 @@ import { useGetModels } from '../queries/use-get-models';
 
 const client = new GroqService();
 
-type UseAiClinent = () => {
+type UseAiClient = () => {
   client: AiService;
   settings: Ref<AiSettings | undefined>;
   isLoadingSettings: Ref<boolean>;
@@ -15,7 +15,7 @@ type UseAiClinent = () => {
   models: Ref<AiModel[] | undefined>;
 };
 
-export const useAiClient: UseAiClinent = () => {
+export const useAiClient: UseAiClient = () => {
   const { data: settings, isLoading: isLoadingSettings } = useGetSettings();
   const settingsHasValidApiKey = computed(() => !!settings.value?.apiKey?.match(client.apiKeyRegex));
 
@@ -29,7 +29,7 @@ export const useAiClient: UseAiClinent = () => {
         refetchModels();
       }
     }
-  });
+  }, { immediate: true });
 
   return {
     client,
