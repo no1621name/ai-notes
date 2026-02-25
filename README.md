@@ -1,39 +1,32 @@
-# ai-notes
+# AI Notes
 
-This template should help get you started developing with Vue 3 in Vite.
+It is a note-taking app built with Vue 3. 
 
-## Recommended IDE Setup
+## Key Features
+- ✨ **AI-Powered Rich Text Editing**: Prompt, modify, and generate text using AI models directly in the editor.
+- 💾 **Local Storage**: All notes and preferences are stored securely in your browser (IndexedDB).
+- 🏷️ **Organization**: Keep your thoughts structured using tags.
+- ⏰ **Reminders**: Set reminders for your notes.
+- 🌐 **Internalization**: The app supports multiple languages.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Tech Stack
+- **Framework & Build**: Vue 3, Vite
+- **Styling**: Tailwind CSS, daisyUI
+- **State Management**: Pinia
+- **Data Fetching**: TanStack Query
+- **Editor**: Tiptap
+- **Form & Validation**: Regle, Artype
+- **Testing**: Vitest
+- **Package Manager**: pnpm
+- **I18n**: Vue I18n
+- **Architecture**: [FSD](https://fsd.how/ru/docs/get-started/overview/)
 
-## Type Support for `.vue` Imports in TS
+## Supported Providers & Languages
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+For now only [Groq](https://groq.com/) is supported as a provider for AI models. If you need support for other providers, please open an issue.
 
-## Customize configuration
+Also there are only English and Russian languages supported for now. If you need support for other languages, please open an issue.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Acknowledgements
 
-## Project Setup
-
-```sh
-pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-pnpm dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-pnpm test:unit
-```
+Special thanks to [Vlad Starkovsky](https://github.com/starkovsky) for bug reports and improvement suggestions via his custom AI model.
