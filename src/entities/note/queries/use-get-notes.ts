@@ -1,4 +1,4 @@
-import { infiniteQueryOptions, useInfiniteQuery, type InfiniteData } from '@tanstack/vue-query';
+import { infiniteQueryOptions, keepPreviousData, useInfiniteQuery, type InfiniteData } from '@tanstack/vue-query';
 
 import { useDbDataTransfer } from '@/app/providers/data-transfer';
 import { getNotesWithTags } from '../api/tags/get-notes-with-tags';
@@ -37,5 +37,6 @@ export const useGetNotes = ({ search, tags }: UseGetNotesKeys) => {
         tags: toValue(tags),
       });
     },
+    placeholderData: keepPreviousData,
   });
 };
