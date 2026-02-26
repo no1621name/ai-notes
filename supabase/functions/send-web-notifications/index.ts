@@ -6,7 +6,7 @@ const vapidJwk = JSON.parse(Deno.env.get('VAPID_JWK')!);
 const vapidKeys = await webpush.importVapidKeys(vapidJwk);
 
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': Deno.env.get('ALLOWED_ORIGIN') || '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
