@@ -9,7 +9,7 @@ const hide = getHide();
 const { t } = useI18n();
 
 defineProps<{
-  tootlip?: string;
+  tooltip?: string;
 }>();
 </script>
 
@@ -30,9 +30,9 @@ defineProps<{
     </header>
     <div
       class="flex flex-col h-max flex-1"
-      :class="{'tooltip': !!tootlip, 'overflow-auto': !tootlip}"
+      :class="{'tooltip': !!tooltip, 'overflow-auto': !tooltip}"
     >
-      <span v-if="tootlip" class="tooltip-content">{{ tootlip }}</span>
+      <span v-if="tooltip" class="tooltip-content">{{ tooltip }}</span>
       <div v-if="$slots.toolbar" class="p-2 flex-none border-b border-b-base-300">
         <slot name="toolbar" />
       </div>

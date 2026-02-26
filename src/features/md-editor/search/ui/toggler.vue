@@ -10,7 +10,7 @@ const { toggle } = useToggleSearchPopup();
 
 <template>
   <button
-    class="btn btn-xs sm:btn-sm btn-sqare"
+    class="btn btn-xs sm:btn-sm btn-square"
     :title="t('search')"
     :aria-label="t('search')"
     @click="toggle"
