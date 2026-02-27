@@ -25,7 +25,7 @@ export const broadcastQueryClient = (queryClient: QueryClient) => {
     transaction = false;
   };
 
-  queryClient.getQueryCache().subscribe((event) => {
+  const unsubscribeCache = queryClient.getQueryCache().subscribe((event) => {
     if (transaction) {
       return;
     }
@@ -87,6 +87,7 @@ export const broadcastQueryClient = (queryClient: QueryClient) => {
   });
 
   return () => {
+    unsubscribeCache();
     removeHandler();
   };
 };
