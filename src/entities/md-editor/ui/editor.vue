@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, shallowRef, useTemplateRef } from 'vue';
+import { onBeforeMount, onBeforeUnmount, shallowRef, useTemplateRef } from 'vue';
 import { Editor, EditorContent, VueNodeViewRenderer } from '@tiptap/vue-3';
 import { BubbleMenu as BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
 import { Placeholder } from '@tiptap/extensions';
@@ -62,6 +62,10 @@ onBeforeMount(async () => {
       aiHelperExtension,
     ],
   });
+});
+
+onBeforeUnmount(() => {
+  editor.value?.destroy();
 });
 
 defineExpose({ editor });
