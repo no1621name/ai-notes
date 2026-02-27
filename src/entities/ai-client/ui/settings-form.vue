@@ -129,6 +129,10 @@ watch(updateError, (newError) => {
           :disabled="isLoadingSettings"
         />
         <ErrorMessage :state="r$.apiKey"/>
+        <p class="text-xs text-warning mt-1 flex items-center gap-1">
+          <VueIcon name="lu:triangle-alert" />
+          {{ t('apiKeyWarning') }}
+        </p>
 
         <label class="label">
           {{ t('model') }}
@@ -193,6 +197,7 @@ watch(updateError, (newError) => {
     "temperature": "Temperature",
     "resetSettings": "Reset settings",
     "apiKeyError": "Enter api key to get models",
+    "apiKeyWarning": "Your API key is stored locally and sent directly from the browser. Do not share your screen while the key is visible.",
     "usingService": "Currently we are using only {0} service for AI features. Soon we will add more services.",
   },
   "ru": {
@@ -202,6 +207,7 @@ watch(updateError, (newError) => {
     "temperature": "Температура",
     "resetSettings": "Reset settings",
     "apiKeyError": "Введите API ключ, чтобы получить модели",
+    "apiKeyWarning": "Ваш API-ключ хранится локально и отправляется напрямую из браузера. Не демонстрируйте экран, пока ключ виден.",
     "usingService": "Сейчас мы используем только {0} для предоставления ИИ функционала. Скоро будет добавлено больше сервисов.",
   }
 }
