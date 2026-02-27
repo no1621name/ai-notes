@@ -1,6 +1,13 @@
 export const BROADCAST_CHANNEL_NAME = 'ai-notes-app';
 
-const channel = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+let channel: BroadcastChannel | null = null;
+
+const getChannel = (): BroadcastChannel => {
+  if (!channel) {
+    channel = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
+  }
+  return channel;
+};
 
 export interface BroadcastMessage<T = unknown> {
   type: string;
@@ -8,7 +15,7 @@ export interface BroadcastMessage<T = unknown> {
 }
 
 export const sendBroadcastMessage = <T = unknown>(type: string, payload?: T) => {
-  channel.postMessage({ type, payload });
+  getChannel().postMessage({ type, payload });
 };
 
 export const onBroadcastMessage = <T = unknown>(
@@ -21,9 +28,9 @@ export const onBroadcastMessage = <T = unknown>(
     }
   };
 
-  channel.addEventListener('message', handler);
+  getChannel().addEventListener('message', handler);
 
   return () => {
-    channel.removeEventListener('message', handler);
+    getChannel().removeEventListener('message', handler);
   };
 };
