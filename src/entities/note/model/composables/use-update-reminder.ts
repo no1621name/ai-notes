@@ -4,7 +4,7 @@ import { useUpdateNote } from '../../queries/use-update-note';
 export const useUpdateReminder = (noteId: Ref<string>) => {
   const { mutate, isPending } = useUpdateNote(noteId);
 
-  const updateReminder = (date: string, title = 'Напоминание') => {
+  const updateReminder = (date: string, title = 'Reminder') => {
     if (!date) {
       mutate({
         body: {
