@@ -10,7 +10,7 @@ import ManageNoteTags from '@/features/note/manage-note-tags.vue';
 import SetReminder from '@/features/note/set-reminder.vue';
 import { AIHelperMenu } from '@/features/md-editor/ai-helper';
 import { FormattingActions } from '@/features/md-editor/formatting';
-import { type EditorRef, Editor, EditorStats, resetEditorContent, useEditor } from '@/entities/md-editor';
+import { type EditorRef, Editor, EditorStats, resetEditorContent, useProvideEditor } from '@/entities/md-editor';
 import {
   useGetNote,
   NoteTitleField,
@@ -32,9 +32,9 @@ const noteId = computed<string>(() => {
 
 const { data, isFetching: isLoading } = useGetNote(noteId);
 
-const { setEditor } = useEditor();
-
 const editor: EditorRef = shallowRef(null);
+useProvideEditor(editor);
+
 const noteTitle = ref<string | null>(null);
 const lastAppliedMutationId = ref<number | null>(null);
 
@@ -61,8 +61,6 @@ const setEditorContent = (text: string) => {
     });
   }
 };
-
-setEditor(editor);
 
 watch(noteId, () => {
   lastAppliedMutationId.value = null;

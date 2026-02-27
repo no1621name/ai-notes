@@ -6,7 +6,7 @@ export { default as EditorStats } from './ui/editor-stats.vue';
 
 export { resetEditorContent } from './lib/reset-editor-content';
 
-export { useEditor } from './composables/use-editor';
+export { useEditor, useProvideEditor } from './composables/use-editor';
 export { useGetEditorSelection } from './composables/use-get-editor-selection';
 
 export { ACTIONS_DEFINITIONS } from './model/config/actions';
