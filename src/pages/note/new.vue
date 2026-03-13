@@ -39,7 +39,7 @@ const triggerCreate = debounce(async () => {
 </script>
 
 <template>
-  <DrawerLayout :tootlip="t('tooltip')">
+  <DrawerLayout :tooltip="t('tooltip')">
     <template #header>
       <NoteTitleField
         ref="titleFieldRef"

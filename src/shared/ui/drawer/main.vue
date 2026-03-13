@@ -10,8 +10,6 @@ const { setHide } = useDrawerHide();
 const { locale, t } = useI18n();
 const router = useRouter();
 const show = ref(false);
-let closing = false;
-
 const isMobile = useIsMobile();
 
 const transitionName = computed(() => isMobile.value ? 'slide-up' : 'slide-right');
@@ -21,8 +19,6 @@ function hide() {
 }
 
 async function afterLeave() {
-  if (closing) return;
-  closing = true;
   router.push({ name: 'home', params: { locale: locale.value } });
   document.body.style.overflow = 'auto';
 }
@@ -31,7 +27,6 @@ setHide(hide);
 
 onActivated(() => {
   show.value = true;
-  closing = false;
   document.body.style.overflow = 'hidden';
 });
 </script>
