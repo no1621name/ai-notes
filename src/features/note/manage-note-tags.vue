@@ -18,7 +18,7 @@ const { t } = useI18n();
 const { mutate: addTag } = useAddTagToNote();
 const { mutate: removeTag } = useRemoveTagFromNote();
 
-const hanldeTagSelection = ({ id }: { id: string }) => {
+const handleTagSelection = ({ id }: { id: string }) => {
   addTag({
     noteId: props.noteId,
     tagId: id,
@@ -61,7 +61,7 @@ const hanldeTagSelection = ({ id }: { id: string }) => {
     </template>
     <TagsDropdown
       v-else
-      @tag-select="hanldeTagSelection"
+      @tag-select="handleTagSelection"
       :small-button="!!tags?.length"
       :selected-tags="tags?.map(({id}) => id)"
     />

@@ -9,7 +9,7 @@ import { useIsMobile } from '@/shared/composables/use-media-query';
 const { t } = useI18n();
 
 const search = ref('');
-const serachInput = useTemplateRef<HTMLInputElement>('search-input');
+const searchInput = useTemplateRef<HTMLInputElement>('search-input');
 const isMobile = useIsMobile();
 const isVisible = ref(false);
 
@@ -19,13 +19,13 @@ const emit = defineEmits<{
   (e: 'update:search', value: string): void;
 }>();
 
-const updateSerach = (value: string) => {
+const updateSearch = (value: string) => {
   value = value.trim();
   search.value = value;
   emit('update:search', value);
 };
 
-const handleUpdate = debounce(updateSerach, 500);
+const handleUpdate = debounce(updateSearch, 500);
 
 const toggleVisible = async () => {
   isVisible.value = !isVisible.value;
@@ -35,7 +35,7 @@ const toggleVisible = async () => {
     emit('update:search', '');
   } else {
     await nextTick();
-    serachInput.value?.focus();
+    searchInput.value?.focus();
   }
 };
 </script>
