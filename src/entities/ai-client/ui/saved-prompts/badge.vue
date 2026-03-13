@@ -37,12 +37,12 @@ defineEmits<{
         class="cursor-pointer"
         name="lu:pencil-line"
 
-        @click="$emit('edit')"
+        @click.stop="$emit('edit')"
       />
       <VueIcon
         class="cursor-pointer"
         name="lu:trash"
-        @click="$emit('delete')"
+        @click.stop="$emit('delete')"
       />
     </template>
   </p>
