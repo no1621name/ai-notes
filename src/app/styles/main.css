@@ -27,7 +27,7 @@
     @apply focus:outline-0 focus-within:outline-0;
   }
 
-  break-word {
+  .break-word {
     word-break: break-word;
   }
 }
