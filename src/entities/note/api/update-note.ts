@@ -20,7 +20,7 @@ export const updateNote = async (
 
   if ('reminder_date' in body) {
     if (reminder_date) {
-      const title = body.title || reminderTitle || 'Напоминание';
+      const title = body.title || reminderTitle || 'Reminder';
       await setReminder(id as string, reminder_date.toISOString(), title);
     } else if (deleteReminder) {
       await deleteReminderApi(id as string);
