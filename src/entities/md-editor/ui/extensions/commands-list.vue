@@ -10,7 +10,7 @@ const props = defineProps<RendererComponentProps>();
 const itemRefs = ref<ComponentPublicInstance[]>([]);
 const selectedIndex = ref(0);
 
-watch(props.items, () => {
+watch(() => props.items, () => {
   selectedIndex.value = 0;
   itemRefs.value = [];
 });
