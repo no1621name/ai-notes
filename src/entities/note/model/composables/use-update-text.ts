@@ -1,17 +1,16 @@
-import { type Ref, watch } from 'vue';
+import { ref, type Ref, watch } from 'vue';
 import type { JSONContent } from '@tiptap/vue-3';
 
 import { addToast } from '@/app/providers/toasts';
 import { debounce } from '@/shared/lib/debounce';
 import { useUpdateNote } from '../../queries/use-update-note';
 
-let globalMutationId = 0;
-
 export const useUpdateText = (noteId: Ref<string>, onDebounced?: () => void) => {
   const { mutate } = useUpdateNote(noteId);
+  const mutationId = ref(0);
 
   watch(noteId, () => {
-    globalMutationId = 0;
+    mutationId.value = 0;
   });
 
   const updateText = debounce((content: JSONContent) => {
@@ -19,12 +18,12 @@ export const useUpdateText = (noteId: Ref<string>, onDebounced?: () => void) => 
       onDebounced?.();
 
       const text = JSON.stringify(content);
-      const mutationId = ++globalMutationId;
+      mutationId.value++;
 
       mutate({
         body: {
           text,
-          __mutationId: mutationId,
+          __mutationId: mutationId.value,
         },
       });
     } catch {

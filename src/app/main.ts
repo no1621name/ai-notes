@@ -12,7 +12,7 @@ import { clickOutsideDirective } from '@/shared/lib/vue/click-outside-directive'
 
 import './styles/main.css';
 
-const configureApp = async (app: IApp) => {
+const configureApp = (app: IApp) => {
   const i18n = setupI18n(app);
   const locale = getLocale(i18n);
   const i18nLoadingPromise = isAvailableLocale(locale)
@@ -34,10 +34,9 @@ const configureApp = async (app: IApp) => {
     errorNotifier,
   } = setupDataTransfers(app);
 
-  await setupReminders(dbDataTransfer, messagesDataTransfer, errorNotifier, queryClient, i18nLoadingPromise);
+  setupReminders(dbDataTransfer, messagesDataTransfer, errorNotifier, queryClient, i18nLoadingPromise);
 };
 
 const app = createApp(App);
 configureApp(app);
-
 app.mount('#app');

@@ -31,7 +31,7 @@ export default class PaginationService {
   private matchesSearch(value: unknown, query: string): boolean {
     let fieldValue = value;
 
-    if (this.validateFieldValue(fieldValue) && fieldValue.match(/[:,\{\}\[\]]|(\".*?\")|('.*?')|[-\w.]+/g)?.length) {
+    if (this.validateFieldValue(fieldValue) && (fieldValue.startsWith('{') || fieldValue.startsWith('['))) {
       try {
         fieldValue = toText(JSON.parse(fieldValue));
       } catch { }
