@@ -107,6 +107,11 @@ serve(async (req) => {
 
   if (!notifications?.length) return new Response('No notifications');
 
+  const webPush = await webpush.ApplicationServer.new({
+    contactInformation: 'mailto:admin@example.com',
+    vapidKeys: vapidKeys,
+  });
+
   for (const n of notifications) {
     const { data: subs } = await supabase
       .from('push_subscriptions')
@@ -114,11 +119,6 @@ serve(async (req) => {
       .eq('fingertip', n.fingertip);
 
     if (!subs?.length) continue;
-
-    const webPush = await webpush.ApplicationServer.new({
-      contactInformation: 'mailto:admin@example.com',
-      vapidKeys: vapidKeys,
-    });
 
     for (const sub of subs) {
       await webPush
