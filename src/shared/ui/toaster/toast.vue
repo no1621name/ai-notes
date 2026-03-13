@@ -20,8 +20,8 @@ const variantStyle = computed(() => variantClasses[props.variant]);
 </script>
 <template>
   <div
-    role="alert alert-vertical sm:alert-horizontal"
-    :class="`alert ${variantStyle}`"
+    role="alert"
+    :class="`alert alert-vertical sm:alert-horizontal ${variantStyle}`"
     @click="() => emit('close')"
   >
     <div>
