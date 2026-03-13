@@ -159,8 +159,11 @@ export default class DBClient implements DBDataTransfer {
   }
 
   public create<T>(store: string, item: T) {
-    if (typeof item === 'object' && item !== null && !('id' in item)) {
-      (item as unknown as { id: string }).id = v4();
+    const storeConf = this.config.stores.find(({ name }) => name === store);
+    const primaryKey = storeConf?.primaryKey ?? 'id';
+
+    if (typeof item === 'object' && item !== null && !(primaryKey in item)) {
+      (item as Record<string, unknown>)[primaryKey] = v4();
     }
 
     const request = () => {
