@@ -129,10 +129,12 @@ watch(updateError, (newError) => {
           :disabled="isLoadingSettings"
         />
         <ErrorMessage :state="r$.apiKey"/>
-        <p class="text-xs text-warning mt-1 flex items-center gap-1">
-          <VueIcon name="lu:triangle-alert" />
-          {{ t('apiKeyWarning') }}
-        </p>
+        <div class="alert alert-warning alert-soft text-xs p-2">
+          <VueIcon class="text-lg" name="lu:triangle-alert" />
+          <p>
+            {{ t('apiKeyWarning') }}
+          </p>
+        </div>
 
         <label class="label">
           {{ t('model') }}
