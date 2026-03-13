@@ -11,7 +11,7 @@ const isMac = typeof window !== 'undefined' && /Mac|iPhone|iPod|iPad/i.test((nav
 const ALIASES: Record<string, string> = {
   meta: 'meta',
   shift: 'shift',
-  alt: isMac ? 'alt' : 'option',
+  alt: isMac ? 'option' : 'alt',
   esc: 'escape',
   mod: isMac ? 'meta' : 'ctrl',
 };
