@@ -1,12 +1,15 @@
-import { ref } from 'vue';
+import { onScopeDispose, ref } from 'vue';
 
 export const useMediaQuery = (query: string) => {
   const mediaQuery = matchMedia(query);
   const matches = ref<boolean>(mediaQuery.matches);
 
-  mediaQuery.addEventListener('change', (event: MediaQueryListEvent) => {
+  const handler = (event: MediaQueryListEvent) => {
     matches.value = event.matches;
-  });
+  };
+
+  mediaQuery.addEventListener('change', handler);
+  onScopeDispose(() => mediaQuery.removeEventListener('change', handler));
 
   return matches;
 };
