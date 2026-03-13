@@ -100,6 +100,7 @@ watch(() => editor.value?.editor, (instance) => {
 
 const cleanupEditor = () => {
   editor.value?.editor.off('update', editorUpdateCallback);
+  editor.value?.editor.destroy();
 };
 
 onDeactivated(cleanupEditor);
