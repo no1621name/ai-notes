@@ -13,7 +13,7 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-const noteId = toRef(props.noteId);
+const noteId = toRef(props, 'noteId');
 const { updateReminder, isLoading: isReminderUpdating } = useUpdateReminder(noteId);
 
 const getCurrentDate = () => new Date(Date.now() - 60 * 1000);
