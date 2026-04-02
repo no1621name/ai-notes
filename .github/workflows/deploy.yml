@@ -57,7 +57,6 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
-          DEPLOY_MESSAGE: ${{ github.event.head_commit.message }}
           DEPLOY_TITLE: Build ${{ steps.sha.outputs.short }}
         with:
-          args: deploy --dir=dist --prod --no-build --message "$DEPLOY_MESSAGE" --title "$DEPLOY_TITLE"
+          args: deploy --dir=dist --prod --no-build --message "$DEPLOY_TITLE"
