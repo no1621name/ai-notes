@@ -48,10 +48,16 @@ jobs:
           name: dist
           path: dist
 
+      - name: Get short SHA
+        id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Publish
         uses: netlify/actions/cli@master
-        with:
-          args: deploy --dir=dist --prod --no-build --title "Production ${{github.sha}}" --message "Deploy ${{github.event.head_commit.message}}"
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
+          DEPLOY_MESSAGE: ${{ github.event.head_commit.message }}
+          DEPLOY_TITLE: Build ${{ steps.sha.outputs.short }}
+        with:
+          args: deploy --dir=dist --prod --no-build --message "$DEPLOY_MESSAGE" --title "$DEPLOY_TITLE"
