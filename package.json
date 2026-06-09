@@ -15,8 +15,8 @@
     "lint:type-check": "vue-tsc --build",
     "lint:eslint": "eslint .",
     "prepare": "husky",
-    "supabase:deploy-functions": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase functions deploy --project-id $SUPABASE_PROJECT_ID",
-    "supabase:generate": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/shared/api/supabase/supabase-generated.types.ts && eslint src/shared/api/supabase/supabase-generated.types.ts --fix"
+    "supabase:deploy-functions": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase functions deploy --project-ref $SUPABASE_PROJECT_ID",
+    "supabase:generate": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-ref $SUPABASE_PROJECT_ID --schema public > src/shared/api/supabase/supabase-generated.types.ts && eslint src/shared/api/supabase/supabase-generated.types.ts --fix"
   },
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "5.0.1",
