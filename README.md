@@ -21,7 +21,7 @@ It is a note-taking app built with Vue 3.
 - **I18n**: Vue I18n
 - **Architecture**: [FSD](https://fsd.how/ru/docs/get-started/overview/)
 - **Notifications logic**: Supabase Edge Functions
-- **CI/CD**: GitHub Actions + Netlify
+- **CI/CD**: GitHub Actions 
 
 ## Supported Providers & Languages
 

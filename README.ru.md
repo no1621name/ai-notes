@@ -21,7 +21,7 @@
 - **I18n**: Vue I18n
 - **Архитектура**: [FSD](https://fsd.how/ru/docs/get-started/overview/)
 - **Логика уведомлений**: Supabase Edge Functions
-- **CI/CD**: GitHub Actions + Netlify
+- **CI/CD**: GitHub Actions
 
 ## Поддерживаемые провайдеры и языки
 
