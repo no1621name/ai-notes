@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+import { Analytics } from '@vercel/analytics/vue';
 import { Toaster } from '@/app/providers/toasts';
 import Header from '@/widgets/layout/header.vue';
 </script>
@@ -19,4 +20,5 @@ import Header from '@/widgets/layout/header.vue';
   </div>
   <Toaster />
   <VueQueryDevtools />
+  <Analytics/>
 </template>
