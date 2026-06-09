@@ -31,4 +31,4 @@ Also there are only English and Russian languages supported for now. If you need
 
 ## Acknowledgements
 
-Special thanks to [Vlad Starkovsky](https://github.com/starkovsky) for bug reports and improvement suggestions via his custom AI model.
+Special thanks to [Vlad Starkovsky](https://github.com/starkovsky) for bug reports and improvement suggestions via his custom AI agent.
