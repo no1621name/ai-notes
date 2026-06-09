@@ -15,8 +15,8 @@
     "lint:type-check": "vue-tsc --build",
     "lint:eslint": "eslint .",
     "prepare": "husky",
-    "supabase:deploy-functions": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase functions deploy --project-id $SUPABASE_PROJECT_ID",
-    "supabase:generate": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/shared/api/supabase/supabase-generated.types.ts && eslint src/shared/api/supabase/supabase-generated.types.ts --fix"
+    "supabase:deploy-functions": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase functions deploy --project-ref $SUPABASE_PROJECT_ID",
+    "supabase:generate": "eval $(grep '^SUPABASE_PROJECT_ID' .env) && supabase gen types typescript --project-ref $SUPABASE_PROJECT_ID --schema public > src/shared/api/supabase/supabase-generated.types.ts && eslint src/shared/api/supabase/supabase-generated.types.ts --fix"
   },
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "5.0.1",
@@ -44,6 +44,7 @@
     "arktype": "2.1.29",
     "groq-sdk": "0.37.0",
     "lowlight": "3.3.0",
+    "marked": "18.0.5",
     "pinia": "3.0.4",
     "tailwindcss": "4.1.18",
     "uuid": "13.0.0",
@@ -76,6 +77,7 @@
     "supabase": "2.72.1",
     "typescript": "5.9.3",
     "vite": "8.0.0",
+    "vite-plugin-static-copy": "4.1.1",
     "vite-plugin-vue-devtools": "8.0.5",
     "vitest": "4.0.16",
     "vue-tsc": "3.2.2"

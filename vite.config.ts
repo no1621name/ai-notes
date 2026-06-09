@@ -7,6 +7,7 @@ import tailwind from '@tailwindcss/vite';
 import vueIconsPlugin from '@kalimahapps/vue-icons/vite';
 import vueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 import { dirname, resolve } from 'node:path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const iconsPlugin = vueIconsPlugin();
 const originalTransform = iconsPlugin.transform;
@@ -28,6 +29,12 @@ export default defineConfig({
     iconsPlugin,
     vueI18nPlugin({
       include: resolve(dirname(fileURLToPath(import.meta.url)), 'src/**/locales/**'),
+    }),
+    viteStaticCopy({
+      targets: [
+        { src: 'README.md', dest: '' },
+        { src: 'README.ru.md', dest: '' },
+      ],
     }),
   ],
   resolve: {
