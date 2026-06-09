@@ -28,6 +28,10 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_VAPID_PUBLIC_JWK: ${{ secrets.VITE_VAPID_PUBLIC_JWK }}
 
       - name: Upload dist
         uses: actions/upload-artifact@v4
