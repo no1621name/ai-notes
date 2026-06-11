@@ -26,7 +26,7 @@ export const useUpdateNote = (id: MaybeRef<PrimaryKeyType>) => {
         __mutationId: variables.body.__mutationId,
       };
 
-      client.setQueryData<NoteData>(['note', id], (oldData) => {
+      client.setQueryData<NoteData>(['note', noteId], (oldData) => {
         if (!oldData) {
           return undefined;
         }
